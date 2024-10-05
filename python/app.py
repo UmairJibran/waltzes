@@ -1,0 +1,35 @@
+from flask import Flask, request
+from dotenv import load_dotenv
+
+from main import fetch_job_details_from_greenhouse
+from services.openai import generate_cover_letter
+from services.resume_best_match import get_best_match_from_resume
+from services.resume_vectorizor import vectorize_resume
+
+
+app = Flask(__name__)
+
+
+@app.route("/test")
+def test():
+    return "Hello, World!"
+
+
+@app.get("/job-details/<job_board>")
+def get_job_details(job_board):
+    job_url = request.args.get("url")
+    job_details = ""
+
+    if job_url is None:
+        return "Please provide a job URL"
+
+    match job_board:
+        case "greenhouse":
+            job_details = fetch_job_details_from_greenhouse(job_url)
+
+    resume_vectors, resume_segments = vectorize_resume()
+    best_match_section = get_best_match_from_resume(job_details, resume_vectors, resume_segments)
+    response = generate_cover_letter(job_details, best_match_section)
+
+
+    return {"cover_letter": response, "best_match_section": best_match_section}
