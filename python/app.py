@@ -34,4 +34,4 @@ def get_job_details(job_board):
     response = generate_cover_letter(job_details, best_match_section)
 
 
-    return {"cover_letter": response, "best_match_section": best_match_section}
+    return {"coverLetter": response, "bestMatchSection": best_match_section}
