@@ -1,5 +1,6 @@
 from flask import Flask, request
 from dotenv import load_dotenv
+from flask_cors import CORS
 
 from main import fetch_job_details_from_greenhouse
 from services.openai import generate_cover_letter
@@ -8,6 +9,7 @@ from services.resume_vectorizor import vectorize_resume
 
 
 app = Flask(__name__)
+CORS(app)
 
 
 @app.route("/test")
