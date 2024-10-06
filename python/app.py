@@ -9,15 +9,19 @@ from services.resume_vectorizor import vectorize_resume
 
 
 app = Flask(__name__)
+
+app.config['CORS_HEADERS'] = 'Content-Type'
+
+resources={r"/job-details": {"origins": "http://localhost:5000"}}
 CORS(app)
 
 
-@app.route("/test")
+@app.route("/test", methods=["GET"])
 def test():
     return "Hello, World!"
 
 
-@app.get("/job-details/<job_board>")
+@app.route("/job-details/<job_board>", methods=["GET"])
 def get_job_details(job_board):
     job_url = request.args.get("url")
     job_details = ""
