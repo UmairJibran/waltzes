@@ -13,6 +13,14 @@ function copyToClipboard(text) {
   document.body.removeChild(copyText);
 }
 
+function notSupported(title) {
+  const div = document.createElement("div");
+  div.innerHTML = `<div>
+    <p><code>${title}</code> is not "yet" supported</p>
+  </div>`;
+  document.body.appendChild(div);
+}
+
 function acknowledgeUser(bestMatchSection) {
   const div = document.createElement("div");
   div.innerHTML = `<div>
@@ -25,8 +33,12 @@ function acknowledgeUser(bestMatchSection) {
 document.getElementById("btn").addEventListener("click", async function () {
   const currentTab = await getCurrentTab();
   // TODO: Fetch base url from local storage (dynamic url based on user's input)
-  const baseUrl = "http:/localhost:5000/job-details/greenhouse";
-  const url = `${baseUrl}?url=${currentTab.url}`;
+  const baseUrl = "http:/localhost:5000/job-details";
+  const jobBoard = "";
+  if (currentTab.url.includes("greenhouse")) jobBoard = "greenhouse";
+
+  if (!jobBoard) notSupported(currentTab.title);
+  const url = `${baseUrl}/${jobBoard}?url=${currentTab.url}`;
 
   const response = await fetch(url, {
     method: "GET",
