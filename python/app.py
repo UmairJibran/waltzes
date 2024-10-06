@@ -1,5 +1,6 @@
 from flask import Flask, request
 from dotenv import load_dotenv
+from flask_cors import CORS
 
 from main import fetch_job_details_from_greenhouse
 from services.openai import generate_cover_letter
@@ -8,6 +9,7 @@ from services.resume_vectorizor import vectorize_resume
 
 
 app = Flask(__name__)
+CORS(app)
 
 
 @app.route("/test")
@@ -32,4 +34,4 @@ def get_job_details(job_board):
     response = generate_cover_letter(job_details, best_match_section)
 
 
-    return {"cover_letter": response, "best_match_section": best_match_section}
+    return {"coverLetter": response, "bestMatchSection": best_match_section}
