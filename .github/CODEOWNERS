@@ -1,0 +1,10 @@
+* @UmairJibran
+
+# Owner for the python folder
+/python/ @UmairJibran
+
+# Owner for the addon folder
+/addon/ @UmairJibran
+
+# Future owner for documentation files (Markdown)
+/*.md @UmairJibran
