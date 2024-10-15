@@ -1,3 +1,6 @@
+> [!WARNING]  
+> This is still a beta, expect issues, security or otherwise, if you find so, please report them!
+
 # Waltzes
 
 Waltzes is a project designed to generate personalized cover letters based on job details and resume information. It consists of a browser extension and a Flask server.
