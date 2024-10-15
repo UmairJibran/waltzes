@@ -39,6 +39,12 @@ Waltzes is a project designed to generate personalized cover letters based on jo
      1. Open Firefox and navigate to `about:debugging#/runtime/this-firefox`.
      2. Click "Load Temporary Add-on" and select any file in the `addon` directory.
 
+3. Configure the extension:
+   - Copy the extension ID (e.g., `6546988c-c591-4bce-8e38-357819650252`).
+   - Go to the following url `moz-extension://{YOUR_TEMPORARY_EXTENSION_ID}/src/configure.html`
+   - Provide your OpenAI API key and the Flask server URL.
+   - Click "Save".
+
 ### Flask Server Setup
 
 1. Navigate to the `python` directory:

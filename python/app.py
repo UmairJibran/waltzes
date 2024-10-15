@@ -24,6 +24,7 @@ def test():
 @app.route("/job-details/<job_board>", methods=["GET"])
 def get_job_details(job_board):
     job_url = request.args.get("url")
+    openai_api_key = request.args.get("openAiKey")
     job_details = ""
 
     if job_url is None:
@@ -35,7 +36,7 @@ def get_job_details(job_board):
 
     resume_vectors, resume_segments = vectorize_resume()
     best_match_section = get_best_match_from_resume(job_details, resume_vectors, resume_segments)
-    response = generate_cover_letter(job_details, best_match_section)
+    response = generate_cover_letter(job_details, best_match_section, openai_api_key)
 
 
     return {"coverLetter": response, "bestMatchSection": best_match_section}

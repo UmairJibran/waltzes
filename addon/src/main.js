@@ -56,8 +56,8 @@ function showCoverLetter(coverLetter) {
 generateCLButton.addEventListener("click", async function () {
   const loader = document.getElementById("loader");
   const currentTab = await getCurrentTab();
-  // TODO: Fetch base url from local storage (dynamic url based on user's input)
-  const baseUrl = "http:/localhost:5000/job-details";
+  const savedHost = localStorage.getItem("host") || "http://localhost:5000";
+  const baseUrl = [savedHost, "job-details"].join("/");
   let jobBoard = "";
   if (currentTab.url.includes("greenhouse")) jobBoard = "greenhouse";
 
@@ -65,7 +65,9 @@ generateCLButton.addEventListener("click", async function () {
     notSupported(currentTab.title, currentTab.url);
     return;
   }
-  const url = `${baseUrl}/${jobBoard}?url=${currentTab.url}`;
+  const openAiKey = localStorage.getItem("openAiKey");
+  let url = `${baseUrl}/${jobBoard}?url=${currentTab.url}`;
+  if (openAiKey) url += `&openAiKey=${openAiKey}`;
 
   generateCLButton.disabled = true;
   loader.hidden = false;
