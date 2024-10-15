@@ -65,7 +65,9 @@ generateCLButton.addEventListener("click", async function () {
     notSupported(currentTab.title, currentTab.url);
     return;
   }
-  const url = `${baseUrl}/${jobBoard}?url=${currentTab.url}`;
+  const openAiKey = localStorage.getItem("openAiKey");
+  let url = `${baseUrl}/${jobBoard}?url=${currentTab.url}`;
+  if (openAiKey) url += `&openAiKey=${openAiKey}`;
 
   generateCLButton.disabled = true;
   loader.hidden = false;

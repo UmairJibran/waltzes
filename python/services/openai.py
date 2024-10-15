@@ -1,10 +1,13 @@
 import os
 from openai import OpenAI
 
-client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 
-def generate_cover_letter(raw_job_details, best_match_section):
+def generate_cover_letter(raw_job_details, best_match_section,api_key):
+    if api_key is None:
+        api_key = os.environ.get("OPENAI_API_KEY")
+    print("OPEN AI KEY => ", api_key)
+    client = OpenAI(api_key=api_key)
 
     prompt = f"""
 Generate a compelling cover letter based on the provided resume and job details. Analyze the resume to identify relevant work experience, skills, and achievements that align with the job requirements. Use this information to craft a brief, enthusiastic letter that showcases the candidate's qualifications and passion for the role.
