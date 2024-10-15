@@ -56,8 +56,8 @@ function showCoverLetter(coverLetter) {
 generateCLButton.addEventListener("click", async function () {
   const loader = document.getElementById("loader");
   const currentTab = await getCurrentTab();
-  // TODO: Fetch base url from local storage (dynamic url based on user's input)
-  const baseUrl = "http:/localhost:5000/job-details";
+  const savedHost = localStorage.getItem("host") || "http://localhost:5000";
+  const baseUrl = [savedHost, "job-details"].join("/");
   let jobBoard = "";
   if (currentTab.url.includes("greenhouse")) jobBoard = "greenhouse";
 
