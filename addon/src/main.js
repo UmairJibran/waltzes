@@ -84,7 +84,7 @@ generateCLButton.addEventListener("click", async function () {
   if (response.ok) {
     const data = await response.json();
     // COPY TO CLIPBOARD
-    acknowledgeUser(data.bestMatchSection);
+    // acknowledgeUser(data.bestMatchSection);
     showCoverLetter(data.coverLetter);
     copyToClipboard(data.coverLetter);
   } else {
