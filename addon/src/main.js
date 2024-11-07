@@ -67,6 +67,7 @@ generateCLButton.addEventListener("click", async function () {
   const baseUrl = [savedHost, "job-details"].join("/");
   let jobBoard = "";
   if (currentTab.url.includes("greenhouse")) jobBoard = "greenhouse";
+  if (currentTab.url.includes("lever")) jobBoard = "lever";
 
   if (!jobBoard) {
     notSupported(currentTab.title, currentTab.url);
