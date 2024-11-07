@@ -56,8 +56,8 @@ function showCoverLetter(coverLetter) {
     <p class="font-monospace">${coverLetter}</p>
   </div>`;
   const mainDiv = document.getElementById("popup");
-  mainDiv.appendChild(div);
   mainDiv.appendChild(copyButton);
+  mainDiv.appendChild(div);
 }
 
 generateCLButton.addEventListener("click", async function () {
