@@ -47,10 +47,17 @@ function showCoverLetter(coverLetter) {
   const div = document.createElement("div");
   div.innerHTML = `<div class="mt-2">
     <p>Cover Letter:</p>
-    <p class="font-monospace">${coverLetter}</p>
   </div>`;
+
+  const clArea = document.createElement("textarea");
+  clArea.value = coverLetter;
+  clArea.rows = 10;
+  clArea.style.width = "100%";
+  clArea.style.resize = "none";
+
   const mainDiv = document.getElementById("popup");
   mainDiv.appendChild(div);
+  mainDiv.appendChild(clArea);
 }
 
 generateCLButton.addEventListener("click", async function () {
