@@ -44,6 +44,12 @@ function acknowledgeUser(bestMatchSection) {
 }
 
 function showCoverLetter(coverLetter) {
+  const copyButton = document.createElement("button");
+  copyButton.innerHTML = "Copy to Clipboard";
+  copyButton.classList.add("btn", "btn-primary", "mt-2");
+  copyButton.onclick = function () {
+    copyToClipboard(coverLetter);
+  };
   const div = document.createElement("div");
   div.innerHTML = `<div class="mt-2">
     <p>Cover Letter:</p>
@@ -56,6 +62,7 @@ function showCoverLetter(coverLetter) {
   clArea.style.resize = "none";
 
   const mainDiv = document.getElementById("popup");
+  mainDiv.appendChild(copyButton);
   mainDiv.appendChild(div);
   mainDiv.appendChild(clArea);
 }
@@ -90,10 +97,8 @@ generateCLButton.addEventListener("click", async function () {
   loader.hidden = true;
   if (response.ok) {
     const data = await response.json();
-    // COPY TO CLIPBOARD
     acknowledgeUser(data.bestMatchSection);
     showCoverLetter(data.coverLetter);
-    copyToClipboard(data.coverLetter);
   } else {
     console.error("Network response was not ok.");
   }
