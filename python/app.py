@@ -2,7 +2,7 @@ from flask import Flask, request
 from dotenv import load_dotenv
 from flask_cors import CORS
 
-from main import fetch_job_details_from_greenhouse
+from main import fetch_job_details_from_greenhouse, fetch_job_details_from_lever
 from services.openai import generate_cover_letter
 from services.resume_best_match import get_best_match_from_resume
 from services.resume_vectorizor import vectorize_resume
@@ -33,6 +33,8 @@ def get_job_details(job_board):
     match job_board:
         case "greenhouse":
             job_details = fetch_job_details_from_greenhouse(job_url)
+        case "lever":
+            job_details = fetch_job_details_from_lever(job_url)
 
     resume_vectors, resume_segments = vectorize_resume()
     best_match_section = get_best_match_from_resume(job_details, resume_vectors, resume_segments)
