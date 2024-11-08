@@ -69,28 +69,38 @@ function showCoverLetter(coverLetter) {
 
 generateCLButton.addEventListener("click", async function () {
   const loader = document.getElementById("loader");
-  const currentTab = await getCurrentTab();
+  const customJd = document.getElementById("custom-job-description");
   const savedHost = localStorage.getItem("host") || "http://localhost:5000";
   const baseUrl = [savedHost, "job-details"].join("/");
-  let jobBoard = "";
-  if (currentTab.url.includes("greenhouse")) jobBoard = "greenhouse";
-  if (currentTab.url.includes("lever")) jobBoard = "lever";
+  let url = "";
+  if (customJd && customJd.value) {
+    url = `${baseUrl}/custom-jd`;
+  } else {
+    const currentTab = await getCurrentTab();
+    let jobBoard = "";
+    if (currentTab.url.includes("greenhouse")) jobBoard = "greenhouse";
+    if (currentTab.url.includes("lever")) jobBoard = "lever";
 
-  if (!jobBoard) {
-    notSupported(currentTab.title, currentTab.url);
-    return;
+    if (!jobBoard) {
+      notSupported(currentTab.title, currentTab.url);
+      return;
+    }
+    url = `${baseUrl}/${jobBoard}?url=${currentTab.url}`;
   }
+
   const openAiKey = localStorage.getItem("openAiKey");
-  let url = `${baseUrl}/${jobBoard}?url=${currentTab.url}`;
   if (openAiKey) url += `&openAiKey=${openAiKey}`;
 
   generateCLButton.disabled = true;
   loader.hidden = false;
   const response = await fetch(url, {
-    method: "GET",
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
+    body: JSON.stringify({
+      ...(customJd && { customJd: customJd.value }),
+    }),
     mode: "cors",
   });
 
