@@ -44,13 +44,27 @@ function acknowledgeUser(bestMatchSection) {
 }
 
 function showCoverLetter(coverLetter) {
+  const copyButton = document.createElement("button");
+  copyButton.innerHTML = "Copy to Clipboard";
+  copyButton.classList.add("btn", "btn-primary", "mt-2");
   const div = document.createElement("div");
   div.innerHTML = `<div class="mt-2">
     <p>Cover Letter:</p>
-    <p class="font-monospace">${coverLetter}</p>
   </div>`;
+
+  const clArea = document.createElement("textarea");
+  clArea.value = coverLetter;
+  clArea.rows = 10;
+  clArea.style.width = "100%";
+  clArea.style.resize = "none";
+  copyButton.onclick = function () {
+    copyToClipboard(clArea.value);
+  };
+
   const mainDiv = document.getElementById("popup");
+  mainDiv.appendChild(copyButton);
   mainDiv.appendChild(div);
+  mainDiv.appendChild(clArea);
 }
 
 generateCLButton.addEventListener("click", async function () {
@@ -60,6 +74,7 @@ generateCLButton.addEventListener("click", async function () {
   const baseUrl = [savedHost, "job-details"].join("/");
   let jobBoard = "";
   if (currentTab.url.includes("greenhouse")) jobBoard = "greenhouse";
+  if (currentTab.url.includes("lever")) jobBoard = "lever";
 
   if (!jobBoard) {
     notSupported(currentTab.title, currentTab.url);
@@ -83,10 +98,7 @@ generateCLButton.addEventListener("click", async function () {
   loader.hidden = true;
   if (response.ok) {
     const data = await response.json();
-    // COPY TO CLIPBOARD
-    // acknowledgeUser(data.bestMatchSection);
     showCoverLetter(data.coverLetter);
-    copyToClipboard(data.coverLetter);
   } else {
     console.error("Network response was not ok.");
   }

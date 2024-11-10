@@ -18,5 +18,11 @@
 
   "permissions": ["activeTab", "tabs"],
 
-  "web_accessible_resources": []
+  "web_accessible_resources": [],
+
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "me@umairjibran.com"
+    }
+  }
 }
