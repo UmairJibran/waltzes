@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request
 from dotenv import load_dotenv
 from flask_cors import CORS
 import pdfplumber
@@ -15,11 +15,6 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 
 resources = {r"/job-details": {"origins": "http://localhost:5000"}}
 CORS(app)
-
-
-@app.route("/")
-def index():
-    return render_template("upload.html")
 
 
 @app.route("/upload", methods=["POST"])
