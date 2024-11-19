@@ -30,7 +30,7 @@ def upload():
         with open("resume.txt", "w") as f:
             f.write(text)
 
-        return jsonify(message='Resume uploaded!')
+        return '<h1>Resume uploaded!</h1>'
     else:
         return "Please select a resume file."
 
