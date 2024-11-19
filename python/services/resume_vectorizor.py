@@ -23,4 +23,4 @@ def vectorize_resume():
             resume_vectors = model.encode(resume_segments)
             return resume_vectors, resume_segments
     except FileNotFoundError:
-        return "cv.txt file not found."
+        return "resume.txt file not found."
