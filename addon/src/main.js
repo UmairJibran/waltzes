@@ -17,7 +17,7 @@ function copyToClipboard(text) {
   const div = document.createElement("div");
   div.id = "copied";
   div.innerHTML = `<div class="mt-2">
-    <small><code>Coppied to your clipboard</code></small>
+    <small><code>Copied to your clipboard</code></small>
   </div>`;
 
   const mainDiv = document.getElementById("popup");

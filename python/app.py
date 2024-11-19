@@ -31,7 +31,7 @@ def get_job_details(job_board):
     job_details = job_details.get("customJd")
 
     if job_url is None and job_details is None:
-        return "Please provide a job URL"
+        return "Please provide a job URL or custom job description"
 
     match job_board:
         case "greenhouse":
