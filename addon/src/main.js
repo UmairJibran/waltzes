@@ -110,7 +110,7 @@ function showCoverLetter({ coverLetter, companyName, role, applicantName }) {
       window.URL.revokeObjectURL(url);
       link.remove();
     } else {
-      console.error("Network response was not ok.");
+      console.error(`Network response was not ok. Status: ${response.status} ${response.statusText}`);
     }
   };
 
