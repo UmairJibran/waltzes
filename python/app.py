@@ -25,9 +25,10 @@ def test():
 @app.route("/create-pdf", methods=["POST"])
 def convert_to_pdf():
     text = request.get_json().get("text")
+    title = request.get_json().get("title", "Cover Letter")
     if text is None:
         return "Please provide text to convert to PDF"
-    pdf_location = convert_text_to_pdf(text)
+    pdf_location = convert_text_to_pdf(text, title)
     with open(pdf_location, "rb") as pdf_file:
         pdf_data = pdf_file.read()
     return pdf_data, 200, {
