@@ -100,8 +100,7 @@ generateCLButton.addEventListener("click", async function () {
     if (currentTab.url.includes("lever")) jobBoard = "lever";
 
     if (!jobBoard) {
-      notSupported(currentTab.title, currentTab.url);
-      return;
+      jobBoard = "unknown";
     }
     url = `${baseUrl}/${jobBoard}?url=${currentTab.url}`;
   }
