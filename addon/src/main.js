@@ -1,5 +1,9 @@
 const generateCLButton = document.getElementById("btn");
 
+function getBaseUrl() {
+  return localStorage.getItem("host") || "http://localhost:5000";
+}
+
 async function getCurrentTab() {
   let queryOptions = { active: true, lastFocusedWindow: true };
   let [tab] = await chrome.tabs.query(queryOptions);
@@ -50,6 +54,11 @@ function showCoverLetter(coverLetter) {
   const copyButton = document.createElement("button");
   copyButton.innerHTML = "Copy to Clipboard";
   copyButton.classList.add("btn", "btn-primary", "mt-2");
+
+  const dlButton = document.createElement("button");
+  dlButton.innerHTML = "Download as PDF";
+  dlButton.classList.add("btn", "btn-primary", "mt-2");
+
   const div = document.createElement("div");
   div.innerHTML = `<div class="mt-2">
     <p>Cover Letter:</p>
@@ -63,10 +72,41 @@ function showCoverLetter(coverLetter) {
   copyButton.onclick = function () {
     copyToClipboard(clArea.value);
   };
+  dlButton.onclick = async function () {
+    dlButton.disabled = true;
+    const baseUrl = getBaseUrl();
+    const response = await fetch([baseUrl, "create-pdf"].join("/"), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        text: clArea.value,
+      }),
+      mode: "cors",
+    });
+
+    dlButton.disabled = false;
+    if (response.ok) {
+      const pdfData = await response.arrayBuffer();
+      const blob = new Blob([pdfData], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "cover_letter.pdf";
+      link.click();
+      window.URL.revokeObjectURL(url);
+      link.remove();
+    } else {
+      console.error("Network response was not ok.");
+    }
+  };
 
   const mainDiv = document.getElementById("popup");
   mainDiv.appendChild(copyButton);
+  mainDiv.appendChild(dlButton);
   copyButton.id = "copy-button";
+  dlButton.id = "download-button";
   mainDiv.appendChild(div);
   div.id = "cover-letter";
   mainDiv.appendChild(clArea);
@@ -81,6 +121,7 @@ generateCLButton.addEventListener("click", async function () {
     "copy-button",
     "cl-area",
     "copied",
+    "download-button",
   ].forEach((id) => {
     const element = document.getElementById(id);
     if (element) element.remove();
@@ -88,8 +129,7 @@ generateCLButton.addEventListener("click", async function () {
 
   const loader = document.getElementById("loader");
   const customJd = document.getElementById("custom-job-description");
-  const savedHost = localStorage.getItem("host") || "http://localhost:5000";
-  const baseUrl = [savedHost, "job-details"].join("/");
+  const baseUrl = [getBaseUrl(), "job-details"].join("/");
   let url = "";
   if (customJd && customJd.value) {
     url = `${baseUrl}/custom-jd`;
