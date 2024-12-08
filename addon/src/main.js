@@ -1,5 +1,9 @@
 const generateCLButton = document.getElementById("btn");
 
+document.getElementById("openCvPage").addEventListener("click", () => {
+  chrome.tabs.create({ url: chrome.runtime.getURL("src/add-cv.html") });
+});
+
 async function getCurrentTab() {
   let queryOptions = { active: true, lastFocusedWindow: true };
   let [tab] = await chrome.tabs.query(queryOptions);
@@ -125,7 +129,6 @@ generateCLButton.addEventListener("click", async function () {
   loader.hidden = true;
   if (response.ok) {
     const data = await response.json();
-    acknowledgeUser(data.bestMatchSection);
     showCoverLetter(data.coverLetter);
   } else {
     console.error("Network response was not ok.");
