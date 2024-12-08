@@ -21,14 +21,17 @@ def test():
     return "Hello, World!"
 
 
-@app.route("/job-details/<job_board>", methods=["GET"])
+@app.route("/job-details/<job_board>", methods=["POST"])
 def get_job_details(job_board):
     job_url = request.args.get("url")
     openai_api_key = request.args.get("openAiKey")
     job_details = ""
 
-    if job_url is None:
-        return "Please provide a job URL"
+    job_details = request.get_json()
+    job_details = job_details.get("customJd")
+
+    if job_url is None and job_details is None:
+        return "Please provide a job URL or custom job description"
 
     match job_board:
         case "greenhouse":

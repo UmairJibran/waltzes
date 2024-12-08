@@ -16,7 +16,15 @@
     "default_popup": "src/popup.html"
   },
 
-  "permissions": ["activeTab", "tabs"],
+  "permissions": ["activeTab", "tabs", "sidePanel", "storage"],
+  "side_panel": {
+    "default_path": "src/sidebar.html"
+  },
+  "sidebar_action": {
+    "default_title": "Waltzes",
+    "default_panel": "src/sidebar.html",
+    "open_at_install": true
+  },
 
   "web_accessible_resources": [],
 
