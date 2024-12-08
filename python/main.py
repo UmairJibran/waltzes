@@ -47,4 +47,4 @@ def fetch_job_details_generic(job_url):
 
     response = requests.request("POST", url, headers=headers, data=payload)
 
-    return response.text
+    return response.json()
