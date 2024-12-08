@@ -6,4 +6,5 @@ python-dotenv==1.0.1
 sentence-transformers==3.1.1
 numpy==2.1.1
 scikit-learn==1.5.2
-flask-cors===5.0.0
+flask-cors==5.0.0
+fpdf==1.7.2

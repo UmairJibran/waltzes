@@ -3,7 +3,7 @@ from openai import OpenAI
 
 
 
-def generate_cover_letter(raw_job_details, best_match_section,api_key):
+def generate_cover_letter(raw_job_details, best_match_section, api_key):
     if api_key is None:
         api_key = os.environ.get("OPENAI_API_KEY")
     print("OPEN AI KEY => ", api_key)
@@ -36,6 +36,17 @@ Additional Instructions:
     8. Do not include any personal information or contact details
     9. Do not leave any placeholder text
     10. Be realistic and avoid exaggeration or false information
+
+The response should be in the form of a well-structured cover letter that meets the above criteria.
+The response should be in the following format:
+{{
+    "cover_letter": <generated cover letter>,
+    "company_name": <company name>,
+    "role": <role>,
+    "applicant_name": <applicant's name>
+}}
+
+It should not be markdown or any other format. Only plain text.
 """
 
     completion = client.chat.completions.create(
