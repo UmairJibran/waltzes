@@ -1,5 +1,9 @@
 const generateCLButton = document.getElementById("btn");
 
+function sanitize(text) {
+  return text.replace(/[^a-zA-Z0-9]/g, "_");
+}
+
 function getBaseUrl() {
   return localStorage.getItem("host") || "http://localhost:5000";
 }
@@ -50,7 +54,7 @@ function acknowledgeUser(bestMatchSection) {
   mainDiv.appendChild(div);
 }
 
-function showCoverLetter(coverLetter) {
+function showCoverLetter({ coverLetter, companyName, role, applicantName }) {
   const copyButton = document.createElement("button");
   copyButton.innerHTML = "Copy to Clipboard";
   copyButton.classList.add("btn", "btn-primary", "mt-2");
@@ -82,6 +86,7 @@ function showCoverLetter(coverLetter) {
       },
       body: JSON.stringify({
         text: clArea.value,
+        title: [applicantName, companyName].join(" - "),
       }),
       mode: "cors",
     });
@@ -93,7 +98,14 @@ function showCoverLetter(coverLetter) {
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = "cover_letter.pdf";
+      link.download =
+        [
+          sanitize(applicantName),
+          "cover_letter",
+          sanitize(companyName),
+          sanitize(role),
+        ].join("_") + ".pdf";
+      link.download = link.download.replace(/_+/g, "_");
       link.click();
       window.URL.revokeObjectURL(url);
       link.remove();
@@ -166,7 +178,13 @@ generateCLButton.addEventListener("click", async function () {
   if (response.ok) {
     const data = await response.json();
     acknowledgeUser(data.bestMatchSection);
-    showCoverLetter(data.coverLetter);
+    const {
+      cover_letter: coverLetter,
+      company_name: companyName,
+      role,
+      applicant_name: applicantName,
+    } = JSON.parse(data.coverLetter);
+    showCoverLetter({ coverLetter, companyName, role, applicantName });
   } else {
     console.error("Network response was not ok.");
   }
