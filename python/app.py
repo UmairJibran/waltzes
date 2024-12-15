@@ -1,6 +1,7 @@
 from flask import Flask, request
 from dotenv import load_dotenv
 from flask_cors import CORS
+from services.pdf import convert_text_to_pdf
 
 from main import fetch_job_details_from_greenhouse, fetch_job_details_from_lever, fetch_job_details_generic
 from services.openai import generate_cover_letter
@@ -19,6 +20,21 @@ CORS(app)
 @app.route("/test", methods=["GET"])
 def test():
     return "Hello, World!"
+
+
+@app.route("/create-pdf", methods=["POST"])
+def convert_to_pdf():
+    text = request.get_json().get("text")
+    title = request.get_json().get("title", "Cover Letter")
+    if text is None:
+        return "Please provide text to convert to PDF"
+    pdf_location = convert_text_to_pdf(text, title)
+    with open(pdf_location, "rb") as pdf_file:
+        pdf_data = pdf_file.read()
+    return pdf_data, 200, {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': f'attachment; filename="{pdf_location.split("/")[-1]}"'
+    }
 
 
 @app.route("/job-details/<job_board>", methods=["POST"])
