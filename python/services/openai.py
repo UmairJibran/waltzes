@@ -2,8 +2,7 @@ import os
 from openai import OpenAI
 
 
-
-def generate_cover_letter(raw_job_details, best_match_section,api_key):
+def generate_cover_letter(raw_job_details, best_match_section, api_key):
     if api_key is None:
         api_key = os.environ.get("OPENAI_API_KEY")
     print("OPEN AI KEY => ", api_key)
@@ -27,7 +26,7 @@ Use a professional yet engaging tone, and avoid generic phrases or clichés. The
 
 Additional Instructions:
     1. Address the letter to the hiring manager
-    2. Use the candidate's name as "Umair Jibran"
+    2. Use the candidate's name from CV
     3. Do not mention the company name or Role in the cover letter if not provided
     4. Include a closing statement expressing interest in an interview
     5. Proofread the letter for grammar and spelling errors
@@ -46,6 +45,5 @@ Additional Instructions:
         max_tokens=500,
         temperature=0.2
     )
-
 
     return completion.choices[0].message.content
