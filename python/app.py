@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from flask_cors import CORS
 import pdfplumber
 
-from main import fetch_job_details_from_greenhouse, fetch_job_details_from_lever
+from main import fetch_job_details_from_greenhouse, fetch_job_details_from_lever, fetch_job_details_generic
 from services.openai import generate_cover_letter
 from services.resume_best_match import get_best_match_from_resume
 from services.resume_vectorizor import vectorize_resume
@@ -40,20 +40,27 @@ def test():
     return "Hello, World!"
 
 
-@app.route("/job-details/<job_board>", methods=["GET"])
+@app.route("/job-details/<job_board>", methods=["POST"])
 def get_job_details(job_board):
     job_url = request.args.get("url")
     openai_api_key = request.args.get("openAiKey")
     job_details = ""
 
-    if job_url is None:
-        return "Please provide a job URL"
+    job_details = request.get_json()
+    job_details = job_details.get("customJd")
+
+    if job_url is None and job_details is None:
+        return "Please provide a job URL or custom job description"
 
     match job_board:
         case "greenhouse":
             job_details = fetch_job_details_from_greenhouse(job_url)
         case "lever":
             job_details = fetch_job_details_from_lever(job_url)
+        case "unknown":
+            job_details = fetch_job_details_generic(job_url)
+            if job_details is None:
+                return "Job details could not be fetched. Please try again."
 
     resume_vectors, resume_segments = vectorize_resume()
     best_match_section = get_best_match_from_resume(
