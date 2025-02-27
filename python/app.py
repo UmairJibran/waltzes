@@ -1,7 +1,7 @@
 from flask import Flask, request
 from dotenv import load_dotenv
 from flask_cors import CORS
-from services.pdf import convert_text_to_pdf
+from services.pdf import convert_text_to_pdf, create_resume
 
 from main import fetch_job_details_from_greenhouse, fetch_job_details_from_lever, fetch_job_details_generic
 from services.openai import generate_cover_letter
@@ -36,6 +36,19 @@ def convert_to_pdf():
         'Content-Disposition': f'attachment; filename="{pdf_location.split("/")[-1]}"'
     }
 
+
+@app.route("/create-resume", methods=["POST"])
+def convert_resume():
+    text = request.get_json().get("text")
+    if text is None:
+        return "Please provide text to convert to PDF"
+    pdf_location = create_resume(text)
+    with open(pdf_location, "rb") as pdf_file:
+        pdf_data = pdf_file.read()
+    return pdf_data, 200, {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': f'attachment; filename="{pdf_location.split("/")[-1]}"'
+    }
 
 @app.route("/job-details/<job_board>", methods=["POST"])
 def get_job_details(job_board):
