@@ -53,10 +53,10 @@ def login():
     email = request.get_json().get("email")
     password = request.get_json().get("password")
     if email is None or password is None:
-        return "Please provide all the required fields"
+        return ("Please provide all the required fields", 400)
     user = User.login_user(email, password)
     if user is None:
-        return "Invalid credentials"
+        return ("Invalid credentials", 400)
     token = user.generate_token()
     return {"token": token}
 
