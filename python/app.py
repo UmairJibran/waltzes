@@ -1,5 +1,7 @@
+import os
 from flask import Flask, request
 from flask_cors import CORS
+from models.user import User
 from services.pdf import convert_text_to_pdf, create_resume
 
 from main import (
@@ -23,6 +25,39 @@ CORS(app)
 @app.route("/test", methods=["GET"])
 def test():
     return "Hello, World!"
+
+
+@app.route("/register", methods=["POST"])
+def register():
+    name = request.get_json().get("name")
+    email = request.get_json().get("email")
+    password = request.get_json().get("password")
+    linkedin_username = request.get_json().get("linkedinUsername")
+    if email is None or password is None:
+        return "Please provide all the required fields"
+    secret_key = os.urandom(16).hex()
+    user = User(
+        email=email,
+        password=password,
+        name=name,
+        linkedin_username=linkedin_username,
+        secret_key=secret_key,
+    )
+    user.create()
+    return "User Created!"
+
+
+@app.route("/login", methods=["POST"])
+def login():
+    email = request.get_json().get("email")
+    password = request.get_json().get("password")
+    if email is None or password is None:
+        return "Please provide all the required fields"
+    user = User.login_user(email, password)
+    if user is None:
+        return "Invalid credentials"
+    token = user.generate_token()
+    return {"token": token}
 
 
 @app.route("/create-pdf", methods=["POST"])
