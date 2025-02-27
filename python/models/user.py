@@ -89,8 +89,6 @@ class User:
         self.password = str(hashed)
 
     def is_valid_password(self, hashed_password, entered_password) -> bool:
-        print(f"""{entered_password=}""")
-        print(f"""{hashed_password=}""")
         entered_password_encoded = entered_password.encode("utf-8")
         hashed_password_encoded = (
             hashed_password.encode("utf-8")
@@ -100,10 +98,8 @@ class User:
 
         try:
             if bcrypt.checkpw(entered_password_encoded, hashed_password_encoded):
-                print("It Matches!")
                 return True
             else:
-                print("It Does not Match :(")
                 return False
         except Exception as e:
             print(f"Error validating password: {e}")
@@ -113,6 +109,8 @@ class User:
         existing_user = self.find_by_email(self.email)
         if existing_user:
             return str(existing_user)
+        self.hash_password()
+        return self.db.create(self.COLLECTION_NAME, self.to_dict())
 
     @classmethod
     def login_user(cls, email: str, password: str) -> Optional["User"]:
