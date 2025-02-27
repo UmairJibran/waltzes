@@ -42,7 +42,177 @@ def convert_resume():
     text = request.get_json().get("text")
     if text is None:
         return "Please provide text to convert to PDF"
-    pdf_location = create_resume(text)
+    pdf_location = create_resume({
+        "name": "UMAIR JIBRAN",
+        "contact": [
+            "umairjibran.com",
+            "me@umairjibran.com",
+            "+92 (312) 091-9647",
+            "linkedin.com/in/umairjibran"
+        ],
+        "experience": [
+            {
+                "title": "Productbox, Backend Tech Lead",
+                "location": "Peshawar, KP",
+                "date": "FEB 2024-Present",
+                "description": [
+                    "Designed a scalable backend capable of handling thousands of concurrent users, with the ability to scale further as needed.",
+                    "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
+                    "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
+                    "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
+                    "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
+                    "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
+                    "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
+                    "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
+                ]
+            },
+            {
+                "title": "Productbox, Backend Tech Lead",
+                "location": "Peshawar, KP",
+                "date": "FEB 2024-Present",
+                "description": [
+                    "Designed a scalable backend capable of handling thousands of concurrent users, with the ability to scale further as needed.",
+                    "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
+                    "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
+                    "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
+                    "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
+                    "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
+                    "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
+                    "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
+                ]
+            },
+            {
+                "title": "Productbox, Backend Tech Lead",
+                "location": "Peshawar, KP",
+                "date": "FEB 2024-Present",
+                "description": [
+                    "Designed a scalable backend capable of handling thousands of concurrent users, with the ability to scale further as needed.",
+                    "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
+                    "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
+                    "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
+                    "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
+                    "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
+                    "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
+                    "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
+                ]
+            },
+            {
+                "title": "Productbox, Backend Tech Lead",
+                "location": "Peshawar, KP",
+                "date": "FEB 2024-Present",
+                "description": [
+                    "Designed a scalable backend capable of handling thousands of concurrent users, with the ability to scale further as needed.",
+                    "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
+                    "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
+                    "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
+                    "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
+                    "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
+                    "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
+                    "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
+                ]
+            },
+            {
+                "title": "Productbox, Backend Tech Lead",
+                "location": "Peshawar, KP",
+                "date": "FEB 2024-Present",
+                "description": [
+                    "Designed a scalable backend capable of handling thousands of concurrent users, with the ability to scale further as needed.",
+                    "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
+                    "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
+                    "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
+                    "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
+                    "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
+                    "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
+                    "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
+                ]
+            },
+        ],
+        "education": [
+            {
+                "title": "CITY UNIVERSITY OF SCIENCE AND INFORMATION TECHNOLOGY",
+                "location": "Peshawar, KP",
+                "date": "SEPT 2017-NOV 2021",
+                "description": "Bachelor of Science in Computer Science",
+                "highlights": [
+                    "Selected as the first ever Student Ambassador of Microsoft for our Campus."
+                ]
+            },
+            {
+                "title": "CITY UNIVERSITY OF SCIENCE AND INFORMATION TECHNOLOGY",
+                "location": "Peshawar, KP",
+                "date": "SEPT 2017-NOV 2021",
+                "description": "Bachelor of Science in Computer Science",
+                "highlights": [
+                    "Selected as the first ever Student Ambassador of Microsoft for our Campus."
+                ]
+            },
+            {
+                "title": "CITY UNIVERSITY OF SCIENCE AND INFORMATION TECHNOLOGY",
+                "location": "Peshawar, KP",
+                "date": "SEPT 2017-NOV 2021",
+                "description": "Bachelor of Science in Computer Science",
+                "highlights": [
+                    "Selected as the first ever Student Ambassador of Microsoft for our Campus."
+                ]
+            },
+            {
+                "title": "CITY UNIVERSITY OF SCIENCE AND INFORMATION TECHNOLOGY",
+                "location": "Peshawar, KP",
+                "date": "SEPT 2017-NOV 2021",
+                "description": "Bachelor of Science in Computer Science",
+                "highlights": [
+                    "Selected as the first ever Student Ambassador of Microsoft for our Campus."
+                ]
+            },
+        ],
+        "skills": [
+            "Technologies: Node.js, Serverless, RESTful APIs, ReactJS, NEXT, JEST, Socket.io",
+            "Databases: MySQL, DynamoDB, Firestore, MongoDB, CassandraDB",
+            "Cloud Infrastructure: Amazon Web Services, Apache Web Services",
+            "Supporting Tools: Figma, Git, GitHub, Swagger, WordPress"
+            "Supporting Tools: Figma, Git, GitHub, Swagger, WordPress"
+            "Supporting Tools: Figma, Git, GitHub, Swagger, WordPress"
+        ],
+        "certifications": [
+            {
+                "title": "GITHUB FOUNDATIONS by GitHub",
+                "date": "NOV 2024",
+                "description": "Credentials: https://www.credly.com/badges/ddb40bee-1063-4016-838a-f3523a871b77"
+            },
+            {
+                "title": "GITHUB FOUNDATIONS by GitHub",
+                "date": "NOV 2024",
+                "description": "Credentials: https://www.credly.com/badges/ddb40bee-1063-4016-838a-f3523a871b77"
+            },
+            {
+                "title": "GITHUB FOUNDATIONS by GitHub",
+                "date": "NOV 2024",
+                "description": "Credentials: https://www.credly.com/badges/ddb40bee-1063-4016-838a-f3523a871b77"
+            }
+        ],
+        "open_source": [
+            {
+                "title": "FAKERJS",
+                "description": "Twelfth top contributor to the package with over 5 million weekly downloads.",
+                "link": "https://GitHub.com/Faker-Js/Faker"
+            },
+            {
+                "title": "FAKERJS",
+                "description": "Twelfth top contributor to the package with over 5 million weekly downloads.",
+                "link": "https://GitHub.com/Faker-Js/Faker"
+            },
+            {
+                "title": "FAKERJS",
+                "description": "Twelfth top contributor to the package with over 5 million weekly downloads.",
+                "link": "https://GitHub.com/Faker-Js/Faker"
+            },
+            {
+                "title": "FAKERJS",
+                "description": "Twelfth top contributor to the package with over 5 million weekly downloads.",
+                "link": "https://GitHub.com/Faker-Js/Faker"
+            },
+        ]
+    })
     with open(pdf_location, "rb") as pdf_file:
         pdf_data = pdf_file.read()
     return pdf_data, 200, {
