@@ -25,6 +25,7 @@ def fetch_user_linkedin_scraping_dog(linkedin_username: str):
             "languages": data.get("languages", None),
             "projects": data.get("projects", None),
             "awards": data.get("awards", None),
+            "skills": data.get("skills", None),
         }
         return {"linkedin_data_raw": linkedin_data_raw}
     except requests.RequestException as e:
@@ -41,18 +42,25 @@ def fetch_user_linkedin_scrapin_io(linkedin_username: str):
             print(f"Error from ScrapinIO: {response.text}")
             return None
         data = response.json()
-        profile = data.get("profile", {})
+        profile = data.get("person", {})
         linkedin_data_raw = {
             "first_name": profile.get("firstName", None),
             "last_name": profile.get("lastName", None),
             "headline": profile.get("headline", None),
             "location": profile.get("location", None),
             "about": profile.get("summary", None),
+            "skills": profile.get("skills", None),
             "experience": profile.get("positions", None),
             "education": profile.get("schools", None),
             "languages": profile.get("languages", None),
             "activities": profile.get("volunteeringExperiences", None),
             "awards": profile.get("certifications", None),
+            "current_company": {
+                "name": profile.get("company", {}).get("name", None),
+                "description": profile.get("company", {}).get("description", None),
+                "industry": profile.get("company", {}).get("industry", None),
+                "specialities": profile.get("company", {}).get("specialities", None),
+            },
         }
         return {"linkedin_data_raw": linkedin_data_raw}
     except requests.RequestException as e:
