@@ -52,6 +52,22 @@ class User:
         )
         return token
 
+    @classmethod
+    def from_token(cls, token) -> Optional["User"]:
+        try:
+            decoded = jwt.decode(
+                token, os.environ.get("JWT_SECRET_KEY"), algorithms=["HS256"]
+            )
+            return cls(
+                name=decoded["name"],
+                email=decoded["email"],
+                linkedin_username=decoded["linkedinUsername"],
+            )
+
+        except Exception as e:
+            print(f"Error decoding token: {e}")
+            return None
+
     def hash_password(self) -> None:
         b_password = self.password.encode("utf-8")
         hashed = bcrypt.hashpw(b_password, bcrypt.gensalt())

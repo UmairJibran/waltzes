@@ -2,6 +2,7 @@ import os
 from flask import Flask, request
 from flask_cors import CORS
 from models.user import User
+from services.linkedin_scrapper import fetch_user_linkedin
 from services.pdf import convert_text_to_pdf, create_resume
 
 from main import (
@@ -58,6 +59,22 @@ def login():
         return "Invalid credentials"
     token = user.generate_token()
     return {"token": token}
+
+
+@app.route("/scrap-linkedin", methods=["GET"])
+def scrape_linkedin():
+    token = request.headers.get("Authorization")
+    if token is None:
+        return "Please provide a valid token"
+    user = User.from_token(token=token)
+    if user is None:
+        return "Invalid token"
+    linkedin_username = user.linkedin_username
+    linkedin_data = fetch_user_linkedin(linkedin_username)
+    if linkedin_data is None:
+        return ("Error fetching LinkedIn data, please try again.", 404)
+
+    return linkedin_data
 
 
 @app.route("/create-pdf", methods=["POST"])
