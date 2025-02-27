@@ -3,7 +3,12 @@ from openai import OpenAI
 
 
 def call_openai_api(
-    prompt, model="gpt-4o", max_tokens=500, temperature=0.2, api_key=None
+    prompt="",
+    model="gpt-4o",
+    max_tokens=500,
+    temperature=0.2,
+    api_key=None,
+    messages=[],
 ):
     """
     Make an independent call to OpenAI API
@@ -18,6 +23,12 @@ def call_openai_api(
     Returns:
         str: The generated content from OpenAI
     """
+
+    if messages is None:
+        messages = [{"role": "system", "content": prompt}]
+    if len(messages) == 0:
+        messages = [{"role": "system", "content": prompt}]
+
     if api_key is None:
         api_key = os.environ.get("OPENAI_API_KEY")
 
@@ -25,7 +36,7 @@ def call_openai_api(
 
     completion = client.chat.completions.create(
         model=model,
-        messages=[{"role": "user", "content": prompt}],
+        messages=messages,
         max_tokens=max_tokens,
         temperature=temperature,
     )

@@ -99,11 +99,10 @@ class UserLinkedInData:
     ) -> Optional["UserLinkedInData"]:
         """Get the latest valid scraped data for a user"""
         db = MongoDB()
-        result = db.find_one_with_sort(
+        result = db.read(
             cls.COLLECTION_NAME,
             {"userLinkedinUsername": user_linkedin_username, "isValid": True},
-            sort_key="scrapeDate",
-            sort_direction=-1,
+            sort=[("scrapeDate", -1)],
         )
         return cls.from_dict(result) if result else None
 
@@ -117,8 +116,12 @@ class UserLinkedInData:
         if not include_invalid:
             query["isValid"] = True
 
-        results = db.find_with_sort(
-            cls.COLLECTION_NAME, query, sort_key="scrapeDate", sort_direction=-1
+        results = db.read(
+            cls.COLLECTION_NAME,
+            query,
+            sort_key="scrapeDate",
+            sort_direction=-1,
+            sort=[("scrapeDate", -1)],
         )
         return [cls.from_dict(result) for result in results]
 

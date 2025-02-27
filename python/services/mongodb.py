@@ -14,10 +14,10 @@ class MongoDB:
         return str(result.inserted_id)
 
     def read(
-        self, collection_name: str, query: Dict[str, Any]
+        self, collection_name: str, query: Dict[str, Any], sort: list = None
     ) -> Optional[Dict[str, Any]]:
         collection = self.db[collection_name]
-        return collection.find_one(query)
+        return collection.find_one(query, sort=sort)
 
     def update(
         self, collection_name: str, query: Dict[str, Any], new_data: Dict[str, Any]
