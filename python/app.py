@@ -67,6 +67,7 @@ def scrape_linkedin():
     if token is None:
         return "Please provide a valid token"
     user = User.from_token(token=token)
+    user = User.find_by_email(user.email)
     if user is None:
         return "Invalid token"
     linkedin_username = user.linkedin_username
@@ -74,7 +75,8 @@ def scrape_linkedin():
     if linkedin_data is None:
         return ("Error fetching LinkedIn data, please try again.", 404)
 
-    return linkedin_data
+    user.save_linkedin_data(linkedin_data)
+    return ("LinkedIn data saved successfully!", 200)
 
 
 @app.route("/create-pdf", methods=["POST"])

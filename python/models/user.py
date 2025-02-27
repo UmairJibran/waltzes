@@ -1,6 +1,7 @@
 from datetime import datetime
 import os
 from typing import Dict, Any, Optional
+from models.user_linkedin import UserLinkedInData
 from services.mongodb import MongoDB
 import jwt
 import bcrypt
@@ -39,6 +40,20 @@ class User:
             "createdAt": self.created_at,
             "updatedAt": self.updated_at,
         }
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "User":
+        user = cls(
+            name=data["name"],
+            email=data["email"],
+            password=data["password"],
+            secret_key=data["secretKey"],
+            is_active=data["isActive"],
+            linkedin_username=data["linkedinUsername"],
+        )
+        user.created_at = data.get("created_at", user.created_at)
+        user.updated_at = data.get("updated_at", user.updated_at)
+        return user
 
     def generate_token(self) -> None:
         token = jwt.encode(
@@ -94,20 +109,6 @@ class User:
             print(f"Error validating password: {e}")
             return False
 
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "User":
-        user = cls(
-            name=data["name"],
-            email=data["email"],
-            password=data["password"],
-            secret_key=data["secretKey"],
-            is_active=data["isActive"],
-            linkedin_username=data["linkedinUsername"],
-        )
-        user.created_at = data.get("created_at", user.created_at)
-        user.updated_at = data.get("updated_at", user.updated_at)
-        return user
-
     def create(self) -> str:
         existing_user = self.find_by_email(self.email)
         if existing_user:
@@ -134,6 +135,12 @@ class User:
         return cls.from_dict(result) if result else None
 
     @classmethod
+    def find_by_email(cls, email: str) -> Optional["User"]:
+        db = MongoDB()
+        result = db.read(cls.COLLECTION_NAME, {"email": email})
+        return cls.from_dict(result) if result else None
+
+    @classmethod
     def find_by_secret_key(cls, secret_key: str) -> Optional["User"]:
         db = MongoDB()
         result = db.read(cls.COLLECTION_NAME, {"secretKey": secret_key})
@@ -151,3 +158,12 @@ class User:
         db = MongoDB()
         users = db.list(cls.COLLECTION_NAME)
         return [cls.from_dict(user) for user in users]
+
+    def save_linkedin_data(self, scraped_data: Dict[str, Any]) -> str:
+        linkedin_data = UserLinkedInData(
+            user_linkedin_username=self.linkedin_username,
+            scrape_data=scraped_data,
+            scrape_date=datetime.now(),
+            is_valid=True,
+        )
+        return linkedin_data.save()
