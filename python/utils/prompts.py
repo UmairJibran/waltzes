@@ -9,6 +9,9 @@ Keep in mind that the user's LinkedIn data may not be complete, but what is avai
 These segments should be very detailed and include all relevant information from the user's LinkedIn profile and the provided job posting Which will also be provided to you.
 
 The Resume should be very well worded and should be able to pass through the ATS system.
+If there is any information missing from the user's LinkedIn data, you should make an assumption based on the user's profile and the job posting, but do not hallucinate information.
+
+Make sure that the segments are very detailed and well-structured, and that they are written in a professional tone, and are relevant to the job posting.
 
 The segments should be a json object with the following structure (NOT MARKDOWN, but a JSON object's string):
 {
@@ -51,4 +54,19 @@ The segments should be a json object with the following structure (NOT MARKDOWN,
         }
     ],
 }
+"""
+
+
+user_prompt_for_resume_creation = """
+<User's Linkedin Data>
+{}
+</User's Linkedin Data>
+
+<Job Details>
+{}
+</Job Details>
+
+<Additional Info>
+{}
+</Additional Info>
 """
