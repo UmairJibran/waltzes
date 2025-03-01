@@ -12,7 +12,6 @@ from main import (
     fetch_job_details_from_lever,
     fetch_job_details_generic,
 )
-from services.openai import generate_cover_letter
 from services.resume_best_match import get_best_match_from_resume
 from services.resume_vectorizor import vectorize_resume
 from services.openai import call_openai_api, generate_cover_letter
@@ -63,6 +62,21 @@ def login():
         return ("Invalid credentials", 400)
     token = user.generate_token()
     return {"token": token}
+
+
+@app.route("/profile", methods=["PUT"])
+def update_profile():
+    token = request.headers.get("Authorization")
+    if token is None:
+        return "Please provide a valid token"
+    user = User.from_token(token=token)
+    user = User.find_by_email(user.email)
+    if user is None:
+        return "Invalid token"
+    new_data = request.get_json()
+    print(f'''{new_data=}''')
+    user.update_profile(new_data)
+    return "Profile updated successfully!"
 
 
 @app.route("/scrap-linkedin", methods=["GET"])
