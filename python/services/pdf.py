@@ -227,35 +227,15 @@ def create_resume(segments, font_family="Times"):
         pdf.set_font(font_family, "", 10)
 
         if isinstance(skills_items, list):
-            # Process list of skill items
+            string_skills = []
+
             for item in skills_items:
-                if isinstance(item, str) and item.strip():
-                    pdf.cell(0, 5, f"- {item.strip()}", 0, 1)
-                elif isinstance(item, dict):
-                    title_text = item.get("title", "")
-                    if isinstance(title_text, str) and title_text.strip():
-                        pdf.set_font(font_family, "B", 11)
-                        pdf.cell(0, 6, title_text.strip(), 0, 1)
+                string_skills.append(item)
 
-                    description = item.get("description", "")
-                    if isinstance(description, list):
-                        pdf.set_font(font_family, "", 10)
-                        descriptions = [
-                            d.strip()
-                            for d in description
-                            if d and isinstance(d, str) and d.strip()
-                        ]
-                        for bullet in descriptions:
-                            pdf.cell(5, 5, "-", 0, 0)
-                            pdf.multi_cell(0, 5, f" {bullet}")
-                    elif isinstance(description, str) and description.strip():
-                        pdf.set_font(font_family, "", 10)
-                        pdf.multi_cell(0, 5, description.strip())
-
-                    # Add spacing after each item
-                    pdf.ln(2)
-        elif isinstance(skills_items, str):
-            pdf.multi_cell(0, 5, skills_items.strip())
+            if string_skills:
+                skills_text = " - ".join(string_skills)
+                pdf.multi_cell(0, 5, skills_text)
+                pdf.ln(2)
 
         pdf.ln(5)
 
