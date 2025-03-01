@@ -16,6 +16,9 @@ class User:
         password: str = "",
         name: str = "",
         linkedin_username: str = "",
+        github_username: str = "",
+        portfolio_url: str = "",
+        phone: str = "",
         secret_key: str = "",
         is_active: bool = False,
         additional_info: str = "",
@@ -23,9 +26,12 @@ class User:
         self.name = name
         self.email = email
         self.linkedin_username = linkedin_username
+        self.github_username = github_username
+        self.phone = phone
         self.secret_key = secret_key
         self.is_active = is_active
         self.additional_info = additional_info
+        self.portfolio_url = portfolio_url
         self.password = password
         self.created_at = datetime.now()
         self.updated_at = datetime.now()
@@ -37,7 +43,10 @@ class User:
             "email": self.email,
             "password": self.password,
             "linkedinUsername": self.linkedin_username,
+            "githubUsername": self.github_username,
+            "phone": self.phone,
             "additionalInfo": self.additional_info,
+            "portfolioUrl": self.portfolio_url,
             "isActive": self.is_active,
             "secretKey": self.secret_key,
             "createdAt": self.created_at,
@@ -53,7 +62,10 @@ class User:
             secret_key=data.get("secretKey", ""),
             is_active=data.get("isActive", ""),
             additional_info=data.get("additionalInfo", ""),
+            phone=data.get("phone", ""),
             linkedin_username=data.get("linkedinUsername", ""),
+            portfolio_url=data.get("portfolioUrl", ""),
+            github_username=data.get("githubUsername", ""),
         )
         user.created_at = data.get("created_at", user.created_at)
         user.updated_at = data.get("updated_at", user.updated_at)

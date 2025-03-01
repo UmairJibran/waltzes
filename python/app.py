@@ -16,7 +16,10 @@ from services.resume_best_match import get_best_match_from_resume
 from services.resume_vectorizor import vectorize_resume
 from services.openai import call_openai_api, generate_cover_letter
 from utils.utils import parse_json_from_llm
-from utils.prompts import system_prompt_linkedin_profile_segmentation
+from utils.prompts import (
+    system_prompt_linkedin_profile_segmentation,
+    user_prompt_for_resume_creation,
+)
 
 
 app = Flask(__name__)
@@ -142,11 +145,29 @@ def convert_resume():
         job_details = fetch_job_details_generic(job_url)
         job_details = json.dumps(job_details)
 
+    user_prompt = user_prompt_for_resume_creation.format(
+        json.dumps(user_linkedin_data.scrape_data),
+        job_details,
+        "email: "
+        + user.email
+        + "phone: "
+        + user.phone
+        + "linkedin: "
+        + user.linkedin_username
+        + "github: "
+        + user.github_username
+        + "portfolio: "
+        + user.portfolio_url
+        + user.additional_info,
+    )
+
     resume_segments = call_openai_api(
         messages=[
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": json.dumps(user_linkedin_data.scrape_data)},
-            {"role": "user", "content": job_details},
+            {
+                "role": "user",
+                "content": user_prompt,
+            },
         ],
         max_tokens=5000,
     )
