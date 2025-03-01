@@ -4,14 +4,14 @@ from fpdf import FPDF
 class PDF(FPDF):
     def __init__(self, title="", font_family="Arial"):
         super().__init__(orientation="P", unit="mm", format="A4")
-        self.title = title
-        self.font_family = font_family
-        self.set_margins(10, 10 if not title else 30, 10)
+        self.title = title if isinstance(title, str) else ""
+        self.font_family = font_family if isinstance(font_family, str) else "Arial"
+        self.set_margins(10, 10 if not self.title else 30, 10)
 
         self.set_font(self.font_family, "")
 
     def header(self):
-        if self.title:
+        if self.title and isinstance(self.title, str):
             self.set_font(self.font_family, "B", 12)
             self.cell(0, 10, self.title, 0, 0, "C")
             self.ln(20)
@@ -23,18 +23,27 @@ class PDF(FPDF):
 
 
 def create_resume(segments, font_family="Times"):
+    if not isinstance(segments, dict):
+        segments = {}
+
+    font_family = font_family if isinstance(font_family, str) else "Times"
+
     pdf = PDF(font_family=font_family)
     pdf.alias_nb_pages()
     pdf.add_page()
 
     pdf.set_font(font_family, "B", 16)
-    pdf.cell(0, 10, segments.get("name", "").strip(), 0, 1, "C")
+    name = segments.get("name", "")
+    name = name.strip() if isinstance(name, str) else ""
+    pdf.cell(0, 10, name, 0, 1, "C")
 
-    if "contact" in segments and segments["contact"]:
+    if "contact" in segments and isinstance(segments["contact"], list):
         pdf.set_font(font_family, "", 10)
         # Filter out empty strings and strip whitespace
         contact = [
-            item.strip() for item in segments["contact"] if item and item.strip()
+            item.strip()
+            for item in segments["contact"]
+            if item and isinstance(item, str) and item.strip()
         ]
         if contact:  # Only proceed if there are non-empty contact items
             contact_text = " - ".join(contact)
@@ -42,7 +51,7 @@ def create_resume(segments, font_family="Times"):
             pdf.ln(5)
 
     def add_section(title, content):
-        if not content:
+        if not title or not isinstance(title, str) or not content:
             return
 
         pdf.set_font(font_family, "B", 12)
@@ -55,12 +64,16 @@ def create_resume(segments, font_family="Times"):
         if isinstance(content, list):
             for item in content:
                 if isinstance(item, dict):
-                    if "title" in item and item["title"].strip():
+                    title_text = item.get("title", "")
+                    if isinstance(title_text, str) and title_text.strip():
                         pdf.set_font(font_family, "B", 11)
-                        pdf.cell(0, 6, item["title"].strip(), 0, 1)
+                        pdf.cell(0, 6, title_text.strip(), 0, 1)
 
-                    location = item.get("location", "").strip()
-                    date = item.get("date", "").strip()
+                    location = item.get("location", "")
+                    location = location.strip() if isinstance(location, str) else ""
+
+                    date = item.get("date", "")
+                    date = date.strip() if isinstance(date, str) else ""
 
                     if location or date:
                         pdf.set_font(font_family, "", 10)
@@ -78,21 +91,22 @@ def create_resume(segments, font_family="Times"):
                         elif location:
                             pdf.ln()
 
-                    if "description" in item and item["description"]:
+                    description = item.get("description", "")
+                    if description:
                         pdf.set_font(font_family, "", 10)
-                        if isinstance(item["description"], list):
+                        if isinstance(description, list):
                             # Filter out empty description items
                             descriptions = [
                                 d.strip()
-                                for d in item["description"]
-                                if d and d.strip()
+                                for d in description
+                                if d and isinstance(d, str) and d.strip()
                             ]
                             for bullet in descriptions:
                                 pdf.cell(5, 5, "-", 0, 0)
                                 pdf.multi_cell(0, 5, f" {bullet}")
-                        elif item["description"].strip():
-                            pdf.multi_cell(0, 5, item["description"].strip())
-                elif item and item.strip():
+                        elif isinstance(description, str) and description.strip():
+                            pdf.multi_cell(0, 5, description.strip())
+                elif isinstance(item, str) and item.strip():
                     pdf.cell(0, 5, f"- {item.strip()}", 0, 1)
 
                 # Only add spacing if something was actually added
@@ -100,11 +114,16 @@ def create_resume(segments, font_family="Times"):
                     isinstance(item, dict)
                     and any(
                         item.get(k)
+                        and (
+                            (isinstance(item[k], str) and item[k].strip())
+                            or (isinstance(item[k], list) and any(item[k]))
+                        )
                         for k in ["title", "location", "date", "description"]
+                        if k in item
                     )
                 ) or (isinstance(item, str) and item.strip()):
                     pdf.ln(2)
-        elif content.strip():
+        elif isinstance(content, str) and content.strip():
             pdf.multi_cell(0, 5, content.strip())
 
         pdf.ln(5)
@@ -126,12 +145,21 @@ def create_resume(segments, font_family="Times"):
 
 
 def convert_text_to_pdf(text, title, font_family="Arial"):
+    if not isinstance(text, str):
+        text = ""
+
+    title = title if isinstance(title, str) else ""
+    font_family = font_family if isinstance(font_family, str) else "Arial"
+
     pdf = PDF(title, font_family=font_family)
     pdf.alias_nb_pages()
     pdf.add_page()
     pdf.set_font(font_family, "", 12)
+
     lines = text.split("\n")
     for line in lines:
-        pdf.multi_cell(0, 5, line)
+        if isinstance(line, str):
+            pdf.multi_cell(0, 5, line)
+
     pdf.output("output.pdf")
     return "output.pdf"
