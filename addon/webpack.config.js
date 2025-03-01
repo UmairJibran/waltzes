@@ -35,6 +35,9 @@ if (fileSystem.existsSync(secretsPath)) {
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
+// Add this line to import the transformer
+const reactRefreshTypeScript = isDevelopment ? require('react-refresh-typescript') : null;
+
 var options = {
   mode: process.env.NODE_ENV || 'development',
   entry: {
@@ -48,7 +51,7 @@ var options = {
     panel: path.join(__dirname, 'src', 'pages', 'Panel', 'index.jsx'),
   },
   chromeExtensionBoilerplate: {
-    notHotReload: ['background', 'contentScript', 'devtools'],
+    notHotReload: ['background', 'contentScript', 'devtools', 'options', 'panel'],
   },
   output: {
     filename: '[name].bundle.js',
@@ -101,11 +104,6 @@ var options = {
           {
             loader: require.resolve('ts-loader'),
             options: {
-              getCustomTransformers: () => ({
-                before: [isDevelopment && ReactRefreshTypeScript()].filter(
-                  Boolean
-                ),
-              }),
               transpileOnly: isDevelopment,
             },
           },

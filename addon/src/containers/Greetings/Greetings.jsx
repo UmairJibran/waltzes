@@ -10,7 +10,7 @@ class GreetingComponent extends Component {
   render() {
     return (
       <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center">
-        <div className="bg-blue p-8 rounded-lg shadow-lg text-center">
+        <div className="bg-black p-8 rounded-lg shadow-lg text-center">
           <p className="text-3xl font-bold text-gray-800 mb-4 text-underline">
             Hello, There!
           </p>
