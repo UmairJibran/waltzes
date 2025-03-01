@@ -1,5 +1,10 @@
+import os
+import json
 from flask import Flask, request
 from flask_cors import CORS
+from models.user_linkedin import UserLinkedInData
+from models.user import User
+from services.linkedin_scrapper import fetch_user_linkedin
 from services.pdf import convert_text_to_pdf, create_resume
 
 from main import (
@@ -10,6 +15,8 @@ from main import (
 from services.openai import generate_cover_letter
 from services.resume_best_match import get_best_match_from_resume
 from services.resume_vectorizor import vectorize_resume
+from services.openai import call_openai_api, generate_cover_letter
+from utils import parse_json_from_llm
 
 
 app = Flask(__name__)
@@ -23,6 +30,57 @@ CORS(app)
 @app.route("/test", methods=["GET"])
 def test():
     return "Hello, World!"
+
+
+@app.route("/register", methods=["POST"])
+def register():
+    name = request.get_json().get("name")
+    email = request.get_json().get("email")
+    password = request.get_json().get("password")
+    linkedin_username = request.get_json().get("linkedinUsername")
+    if email is None or password is None:
+        return "Please provide all the required fields"
+    secret_key = os.urandom(16).hex()
+    user = User(
+        email=email,
+        password=password,
+        name=name,
+        linkedin_username=linkedin_username,
+        secret_key=secret_key,
+    )
+    user.create()
+    return "User Created!"
+
+
+@app.route("/login", methods=["POST"])
+def login():
+    email = request.get_json().get("email")
+    password = request.get_json().get("password")
+    if email is None or password is None:
+        return ("Please provide all the required fields", 400)
+    user = User.login_user(email, password)
+    if user is None:
+        return ("Invalid credentials", 400)
+    token = user.generate_token()
+    return {"token": token}
+
+
+@app.route("/scrap-linkedin", methods=["GET"])
+def scrape_linkedin():
+    token = request.headers.get("Authorization")
+    if token is None:
+        return "Please provide a valid token"
+    user = User.from_token(token=token)
+    user = User.find_by_email(user.email)
+    if user is None:
+        return "Invalid token"
+    linkedin_username = user.linkedin_username
+    linkedin_data = fetch_user_linkedin(linkedin_username)
+    if linkedin_data is None:
+        return ("Error fetching LinkedIn data, please try again.", 404)
+
+    user.save_linkedin_data(linkedin_data)
+    return ("LinkedIn data saved successfully!", 200)
 
 
 @app.route("/create-pdf", methods=["POST"])
@@ -46,182 +104,93 @@ def convert_to_pdf():
 
 @app.route("/create-resume", methods=["POST"])
 def convert_resume():
-    text = request.get_json().get("text")
-    if text is None:
-        return "Please provide text to convert to PDF"
-    pdf_location = create_resume(
+    token = request.headers.get("Authorization")
+    if token is None:
+        return "Please provide a valid token"
+    user = User.from_token(token=token)
+    job_url = request.get_json().get("jobUrl")
+    if job_url is None:
+        return ("Please provide Job Url to create your Resume", 400)
+    user_linkedin_data = UserLinkedInData.get_latest_valid_scrape(
+        user_linkedin_username=user.linkedin_username
+    )
+    if user_linkedin_data is None:
+        return ("Please scrape your LinkedIn data first", 400)
+
+    system_prompt = """
+        You are a head hunter with over 10 years of experience in the recruitment industry.
+        You have a proven track record of successfully placing candidates in various roles across different industries.
+        You are passionate about helping people find their dream jobs and thrive in their careers.
+        You will be given a user's LinkedIn data, which will include most of the information needed to create a resume.
+        You will need to generate resume segments based on the user's LinkedIn data.
+
+        Keep in mind that the user's LinkedIn data may not be complete, but what is available should be used to generate the resume segments.
+        These segments should be very detailed and include all relevant information from the user's LinkedIn profile and the provided job posting Which will also be provided to you.
+
+        The Resume should be very well worded and should be able to pass through the ATS system.
+
+        The segments should be a json object with the following structure (NOT MARKDOWN, but a JSON object's string):
         {
-            "name": "UMAIR JIBRAN",
+            "name": "user's full name",
             "contact": [
-                "umairjibran.com",
-                "me@umairjibran.com",
-                "+92 (312) 091-9647",
-                "linkedin.com/in/umairjibran",
+                "site (if available)",
+                "email",
+                "phone (if available)",
+                "linkedin_url",
             ],
             "experience": [
                 {
-                    "title": "Productbox, Backend Tech Lead",
-                    "location": "Peshawar, KP",
-                    "date": "FEB 2024-Present",
-                    "description": [
-                        "Designed a scalable backend capable of handling thousands of concurrent users, with the ability to scale further as needed.",
-                        "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
-                        "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
-                        "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
-                        "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
-                        "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
-                        "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
-                        "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
-                    ],
-                },
-                {
-                    "title": "Productbox, Backend Tech Lead",
-                    "location": "Peshawar, KP",
-                    "date": "FEB 2024-Present",
-                    "description": [
-                        "Designed a scalable backend capable of handling thousands of concurrent users, with the ability to scale further as needed.",
-                        "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
-                        "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
-                        "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
-                        "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
-                        "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
-                        "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
-                        "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
-                    ],
-                },
-                {
-                    "title": "Productbox, Backend Tech Lead",
-                    "location": "Peshawar, KP",
-                    "date": "FEB 2024-Present",
-                    "description": [
-                        "Designed a scalable backend capable of handling thousands of concurrent users, with the ability to scale further as needed.",
-                        "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
-                        "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
-                        "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
-                        "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
-                        "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
-                        "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
-                        "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
-                    ],
-                },
-                {
-                    "title": "Productbox, Backend Tech Lead",
-                    "location": "Peshawar, KP",
-                    "date": "FEB 2024-Present",
-                    "description": [
-                        "Designed a scalable backend capable of handling thousands of concurrent users, with the ability to scale further as needed.",
-                        "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
-                        "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
-                        "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
-                        "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
-                        "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
-                        "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
-                        "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
-                    ],
-                },
-                {
-                    "title": "Productbox, Backend Tech Lead",
-                    "location": "Peshawar, KP",
-                    "date": "FEB 2024-Present",
-                    "description": [
-                        "Designed a scalable backend capable of handling thousands of concurrent users, with the ability to scale further as needed.",
-                        "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
-                        "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
-                        "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
-                        "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
-                        "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
-                        "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
-                        "Coordinated 3+ stakeholder meetings to clarify specifications, enabling the UI/UX team to develop 20+ refined mock-ups.",
-                    ],
-                },
+                    "title": "job title",
+                    "location": "job location",
+                    "date": "from - to/present",
+                    "description": ["bullet point 1", "bullet point 2", ...],
+                }
             ],
             "education": [
                 {
-                    "title": "CITY UNIVERSITY OF SCIENCE AND INFORMATION TECHNOLOGY",
-                    "location": "Peshawar, KP",
-                    "date": "SEPT 2017-NOV 2021",
-                    "description": "Bachelor of Science in Computer Science",
-                    "highlights": [
-                        "Selected as the first ever Student Ambassador of Microsoft for our Campus."
-                    ],
-                },
-                {
-                    "title": "CITY UNIVERSITY OF SCIENCE AND INFORMATION TECHNOLOGY",
-                    "location": "Peshawar, KP",
-                    "date": "SEPT 2017-NOV 2021",
-                    "description": "Bachelor of Science in Computer Science",
-                    "highlights": [
-                        "Selected as the first ever Student Ambassador of Microsoft for our Campus."
-                    ],
-                },
-                {
-                    "title": "CITY UNIVERSITY OF SCIENCE AND INFORMATION TECHNOLOGY",
-                    "location": "Peshawar, KP",
-                    "date": "SEPT 2017-NOV 2021",
-                    "description": "Bachelor of Science in Computer Science",
-                    "highlights": [
-                        "Selected as the first ever Student Ambassador of Microsoft for our Campus."
-                    ],
-                },
-                {
-                    "title": "CITY UNIVERSITY OF SCIENCE AND INFORMATION TECHNOLOGY",
-                    "location": "Peshawar, KP",
-                    "date": "SEPT 2017-NOV 2021",
-                    "description": "Bachelor of Science in Computer Science",
-                    "highlights": [
-                        "Selected as the first ever Student Ambassador of Microsoft for our Campus."
-                    ],
-                },
+                    "title": "degree",
+                    "location": "university",
+                    "date": "from - to",
+                    "description": ["bullet point 1", "bullet point 2", ...],
+                }
             ],
-            "skills": [
-                "Technologies: Node.js, Serverless, RESTful APIs, ReactJS, NEXT, JEST, Socket.io",
-                "Databases: MySQL, DynamoDB, Firestore, MongoDB, CassandraDB",
-                "Cloud Infrastructure: Amazon Web Services, Apache Web Services",
-                "Supporting Tools: Figma, Git, GitHub, Swagger, WordPress"
-                "Supporting Tools: Figma, Git, GitHub, Swagger, WordPress"
-                "Supporting Tools: Figma, Git, GitHub, Swagger, WordPress",
-            ],
+            "skills": ["skill 1", "skill 2", ...],
             "certifications": [
                 {
-                    "title": "GITHUB FOUNDATIONS by GitHub",
-                    "date": "NOV 2024",
-                    "description": "Credentials: https://www.credly.com/badges/ddb40bee-1063-4016-838a-f3523a871b77",
-                },
-                {
-                    "title": "GITHUB FOUNDATIONS by GitHub",
-                    "date": "NOV 2024",
-                    "description": "Credentials: https://www.credly.com/badges/ddb40bee-1063-4016-838a-f3523a871b77",
-                },
-                {
-                    "title": "GITHUB FOUNDATIONS by GitHub",
-                    "date": "NOV 2024",
-                    "description": "Credentials: https://www.credly.com/badges/ddb40bee-1063-4016-838a-f3523a871b77",
-                },
+                    "title": "certification title",
+                    "date": "date",
+                    "description": "description",
+                }
             ],
             "open_source": [
                 {
-                    "title": "FAKERJS",
-                    "description": "Twelfth top contributor to the package with over 5 million weekly downloads.",
-                    "link": "https://GitHub.com/Faker-Js/Faker",
-                },
-                {
-                    "title": "FAKERJS",
-                    "description": "Twelfth top contributor to the package with over 5 million weekly downloads.",
-                    "link": "https://GitHub.com/Faker-Js/Faker",
-                },
-                {
-                    "title": "FAKERJS",
-                    "description": "Twelfth top contributor to the package with over 5 million weekly downloads.",
-                    "link": "https://GitHub.com/Faker-Js/Faker",
-                },
-                {
-                    "title": "FAKERJS",
-                    "description": "Twelfth top contributor to the package with over 5 million weekly downloads.",
-                    "link": "https://GitHub.com/Faker-Js/Faker",
-                },
+                    "title": "project title",
+                    "description": "project description",
+                    "link": "project link",
+                }
             ],
         }
+    """
+
+    job_details = ""
+    if "greenhouse" in job_url:
+        job_details = fetch_job_details_from_greenhouse(job_url)
+    elif "lever" in job_url:
+        job_details = fetch_job_details_from_lever(job_url)
+    else:
+        job_details = fetch_job_details_generic(job_url)
+        job_details = json.dumps(job_details)
+
+    resume_segments = call_openai_api(
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": json.dumps(user_linkedin_data.scrape_data)},
+            {"role": "user", "content": job_details},
+        ],
+        max_tokens=5000,
     )
+    resume_segments = parse_json_from_llm(resume_segments)
+    pdf_location = create_resume(resume_segments)
     with open(pdf_location, "rb") as pdf_file:
         pdf_data = pdf_file.read()
     return (

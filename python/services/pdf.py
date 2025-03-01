@@ -28,14 +28,18 @@ def create_resume(segments, font_family="Times"):
     pdf.add_page()
 
     pdf.set_font(font_family, "B", 16)
-    pdf.cell(0, 10, segments.get("name", ""), 0, 1, "C")
+    pdf.cell(0, 10, segments.get("name", "").strip(), 0, 1, "C")
 
-    if "contact" in segments:
+    if "contact" in segments and segments["contact"]:
         pdf.set_font(font_family, "", 10)
-        contact = segments["contact"]
-        contact_text = " - ".join(contact)
-        pdf.cell(0, 5, contact_text, 0, 1, "C")
-        pdf.ln(5)
+        # Filter out empty strings and strip whitespace
+        contact = [
+            item.strip() for item in segments["contact"] if item and item.strip()
+        ]
+        if contact:  # Only proceed if there are non-empty contact items
+            contact_text = " - ".join(contact)
+            pdf.cell(0, 5, contact_text, 0, 1, "C")
+            pdf.ln(5)
 
     def add_section(title, content):
         if not content:
@@ -51,17 +55,19 @@ def create_resume(segments, font_family="Times"):
         if isinstance(content, list):
             for item in content:
                 if isinstance(item, dict):
-                    if "title" in item:
+                    if "title" in item and item["title"].strip():
                         pdf.set_font(font_family, "B", 11)
-                        pdf.cell(0, 6, item.get("title", ""), 0, 1)
+                        pdf.cell(0, 6, item["title"].strip(), 0, 1)
 
-                    if "location" in item or "date" in item:
+                    location = item.get("location", "").strip()
+                    date = item.get("date", "").strip()
+
+                    if location or date:
                         pdf.set_font(font_family, "", 10)
-                        location = item.get("location", "")
-                        date = item.get("date", "")
-
-                        location_width = pdf.get_string_width(location)
-                        date_width = pdf.get_string_width(date)
+                        location_width = (
+                            pdf.get_string_width(location) if location else 0
+                        )
+                        date_width = pdf.get_string_width(date) if date else 0
 
                         if location:
                             pdf.cell(location_width + 5, 5, location, 0, 0)
@@ -72,20 +78,34 @@ def create_resume(segments, font_family="Times"):
                         elif location:
                             pdf.ln()
 
-                    if "description" in item:
+                    if "description" in item and item["description"]:
                         pdf.set_font(font_family, "", 10)
                         if isinstance(item["description"], list):
-                            for bullet in item["description"]:
+                            # Filter out empty description items
+                            descriptions = [
+                                d.strip()
+                                for d in item["description"]
+                                if d and d.strip()
+                            ]
+                            for bullet in descriptions:
                                 pdf.cell(5, 5, "-", 0, 0)
                                 pdf.multi_cell(0, 5, f" {bullet}")
-                        else:
-                            pdf.multi_cell(0, 5, item["description"])
-                else:
-                    pdf.cell(0, 5, f"- {item}", 0, 1)
+                        elif item["description"].strip():
+                            pdf.multi_cell(0, 5, item["description"].strip())
+                elif item and item.strip():
+                    pdf.cell(0, 5, f"- {item.strip()}", 0, 1)
 
-                pdf.ln(2)
-        else:
-            pdf.multi_cell(0, 5, content)
+                # Only add spacing if something was actually added
+                if (
+                    isinstance(item, dict)
+                    and any(
+                        item.get(k)
+                        for k in ["title", "location", "date", "description"]
+                    )
+                ) or (isinstance(item, str) and item.strip()):
+                    pdf.ln(2)
+        elif content.strip():
+            pdf.multi_cell(0, 5, content.strip())
 
         pdf.ln(5)
 
@@ -98,7 +118,7 @@ def create_resume(segments, font_family="Times"):
     ]
 
     for section_title, section_key in sections_order:
-        if section_key in segments:
+        if section_key in segments and segments[section_key]:
             add_section(section_title, segments[section_key])
 
     pdf.output("output.pdf")
