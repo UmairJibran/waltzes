@@ -78,7 +78,6 @@ def update_profile():
     if user is None:
         return "Invalid token"
     new_data = request.get_json()
-    print(f'''{new_data=}''')
     user.update_profile(new_data)
     return "Profile updated successfully!"
 
