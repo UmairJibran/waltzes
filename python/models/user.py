@@ -18,12 +18,14 @@ class User:
         linkedin_username: str = "",
         secret_key: str = "",
         is_active: bool = False,
+        additional_info: str = "",
     ):
         self.name = name
         self.email = email
         self.linkedin_username = linkedin_username
         self.secret_key = secret_key
         self.is_active = is_active
+        self.additional_info = additional_info
         self.password = password
         self.created_at = datetime.now()
         self.updated_at = datetime.now()
@@ -35,6 +37,7 @@ class User:
             "email": self.email,
             "password": self.password,
             "linkedinUsername": self.linkedin_username,
+            "additionalInfo": self.additional_info,
             "isActive": self.is_active,
             "secretKey": self.secret_key,
             "createdAt": self.created_at,
@@ -44,12 +47,13 @@ class User:
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "User":
         user = cls(
-            name=data["name"],
-            email=data["email"],
-            password=data["password"],
-            secret_key=data["secretKey"],
-            is_active=data["isActive"],
-            linkedin_username=data["linkedinUsername"],
+            name=data.get("name", ""),
+            email=data.get("email", ""),
+            password=data.get("password", ""),
+            secret_key=data.get("secretKey", ""),
+            is_active=data.get("isActive", ""),
+            additional_info=data.get("additionalInfo", ""),
+            linkedin_username=data.get("linkedinUsername", ""),
         )
         user.created_at = data.get("created_at", user.created_at)
         user.updated_at = data.get("updated_at", user.updated_at)
@@ -145,8 +149,17 @@ class User:
         return cls.from_dict(result) if result else None
 
     def update_profile(self, new_data: Dict[str, Any]) -> bool:
-        new_data["updated_at"] = datetime.now()
-        return self.db.update(self.COLLECTION_NAME, {"email": self.email}, new_data)
+        new_data["updatedAt"] = datetime.now()
+        update_data = {}
+        for key, value in new_data.items():
+            update_data[key] = value
+        if "password" in update_data:
+            self.hash_password()
+            update_data["password"] = self.password
+        if "email" in update_data:
+            del update_data["email"]
+
+        return self.db.update(self.COLLECTION_NAME, {"email": self.email}, update_data)
 
     def delete_account(self) -> bool:
         return self.db.delete(self.COLLECTION_NAME, {"email": self.email})
