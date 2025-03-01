@@ -137,54 +137,43 @@ def create_resume(segments, font_family="Times"):
 
         for item in education_items:
             if isinstance(item, dict):
-                title_text = item.get("title", "")
-                if isinstance(title_text, str) and title_text.strip():
-                    pdf.set_font(font_family, "B", 11)
-                    pdf.cell(0, 6, title_text.strip(), 0, 1)
-
-                institution = item.get("location", "")
-                institution_url = item.get("url", "")
-
+                degree = item.get("title", "")
+                institute = item.get("institute", "")
+                location = item.get("location", "")
                 date = item.get("date", "")
                 date = date.strip() if isinstance(date, str) else ""
 
-                if institution or date:
+                pdf.set_font(font_family, "B", 11)
+                if isinstance(degree, str) and degree.strip():
+                    date_width = pdf.get_string_width(date) + 10 if date else 0
+                    degree_width = pdf.w - pdf.l_margin - pdf.r_margin - date_width
+                    pdf.cell(degree_width, 6, degree.strip(), 0, 0)
+
+                if date:
                     pdf.set_font(font_family, "", 10)
+                    pdf.set_x(pdf.w - pdf.r_margin - pdf.get_string_width(date))
+                    pdf.cell(pdf.get_string_width(date), 6, date, 0, 1, "R")
+                else:
+                    pdf.ln()
 
-                    if (
-                        institution
-                        and isinstance(institution, str)
-                        and institution.strip()
-                    ):
-                        text_color = pdf.text_color
+                pdf.set_font(font_family, "", 10)
+                if institute and isinstance(institute, str) and institute.strip():
+                    institute_width = pdf.w - pdf.l_margin - pdf.r_margin
+                    if location and isinstance(location, str) and location.strip():
+                        institute_width -= pdf.get_string_width(location.strip()) + 10
+                    pdf.cell(institute_width, 5, institute.strip(), 0, 0)
 
-                        pdf.set_text_color(0, 0, 255)
-                        institution_width = pdf.get_string_width(institution.strip())
-                        institution_width = pdf.get_string_width(institution.strip())
-                        pdf.cell(
-                            institution_width + 5,
-                            5,
-                            institution.strip(),
-                            0,
-                            0,
-                            link=institution_url.strip(),
-                        )
-
-                        pdf.set_text_color(text_color[0], text_color[1], text_color[2])
-                    else:
-                        pdf.cell(
-                            pdf.get_string_width(institution.strip()) + 5,
-                            5,
-                            institution.strip(),
-                            0,
-                            0,
-                        )
-
-                    if date:
-                        pdf.set_x(pdf.w - pdf.get_string_width(date) - 10)
-                        pdf.cell(pdf.get_string_width(date), 5, date, 0, 1, "R")
-                    elif institution:
-                        pdf.ln()
+                if location and isinstance(location, str) and location.strip():
+                    pdf.cell(
+                        pdf.get_string_width(location.strip()) + 10,
+                        5,
+                        location.strip(),
+                        0,
+                        1,
+                        "R",
+                    )
+                elif institute:
+                    pdf.ln()
 
                 description = item.get("description", "")
                 if description:
@@ -197,12 +186,18 @@ def create_resume(segments, font_family="Times"):
                         ]
                         for bullet in descriptions:
                             pdf.cell(5, 5, "-", 0, 0)
-                            pdf.multi_cell(0, 5, f" {bullet}")
-                    elif isinstance(description, str) and description.strip():
-                        pdf.multi_cell(0, 5, description.strip())
-
+                            if bullet and len(bullet) > 0:
+                                available_width = (
+                                    pdf.w - pdf.l_margin - pdf.r_margin - 5
+                                )
+                                if available_width > pdf.get_string_width("W"):
+                                    pdf.multi_cell(available_width, 5, f" {bullet}")
+                                    pdf.set_x(pdf.l_margin)
+                                else:
+                                    pdf.ln()
+                            else:
+                                pdf.ln()
                 pdf.ln(2)
-
         pdf.ln(5)
 
     def add_skills_section(skills_items):
@@ -320,8 +315,8 @@ def create_resume(segments, font_family="Times"):
     if "experience" in segments:
         add_experience_section(segments["experience"])
 
-    # if "education" in segments:
-    #     add_education_section(segments["education"])
+    if "education" in segments:
+        add_education_section(segments["education"])
 
     if "skills" in segments:
         add_skills_section(segments["skills"])
