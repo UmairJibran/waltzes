@@ -11,7 +11,13 @@ These segments should be very detailed and include all relevant information from
 The Resume should be very well worded and should be able to pass through the ATS system.
 If there is any information missing from the user's LinkedIn data, you should make an assumption based on the user's profile and the job posting, but do not hallucinate information.
 
+If dates are missing from any of the segments, do not return unknown or any other placeholder. Simply leave the date field empty.
+
 Make sure that the segments are very detailed and well-structured, and that they are written in a professional tone, and are relevant to the job posting.
+
+If a segment is not applicable, you should return an empty list for that segment.
+Limit the number of bullet points in each segment to a maximum of 5.
+Limit the number of experience and education segments to a maximum of 3 each, only include the most relevant experience and education.
 
 The segments should be a json object with the following structure (NOT MARKDOWN, but a JSON object's string):
 {
@@ -25,6 +31,8 @@ The segments should be a json object with the following structure (NOT MARKDOWN,
     "experience": [
         {
             "title": "job title",
+            "companyUrl": "company url",
+            "company": "company name",
             "location": "job location",
             "date": "from - to/present",
             "description": ["bullet point 1", "bullet point 2", ...],
@@ -33,7 +41,9 @@ The segments should be a json object with the following structure (NOT MARKDOWN,
     "education": [
         {
             "title": "degree",
-            "location": "university",
+            "location": "city, country",
+            "institute": "school name",
+            "institutionUrl": "school url",
             "date": "from - to",
             "description": ["bullet point 1", "bullet point 2", ...],
         }
@@ -43,7 +53,9 @@ The segments should be a json object with the following structure (NOT MARKDOWN,
         {
             "title": "certification title",
             "date": "date",
-            "description": "description",
+            "description": "description (if available, if not create a one-liner that makes sense)",
+            "issuer": "issuer",
+            "credentialId": "credential id/url/link (if available, if not leave empty)",
         }
     ],
     "open_source": [
