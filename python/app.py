@@ -12,6 +12,7 @@ from main import (
     fetch_job_details_from_lever,
     fetch_job_details_generic,
 )
+from services.openai import generate_cover_letter
 from services.resume_best_match import get_best_match_from_resume
 from services.resume_vectorizor import vectorize_resume
 from services.openai import call_openai_api, generate_cover_letter
