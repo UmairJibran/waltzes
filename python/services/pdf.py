@@ -123,6 +123,7 @@ def create_resume(segments, font_family="Times"):
                                 )
                                 if available_width > pdf.get_string_width("W"):
                                     pdf.multi_cell(available_width, 5, f" {bullet}")
+                                    pdf.set_x(pdf.l_margin)
                                 else:
                                     pdf.ln()
                             else:
