@@ -32,6 +32,7 @@ def create_resume(segments, font_family="Times"):
     pdf.alias_nb_pages()
     pdf.add_page()
 
+    # Add name and contact information
     pdf.set_font(font_family, "B", 16)
     name = segments.get("name", "")
     name = name.strip() if isinstance(name, str) else ""
@@ -50,19 +51,223 @@ def create_resume(segments, font_family="Times"):
             pdf.cell(0, 5, contact_text, 0, 1, "C")
             pdf.ln(5)
 
-    def add_section(title, content):
-        if not title or not isinstance(title, str) or not content:
+    # Function to add section header
+    def add_section_header(title):
+        if not title or not isinstance(title, str):
             return
-
         pdf.set_font(font_family, "B", 12)
         pdf.cell(0, 10, title.upper(), 0, 1, "")
         pdf.line(10, pdf.get_y(), 200, pdf.get_y())
         pdf.ln(2)
 
+    # Add experience section
+    def add_experience_section(experience_items):
+        if not experience_items:
+            return
+
+        add_section_header("PROFESSIONAL EXPERIENCE")
         pdf.set_font(font_family, "", 10)
 
-        if isinstance(content, list):
-            for item in content:
+        for item in experience_items:
+            if isinstance(item, dict):
+                company = item.get("company", "")
+                title_text = item.get("title", "")
+                pdf.set_font(font_family, "B", 11)
+                first_line = ""
+                if isinstance(title_text, str) and title_text.strip():
+                    first_line = title_text.strip()
+                if company and isinstance(company, str) and company.strip():
+                    if first_line:
+                        first_line = first_line + " at " + company.strip()
+                    else:
+                        first_line = company.strip()
+
+                pdf.cell(0, 6, first_line.strip(), 0, 1)
+
+                workplace = item.get("location", "")
+
+                date = item.get("date", "")
+                date = date.strip() if isinstance(date, str) else ""
+
+                if workplace:
+                    pdf.set_font(font_family, "", 10)
+                    if workplace and isinstance(workplace, str) and workplace.strip():
+                        pdf.cell(
+                            pdf.get_string_width(workplace.strip()) + 5,
+                            5,
+                            workplace.strip(),
+                            0,
+                            0,
+                        )
+                if date:
+                    pdf.set_x(pdf.w - pdf.get_string_width(date) - 10)
+                    pdf.cell(pdf.get_string_width(date), 5, date, 0, 1, "R")
+                elif workplace:
+                    pdf.ln()
+
+                # Handle description
+                description = item.get("description", "")
+                if description:
+                    pdf.set_font(font_family, "", 10)
+                    if isinstance(description, list):
+                        descriptions = [
+                            d.strip()
+                            for d in description
+                            if d and isinstance(d, str) and d.strip()
+                        ]
+                        for bullet in descriptions:
+                            pdf.cell(5, 5, "-", 0, 0)
+                            if bullet and len(bullet) > 0:
+                                available_width = (
+                                    pdf.w - pdf.l_margin - pdf.r_margin - 5
+                                )
+                                if available_width > pdf.get_string_width("W"):
+                                    pdf.multi_cell(available_width, 5, f" {bullet}")
+                                else:
+                                    pdf.ln()
+                            else:
+                                pdf.ln()
+                pdf.ln(2)
+
+        pdf.ln(5)
+
+    # Add education section
+    def add_education_section(education_items):
+        if not education_items:
+            return
+
+        add_section_header("EDUCATION")
+        pdf.set_font(font_family, "", 10)
+
+        for item in education_items:
+            if isinstance(item, dict):
+                title_text = item.get("title", "")
+                if isinstance(title_text, str) and title_text.strip():
+                    pdf.set_font(font_family, "B", 11)
+                    pdf.cell(0, 6, title_text.strip(), 0, 1)
+
+                # Handle institution with URL
+                institution = item.get("location", "")
+                institution_url = item.get("url", "")
+
+                date = item.get("date", "")
+                date = date.strip() if isinstance(date, str) else ""
+
+                if institution or date:
+                    pdf.set_font(font_family, "", 10)
+
+                    # Handle institution with URL if available
+                    if (
+                        institution
+                        and isinstance(institution, str)
+                        and institution.strip()
+                    ):
+                        # Save current color
+                        text_color = pdf.text_color
+
+                        # Set blue color for hyperlink
+                        pdf.set_text_color(0, 0, 255)
+                        institution_width = pdf.get_string_width(institution.strip())
+                        institution_width = pdf.get_string_width(institution.strip())
+                        pdf.cell(
+                            institution_width + 5,
+                            5,
+                            institution.strip(),
+                            0,
+                            0,
+                            link=institution_url.strip(),
+                        )
+
+                        # Restore original color
+                        pdf.set_text_color(text_color[0], text_color[1], text_color[2])
+                    else:
+                        pdf.cell(
+                            pdf.get_string_width(institution.strip()) + 5,
+                            5,
+                            institution.strip(),
+                            0,
+                            0,
+                        )
+
+                    # Handle date on the right side
+                    if date:
+                        pdf.set_x(pdf.w - pdf.get_string_width(date) - 10)
+                        pdf.cell(pdf.get_string_width(date), 5, date, 0, 1, "R")
+                    elif institution:
+                        pdf.ln()
+
+                # Handle description
+                description = item.get("description", "")
+                if description:
+                    pdf.set_font(font_family, "", 10)
+                    if isinstance(description, list):
+                        descriptions = [
+                            d.strip()
+                            for d in description
+                            if d and isinstance(d, str) and d.strip()
+                        ]
+                        for bullet in descriptions:
+                            pdf.cell(5, 5, "-", 0, 0)
+                            pdf.multi_cell(0, 5, f" {bullet}")
+                    elif isinstance(description, str) and description.strip():
+                        pdf.multi_cell(0, 5, description.strip())
+
+                # Add spacing after each item
+                pdf.ln(2)
+
+        pdf.ln(5)
+
+    # Add skills section
+    def add_skills_section(skills_items):
+        if not skills_items:
+            return
+
+        add_section_header("SKILLS")
+        pdf.set_font(font_family, "", 10)
+
+        if isinstance(skills_items, list):
+            # Process list of skill items
+            for item in skills_items:
+                if isinstance(item, str) and item.strip():
+                    pdf.cell(0, 5, f"- {item.strip()}", 0, 1)
+                elif isinstance(item, dict):
+                    title_text = item.get("title", "")
+                    if isinstance(title_text, str) and title_text.strip():
+                        pdf.set_font(font_family, "B", 11)
+                        pdf.cell(0, 6, title_text.strip(), 0, 1)
+
+                    description = item.get("description", "")
+                    if isinstance(description, list):
+                        pdf.set_font(font_family, "", 10)
+                        descriptions = [
+                            d.strip()
+                            for d in description
+                            if d and isinstance(d, str) and d.strip()
+                        ]
+                        for bullet in descriptions:
+                            pdf.cell(5, 5, "-", 0, 0)
+                            pdf.multi_cell(0, 5, f" {bullet}")
+                    elif isinstance(description, str) and description.strip():
+                        pdf.set_font(font_family, "", 10)
+                        pdf.multi_cell(0, 5, description.strip())
+
+                    # Add spacing after each item
+                    pdf.ln(2)
+        elif isinstance(skills_items, str):
+            pdf.multi_cell(0, 5, skills_items.strip())
+
+        pdf.ln(5)
+
+    # Add certifications section
+    def add_certifications_section(cert_items):
+        if not cert_items:
+            return
+
+        add_section_header("CERTIFICATIONS")
+        pdf.set_font(font_family, "", 10)
+
+        if isinstance(cert_items, list):
+            for item in cert_items:
                 if isinstance(item, dict):
                     title_text = item.get("title", "")
                     if isinstance(title_text, str) and title_text.strip():
@@ -70,24 +275,22 @@ def create_resume(segments, font_family="Times"):
                         pdf.cell(0, 6, title_text.strip(), 0, 1)
 
                     location = item.get("location", "")
-                    location = location.strip() if isinstance(location, str) else ""
-
                     date = item.get("date", "")
-                    date = date.strip() if isinstance(date, str) else ""
 
                     if location or date:
                         pdf.set_font(font_family, "", 10)
-                        location_width = (
-                            pdf.get_string_width(location) if location else 0
-                        )
-                        date_width = pdf.get_string_width(date) if date else 0
+                        if location and isinstance(location, str) and location.strip():
+                            pdf.cell(
+                                pdf.get_string_width(location.strip()) + 5,
+                                5,
+                                location.strip(),
+                                0,
+                                0,
+                            )
 
-                        if location:
-                            pdf.cell(location_width + 5, 5, location, 0, 0)
-
-                        if date:
-                            pdf.set_x(pdf.w - date_width - 10)
-                            pdf.cell(date_width, 5, date, 0, 1, "R")
+                        if date and isinstance(date, str) and date.strip():
+                            pdf.set_x(pdf.w - pdf.get_string_width(date) - 10)
+                            pdf.cell(pdf.get_string_width(date), 5, date, 0, 1, "R")
                         elif location:
                             pdf.ln()
 
@@ -95,50 +298,82 @@ def create_resume(segments, font_family="Times"):
                     if description:
                         pdf.set_font(font_family, "", 10)
                         if isinstance(description, list):
-                            # Filter out empty description items
-                            descriptions = [
-                                d.strip()
-                                for d in description
-                                if d and isinstance(d, str) and d.strip()
-                            ]
-                            for bullet in descriptions:
-                                pdf.cell(5, 5, "-", 0, 0)
-                                pdf.multi_cell(0, 5, f" {bullet}")
+                            for bullet in description:
+                                if isinstance(bullet, str) and bullet.strip():
+                                    pdf.cell(5, 5, "-", 0, 0)
+                                    pdf.multi_cell(0, 5, f" {bullet.strip()}")
                         elif isinstance(description, str) and description.strip():
                             pdf.multi_cell(0, 5, description.strip())
+
+                    pdf.ln(2)
                 elif isinstance(item, str) and item.strip():
                     pdf.cell(0, 5, f"- {item.strip()}", 0, 1)
 
-                # Only add spacing if something was actually added
-                if (
-                    isinstance(item, dict)
-                    and any(
-                        item.get(k)
-                        and (
-                            (isinstance(item[k], str) and item[k].strip())
-                            or (isinstance(item[k], list) and any(item[k]))
-                        )
-                        for k in ["title", "location", "date", "description"]
-                        if k in item
-                    )
-                ) or (isinstance(item, str) and item.strip()):
+        pdf.ln(5)
+
+    # Add open source section
+    def add_open_source_section(open_source_items):
+        if not open_source_items:
+            return
+
+        add_section_header("OPEN SOURCE")
+        pdf.set_font(font_family, "", 10)
+
+        if isinstance(open_source_items, list):
+            for item in open_source_items:
+                if isinstance(item, dict):
+                    title_text = item.get("title", "")
+                    url = item.get("url", "")
+
+                    if isinstance(title_text, str) and title_text.strip():
+                        pdf.set_font(font_family, "B", 11)
+                        if url and isinstance(url, str) and url.strip():
+                            # Save current color
+                            text_color = pdf.text_color
+
+                            # Set blue color for hyperlink
+                            pdf.set_text_color(0, 0, 255)
+                            pdf.cell(0, 6, title_text.strip(), 0, 1, link=url.strip())
+
+                            # Restore original color
+                            pdf.set_text_color(
+                                text_color[0], text_color[1], text_color[2]
+                            )
+                        else:
+                            pdf.cell(0, 6, title_text.strip(), 0, 1)
+
+                    description = item.get("description", "")
+                    if description:
+                        pdf.set_font(font_family, "", 10)
+                        if isinstance(description, list):
+                            for bullet in description:
+                                if isinstance(bullet, str) and bullet.strip():
+                                    pdf.cell(5, 5, "-", 0, 0)
+                                    pdf.multi_cell(0, 5, f" {bullet.strip()}")
+                        elif isinstance(description, str) and description.strip():
+                            pdf.multi_cell(0, 5, description.strip())
+
                     pdf.ln(2)
-        elif isinstance(content, str) and content.strip():
-            pdf.multi_cell(0, 5, content.strip())
+                elif isinstance(item, str) and item.strip():
+                    pdf.cell(0, 5, f"- {item.strip()}", 0, 1)
 
         pdf.ln(5)
 
-    sections_order = [
-        ("PROFESSIONAL EXPERIENCE", "experience"),
-        ("EDUCATION", "education"),
-        ("SKILLS", "skills"),
-        ("CERTIFICATIONS", "certifications"),
-        ("OPEN SOURCE", "open_source"),
-    ]
+    # Add sections in order
+    if "experience" in segments:
+        add_experience_section(segments["experience"])
 
-    for section_title, section_key in sections_order:
-        if section_key in segments and segments[section_key]:
-            add_section(section_title, segments[section_key])
+    # if "education" in segments:
+    #     add_education_section(segments["education"])
+
+    if "skills" in segments:
+        add_skills_section(segments["skills"])
+
+    if "certifications" in segments:
+        add_certifications_section(segments["certifications"])
+
+    if "open_source" in segments:
+        add_open_source_section(segments["open_source"])
 
     pdf.output("output.pdf")
     return "output.pdf"
