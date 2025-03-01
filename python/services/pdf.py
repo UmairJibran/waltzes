@@ -315,9 +315,6 @@ def create_resume(segments, font_family="Times"):
     if "experience" in segments:
         add_experience_section(segments["experience"])
 
-    if "education" in segments:
-        add_education_section(segments["education"])
-
     if "skills" in segments:
         add_skills_section(segments["skills"])
 
@@ -326,6 +323,9 @@ def create_resume(segments, font_family="Times"):
 
     if "open_source" in segments:
         add_open_source_section(segments["open_source"])
+
+    if "education" in segments:
+        add_education_section(segments["education"])
 
     pdf.output("output.pdf")
     return "output.pdf"
