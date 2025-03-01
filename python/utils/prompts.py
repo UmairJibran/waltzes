@@ -19,13 +19,16 @@ If a segment is not applicable, you should return an empty list for that segment
 Limit the number of bullet points in each segment to a maximum of 5.
 Limit the number of experience and education segments to a maximum of 3 each, only include the most relevant experience and education.
 
+Ensure that all locations are in the format "City, Country".
+Ensure that all dates are in the format "Month Year - Month Year" or "Month Year - Present". Month should be abbreviated to 3 letters (e.g. Jan, Feb, Mar, etc.).
+
 The segments should be a json object with the following structure (NOT MARKDOWN, but a JSON object's string):
 {
     "name": "user's full name",
     "contact": [
-        "site (if available)",
+        "site/portfolio  (if available) (without https:// and www, if subdomain is present, include that)",
         "email",
-        "phone (if available)",
+        "phone (if available) (with country code)",
         "linkedin_url",
     ],
     "experience": [
