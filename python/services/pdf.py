@@ -32,7 +32,6 @@ def create_resume(segments, font_family="Times"):
     pdf.alias_nb_pages()
     pdf.add_page()
 
-    # Add name and contact information
     pdf.set_font(font_family, "B", 16)
     name = segments.get("name", "")
     name = name.strip() if isinstance(name, str) else ""
@@ -40,18 +39,17 @@ def create_resume(segments, font_family="Times"):
 
     if "contact" in segments and isinstance(segments["contact"], list):
         pdf.set_font(font_family, "", 10)
-        # Filter out empty strings and strip whitespace
+
         contact = [
             item.strip()
             for item in segments["contact"]
             if item and isinstance(item, str) and item.strip()
         ]
-        if contact:  # Only proceed if there are non-empty contact items
+        if contact:
             contact_text = " - ".join(contact)
             pdf.cell(0, 5, contact_text, 0, 1, "C")
             pdf.ln(5)
 
-    # Function to add section header
     def add_section_header(title):
         if not title or not isinstance(title, str):
             return
@@ -60,7 +58,6 @@ def create_resume(segments, font_family="Times"):
         pdf.line(10, pdf.get_y(), 200, pdf.get_y())
         pdf.ln(2)
 
-    # Add experience section
     def add_experience_section(experience_items):
         if not experience_items:
             return
@@ -105,7 +102,6 @@ def create_resume(segments, font_family="Times"):
                 elif workplace:
                     pdf.ln()
 
-                # Handle description
                 description = item.get("description", "")
                 if description:
                     pdf.set_font(font_family, "", 10)
@@ -132,7 +128,6 @@ def create_resume(segments, font_family="Times"):
 
         pdf.ln(5)
 
-    # Add education section
     def add_education_section(education_items):
         if not education_items:
             return
@@ -147,7 +142,6 @@ def create_resume(segments, font_family="Times"):
                     pdf.set_font(font_family, "B", 11)
                     pdf.cell(0, 6, title_text.strip(), 0, 1)
 
-                # Handle institution with URL
                 institution = item.get("location", "")
                 institution_url = item.get("url", "")
 
@@ -157,16 +151,13 @@ def create_resume(segments, font_family="Times"):
                 if institution or date:
                     pdf.set_font(font_family, "", 10)
 
-                    # Handle institution with URL if available
                     if (
                         institution
                         and isinstance(institution, str)
                         and institution.strip()
                     ):
-                        # Save current color
                         text_color = pdf.text_color
 
-                        # Set blue color for hyperlink
                         pdf.set_text_color(0, 0, 255)
                         institution_width = pdf.get_string_width(institution.strip())
                         institution_width = pdf.get_string_width(institution.strip())
@@ -179,7 +170,6 @@ def create_resume(segments, font_family="Times"):
                             link=institution_url.strip(),
                         )
 
-                        # Restore original color
                         pdf.set_text_color(text_color[0], text_color[1], text_color[2])
                     else:
                         pdf.cell(
@@ -190,14 +180,12 @@ def create_resume(segments, font_family="Times"):
                             0,
                         )
 
-                    # Handle date on the right side
                     if date:
                         pdf.set_x(pdf.w - pdf.get_string_width(date) - 10)
                         pdf.cell(pdf.get_string_width(date), 5, date, 0, 1, "R")
                     elif institution:
                         pdf.ln()
 
-                # Handle description
                 description = item.get("description", "")
                 if description:
                     pdf.set_font(font_family, "", 10)
@@ -213,12 +201,10 @@ def create_resume(segments, font_family="Times"):
                     elif isinstance(description, str) and description.strip():
                         pdf.multi_cell(0, 5, description.strip())
 
-                # Add spacing after each item
                 pdf.ln(2)
 
         pdf.ln(5)
 
-    # Add skills section
     def add_skills_section(skills_items):
         if not skills_items:
             return
@@ -239,45 +225,36 @@ def create_resume(segments, font_family="Times"):
 
         pdf.ln(5)
 
-    # Add certifications section
     def add_certifications_section(cert_items):
         if not cert_items:
             return
 
         add_section_header("CERTIFICATIONS")
-        pdf.set_font(font_family, "", 10)
-
         if isinstance(cert_items, list):
             for item in cert_items:
                 if isinstance(item, dict):
                     title_text = item.get("title", "")
-                    if isinstance(title_text, str) and title_text.strip():
-                        pdf.set_font(font_family, "B", 11)
-                        pdf.cell(0, 6, title_text.strip(), 0, 1)
-
-                    location = item.get("location", "")
+                    issuer = item.get("issuer", "")
                     date = item.get("date", "")
 
-                    if location or date:
-                        pdf.set_font(font_family, "", 10)
-                        if location and isinstance(location, str) and location.strip():
-                            pdf.cell(
-                                pdf.get_string_width(location.strip()) + 5,
-                                5,
-                                location.strip(),
-                                0,
-                                0,
-                            )
+                    pdf.set_font(font_family, "B", 11)
 
-                        if date and isinstance(date, str) and date.strip():
-                            pdf.set_x(pdf.w - pdf.get_string_width(date) - 10)
-                            pdf.cell(pdf.get_string_width(date), 5, date, 0, 1, "R")
-                        elif location:
-                            pdf.ln()
+                    date_width = pdf.get_string_width(date) + 10 if date else 0
+                    title_width = pdf.w - pdf.l_margin - pdf.r_margin - date_width
+
+                    if isinstance(title_text, str) and title_text.strip():
+                        if issuer and isinstance(issuer, str) and issuer.strip():
+                            title_text = f"{title_text.strip()} by {issuer.strip()}"
+                        pdf.cell(title_width, 5, title_text.strip(), 0, 0)
+
+                    if date:
+                        pdf.set_font(font_family, "", 10)
+                        pdf.cell(date_width, 5, date, 0, 1, "R")
+                    else:
+                        pdf.ln()
 
                     description = item.get("description", "")
                     if description:
-                        pdf.set_font(font_family, "", 10)
                         if isinstance(description, list):
                             for bullet in description:
                                 if isinstance(bullet, str) and bullet.strip():
@@ -285,14 +262,17 @@ def create_resume(segments, font_family="Times"):
                                     pdf.multi_cell(0, 5, f" {bullet.strip()}")
                         elif isinstance(description, str) and description.strip():
                             pdf.multi_cell(0, 5, description.strip())
+                    credentialId = item.get("credentialId", "")
+                    if credentialId:
+                        pdf.set_x(pdf.l_margin)
+                        pdf.multi_cell(0, 5, credentialId.strip())
+                    pdf.ln(3)
 
-                    pdf.ln(2)
                 elif isinstance(item, str) and item.strip():
                     pdf.cell(0, 5, f"- {item.strip()}", 0, 1)
 
         pdf.ln(5)
 
-    # Add open source section
     def add_open_source_section(open_source_items):
         if not open_source_items:
             return
@@ -309,14 +289,11 @@ def create_resume(segments, font_family="Times"):
                     if isinstance(title_text, str) and title_text.strip():
                         pdf.set_font(font_family, "B", 11)
                         if url and isinstance(url, str) and url.strip():
-                            # Save current color
                             text_color = pdf.text_color
 
-                            # Set blue color for hyperlink
                             pdf.set_text_color(0, 0, 255)
                             pdf.cell(0, 6, title_text.strip(), 0, 1, link=url.strip())
 
-                            # Restore original color
                             pdf.set_text_color(
                                 text_color[0], text_color[1], text_color[2]
                             )
@@ -340,7 +317,6 @@ def create_resume(segments, font_family="Times"):
 
         pdf.ln(5)
 
-    # Add sections in order
     if "experience" in segments:
         add_experience_section(segments["experience"])
 
