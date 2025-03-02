@@ -5,7 +5,7 @@ import { LanguageList } from './sections/LanguageList';
 import { HonorAwardList } from './sections/HonorAwardList';
 import { ProjectList } from './sections/ProjectList';
 import { VolunteerWorkList } from './sections/VolunteerWorkList';
-// import { CertificationList } from './sections/CertificationList';
+import { CertificationList } from './sections/CertificationList';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -164,10 +164,10 @@ export function LinkedInForm({
         onChange={volunteer => updateField('volunteer_work', volunteer)}
       />
 
-      {/* <CertificationList
+      <CertificationList
         items={data.certifications}
-        onChange={(certifications) => updateField('certifications', certifications)}
-      /> */}
+        onChange={certifications => updateField('certifications', certifications)}
+      />
 
       <div className="flex justify-end">
         <Button type="submit" disabled={isSaving}>
