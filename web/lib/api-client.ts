@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { LoginInput, RegisterInput } from './validations/auth';
 import { Application, ApplicationStatus } from './types/application';
+import { LinkedInData } from './types/linkedin';
+import linkedinData from '@/app/(authenticated)/(dashboard-sub)/scraped/linkedin/data.json';
 
 if (!process.env.NEXT_PUBLIC_API_URL) {
   throw new Error('NEXT_PUBLIC_API_URL environment variable is not set');
@@ -21,6 +23,19 @@ export const authApi = {
   register: async (data: RegisterInput) => {
     const response = await apiClient.post('/auth/register', data);
     return response.data;
+  },
+};
+
+export const linkedinApi = {
+  getData: async (): Promise<LinkedInData> => {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 500));
+    return linkedinData.linkedin_data_raw;
+  },
+  updateData: async (data: LinkedInData): Promise<LinkedInData> => {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    return data;
   },
 };
 
