@@ -34,6 +34,7 @@ interface PaginatedResponse<T> {
 const MOCK_APPLICATIONS = Array.from({ length: 100 }, (_, i) => ({
   _id: `${i + 1}`,
   jobTitle: `Job Title ${i + 1}`,
+  companyName: `Company#${i + 1}`,
   applicationStatus: ['applied', 'interviewing', 'rejected', 'accepted'][Math.floor(Math.random() * 4)] as ApplicationStatus,
   applyDate: Date.now() - Math.floor(Math.random() * 30) * 24 * 60 * 60 * 1000,
   createdAt: Date.now(),
@@ -49,11 +50,11 @@ export const applicationsApi = {
   getAll: async (page = 1, pageSize = 50): Promise<PaginatedResponse<Application>> => {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 500));
-    
+
     const start = (page - 1) * pageSize;
     const end = start + pageSize;
     const paginatedData = MOCK_APPLICATIONS.slice(start, end);
-    
+
     return {
       data: paginatedData,
       total: MOCK_APPLICATIONS.length,
@@ -66,7 +67,7 @@ export const applicationsApi = {
     const filteredData = result.data.filter(app => app.applicationStatus === status);
     const start = (page - 1) * pageSize;
     const end = start + pageSize;
-    
+
     return {
       data: filteredData.slice(start, end),
       total: filteredData.length,
@@ -77,16 +78,16 @@ export const applicationsApi = {
   updateStatus: async (applicationId: string, status: ApplicationStatus): Promise<Application> => {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
+
     const application = MOCK_APPLICATIONS.find(app => app._id === applicationId);
-    
+
     if (!application) {
       throw new Error('Application not found');
     }
-    
+
     application.applicationStatus = status;
     application.updatedAt = Date.now();
-    
+
     return application;
   },
 };

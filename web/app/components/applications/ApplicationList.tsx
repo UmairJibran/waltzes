@@ -29,11 +29,24 @@ const statusColors = {
   accepted: 'bg-green-500/10 text-green-500',
 };
 
-const STATUS_OPTIONS: ApplicationStatus[] = ['applied', 'interviewing', 'accepted', 'rejected'];
+const STATUS_OPTIONS: ApplicationStatus[] = [
+  'applied',
+  'interviewing',
+  'accepted',
+  'rejected',
+];
 
-export function ApplicationList({ applications, page, pageSize, total, onPageChange }: ApplicationListProps) {
-  const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
-  const { mutate: updateStatus, isPending: isUpdating } = useUpdateApplicationStatus();
+export function ApplicationList({
+  applications,
+  page,
+  pageSize,
+  total,
+  onPageChange,
+}: ApplicationListProps) {
+  const [selectedApplication, setSelectedApplication] =
+    useState<Application | null>(null);
+  const { mutate: updateStatus, isPending: isUpdating } =
+    useUpdateApplicationStatus();
   const totalPages = Math.ceil(total / pageSize);
 
   return (
@@ -43,18 +56,34 @@ export function ApplicationList({ applications, page, pageSize, total, onPageCha
           <table className="w-full">
             <thead>
               <tr className="border-b bg-muted/50">
-                <th className="py-2 px-3 text-left text-xs font-medium">Job Title</th>
-                <th className="py-2 px-3 text-left text-xs font-medium w-[100px]">Applied On</th>
-                <th className="py-2 px-3 text-left text-xs font-medium w-[150px]">Status</th>
-                <th className="py-2 px-3 text-center text-xs font-medium w-[60px]">View</th>
+                <th className="py-2 px-3 text-left text-xs font-medium">
+                  Job Title
+                </th>
+                <th className="py-2 px-3 text-left text-xs font-medium w-[250px]">
+                  Company
+                </th>
+                <th className="py-2 px-3 text-left text-xs font-medium w-[100px]">
+                  Applied On
+                </th>
+                <th className="py-2 px-3 text-left text-xs font-medium w-[150px]">
+                  Status
+                </th>
+                <th className="py-2 px-3 text-center text-xs font-medium w-[60px]">
+                  View
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y">
-              {applications.map((application) => (
+              {applications.map(application => (
                 <tr key={application._id} className="hover:bg-muted/50">
                   <td className="py-1.5 px-3">
                     <span className="text-sm font-medium truncate block">
                       {application.jobTitle}
+                    </span>
+                  </td>
+                  <td className="py-1.5 px-3">
+                    <span className="text-xs text-muted-foreground">
+                      {application.companyName}
                     </span>
                   </td>
                   <td className="py-1.5 px-3">
@@ -66,19 +95,28 @@ export function ApplicationList({ applications, page, pageSize, total, onPageCha
                     <Select
                       value={application.applicationStatus}
                       onValueChange={(value: ApplicationStatus) => {
-                        updateStatus({ applicationId: application._id, status: value });
+                        updateStatus({
+                          applicationId: application._id,
+                          status: value,
+                        });
                       }}
                       disabled={isUpdating}
                     >
-                      <SelectTrigger className={cn(
-                        "h-7 w-[130px] text-xs",
-                        statusColors[application.applicationStatus]
-                      )}>
+                      <SelectTrigger
+                        className={cn(
+                          'h-7 w-[130px] text-xs',
+                          statusColors[application.applicationStatus]
+                        )}
+                      >
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        {STATUS_OPTIONS.map((status) => (
-                          <SelectItem key={status} value={status} className="text-xs">
+                        {STATUS_OPTIONS.map(status => (
+                          <SelectItem
+                            key={status}
+                            value={status}
+                            className="text-xs"
+                          >
                             {status.charAt(0).toUpperCase() + status.slice(1)}
                           </SelectItem>
                         ))}
@@ -100,11 +138,12 @@ export function ApplicationList({ applications, page, pageSize, total, onPageCha
             </tbody>
           </table>
         </div>
-        
+
         {totalPages > 1 && (
           <div className="flex items-center justify-between mt-4">
             <div className="text-sm text-muted-foreground">
-              Showing {(page - 1) * pageSize + 1} to {Math.min(page * pageSize, total)} of {total} results
+              Showing {(page - 1) * pageSize + 1} to{' '}
+              {Math.min(page * pageSize, total)} of {total} results
             </div>
             <div className="flex items-center gap-2">
               <Button

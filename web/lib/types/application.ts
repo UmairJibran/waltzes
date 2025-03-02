@@ -8,6 +8,7 @@ export interface AppliedWith {
 export interface Application {
   _id: string;
   jobTitle: string;
+  companyName: string;
   applicationStatus: ApplicationStatus;
   applyDate: number;
   createdAt: number;

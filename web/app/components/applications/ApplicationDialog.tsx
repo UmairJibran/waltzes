@@ -18,6 +18,7 @@ import {
 import { useState } from 'react';
 import { useUpdateApplicationStatus } from '@/hooks/use-applications';
 import { PDFViewer } from './PDFViewer';
+import { DialogDescription } from '@radix-ui/react-dialog';
 
 interface ApplicationDialogProps {
   application: Application | null;
@@ -59,6 +60,7 @@ export function ApplicationDialog({
       <DialogContent className="w-[90vw] max-w-[90%] md:max-w-[80%] lg:max-w-[80%] h-[80vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>{application.jobTitle}</DialogTitle>
+          <DialogDescription>{application.companyName}</DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-6 flex-1 overflow-hidden">
           <div className="grid grid-cols-2 gap-4">
@@ -86,7 +88,7 @@ export function ApplicationDialog({
             </div>
             <div className="space-y-2">
               <p className="text-sm font-medium">Status</p>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-col">
                 <Select
                   value={selectedStatus || application.applicationStatus}
                   onValueChange={(value: ApplicationStatus) =>
