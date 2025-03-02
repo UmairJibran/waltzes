@@ -35,41 +35,41 @@ const data = {
   navMain: [
     {
       title: 'Applications',
-      url: '#',
+      url: '/applications',
       icon: SquareTerminal,
       isActive: true,
       items: [
         {
           title: 'Applied',
-          url: '#',
+          url: '/applications/applied',
           enabled: true,
         },
         {
           title: 'Interviewing',
-          url: '#',
+          url: '/applications/interviewing',
           enabled: true,
         },
         {
           title: 'Accepted',
-          url: '#',
+          url: '/applications/accepted',
           enabled: true,
         },
         {
           title: 'Rejected',
-          url: '#',
+          url: '/applications/rejected',
           enabled: true,
         },
       ],
     },
     {
-      title: 'Scrapped',
-      url: '#',
+      title: 'Scraped',
+      url: '/scraped',
       icon: Bot,
       isActive: true,
       items: [
         {
           title: 'LinkedIn Profile',
-          url: '#',
+          url: '/scraped/linkedin',
           enabled: true,
         },
         {
