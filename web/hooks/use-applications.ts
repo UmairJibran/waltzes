@@ -7,13 +7,19 @@ interface UpdateStatusInput {
   status: ApplicationStatus;
 }
 
-export function useApplications(status?: ApplicationStatus) {
-  return useQuery({
-    queryKey: ['applications', status],
-    queryFn: () => (status ? applicationsApi.getByStatus(status) : applicationsApi.getAll()),
-  });
+interface UseApplicationsOptions {
+  status?: ApplicationStatus;
+  page?: number;
+  pageSize?: number;
 }
 
+
+export function useApplications({ status, page = 1, pageSize = 50 }: UseApplicationsOptions = {}) {
+  return useQuery({
+    queryKey: ['applications', { status, page, pageSize }],
+    queryFn: () => (status ? applicationsApi.getByStatus(status, page, pageSize) : applicationsApi.getAll(page, pageSize)),
+  });
+}
 
 export function useUpdateApplicationStatus() {
   const queryClient = useQueryClient();

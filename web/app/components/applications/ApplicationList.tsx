@@ -1,10 +1,25 @@
-import { Application } from '@/lib/types/application';
+import { Application, ApplicationStatus } from '@/lib/types/application';
 import { format } from 'date-fns';
+import { Eye, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 import { ApplicationDialog } from './ApplicationDialog';
+import { Button } from '@/components/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { useUpdateApplicationStatus } from '@/hooks/use-applications';
+import { cn } from '@/lib/utils';
 
 interface ApplicationListProps {
   applications: Application[];
+  page: number;
+  pageSize: number;
+  total: number;
+  onPageChange: (page: number) => void;
 }
 
 const statusColors = {
@@ -14,47 +29,103 @@ const statusColors = {
   accepted: 'bg-green-500/10 text-green-500',
 };
 
-export function ApplicationList({ applications }: ApplicationListProps) {
-  const [selectedApplication, setSelectedApplication] =
-    useState<Application | null>(null);
+const STATUS_OPTIONS: ApplicationStatus[] = ['applied', 'interviewing', 'accepted', 'rejected'];
+
+export function ApplicationList({ applications, page, pageSize, total, onPageChange }: ApplicationListProps) {
+  const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
+  const { mutate: updateStatus, isPending: isUpdating } = useUpdateApplicationStatus();
+  const totalPages = Math.ceil(total / pageSize);
 
   return (
     <>
       <div className="w-full">
         <div className="rounded-md border">
-          <div className="grid grid-cols-[1fr,100px,80px] gap-4 border-b bg-muted/50 p-2 text-sm font-medium">
-            <div>Job Title</div>
-            <div>Applied On</div>
-            <div>Status</div>
-          </div>
-          <div className="divide-y">
-            {applications.map(application => (
-              <button
-                key={application._id}
-                className="w-full grid grid-cols-[1fr,100px,80px] items-center gap-4 p-2 hover:bg-muted/50 text-left"
-                onClick={() => setSelectedApplication(application)}
-              >
-                <div className="flex flex-col">
-                  <span className="font-medium truncate">
-                    {application.jobTitle}
-                  </span>
-                </div>
-                <div className="text-xs text-muted-foreground">
-                  {format(application.applyDate, 'MMM d, yyyy')}
-                </div>
-                <div>
-                  <span
-                    className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${
-                      statusColors[application.applicationStatus]
-                    }`}
-                  >
-                    {application.applicationStatus}
-                  </span>
-                </div>
-              </button>
-            ))}
-          </div>
+          <table className="w-full">
+            <thead>
+              <tr className="border-b bg-muted/50">
+                <th className="py-2 px-3 text-left text-xs font-medium">Job Title</th>
+                <th className="py-2 px-3 text-left text-xs font-medium w-[100px]">Applied On</th>
+                <th className="py-2 px-3 text-left text-xs font-medium w-[150px]">Status</th>
+                <th className="py-2 px-3 text-center text-xs font-medium w-[60px]">View</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y">
+              {applications.map((application) => (
+                <tr key={application._id} className="hover:bg-muted/50">
+                  <td className="py-1.5 px-3">
+                    <span className="text-sm font-medium truncate block">
+                      {application.jobTitle}
+                    </span>
+                  </td>
+                  <td className="py-1.5 px-3">
+                    <span className="text-xs text-muted-foreground">
+                      {format(application.applyDate, 'MMM d, yyyy')}
+                    </span>
+                  </td>
+                  <td className="py-1.5 px-3">
+                    <Select
+                      value={application.applicationStatus}
+                      onValueChange={(value: ApplicationStatus) => {
+                        updateStatus({ applicationId: application._id, status: value });
+                      }}
+                      disabled={isUpdating}
+                    >
+                      <SelectTrigger className={cn(
+                        "h-7 w-[130px] text-xs",
+                        statusColors[application.applicationStatus]
+                      )}>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {STATUS_OPTIONS.map((status) => (
+                          <SelectItem key={status} value={status} className="text-xs">
+                            {status.charAt(0).toUpperCase() + status.slice(1)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </td>
+                  <td className="py-1.5 px-3 text-center">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-7 w-7"
+                      onClick={() => setSelectedApplication(application)}
+                    >
+                      <Eye className="h-4 w-4" />
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
+        
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between mt-4">
+            <div className="text-sm text-muted-foreground">
+              Showing {(page - 1) * pageSize + 1} to {Math.min(page * pageSize, total)} of {total} results
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onPageChange(page - 1)}
+                disabled={page <= 1}
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onPageChange(page + 1)}
+                disabled={page >= totalPages}
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
       <ApplicationDialog
         application={selectedApplication}

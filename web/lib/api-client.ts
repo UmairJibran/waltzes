@@ -24,73 +24,70 @@ export const authApi = {
   },
 };
 
-export const applicationsApi = {
-  getAll: async (): Promise<Application[]> => {
-    // Temporary mock data
-    return [
-      {
-        _id: '1',
-        jobTitle: 'Senior Frontend Developer',
-        applicationStatus: 'applied',
-        applyDate: Date.now(),
-        createdAt: Date.now(),
-        updatedAt: Date.now(),
-        appliedWith: { resume: null, coverLetter: null },
-        jobUrl: 'https://example.com/job1',
-      },
-      {
-        _id: '2',
-        jobTitle: 'Full Stack Engineer',
-        applicationStatus: 'interviewing',
-        applyDate: Date.now(),
-        createdAt: Date.now(),
-        updatedAt: Date.now(),
-        appliedWith: { resume: 'https://www.orimi.com/pdf-test.pdf', coverLetter: null },
-        jobUrl: 'https://example.com/job2',
-      },
-      {
-        _id: '3',
-        jobTitle: 'React Developer',
-        applicationStatus: 'rejected',
-        applyDate: Date.now(),
-        createdAt: Date.now(),
-        updatedAt: Date.now(),
-        appliedWith: { resume: 'https://www.orimi.com/pdf-test.pdf', coverLetter: 'https://www.orimi.com/pdf-test.pdf' },
-        jobUrl: 'https://example.com/job3',
-      },
-      {
-        _id: '4',
-        jobTitle: 'Software Engineer',
-        applicationStatus: 'accepted',
-        applyDate: Date.now(),
-        createdAt: Date.now(),
-        updatedAt: Date.now(),
-        appliedWith: { resume: null, coverLetter: 'https://www.orimi.com/pdf-test.pdf' },
-        jobUrl: 'https://example.com/job4',
-      },
-    ];
+interface PaginatedResponse<T> {
+  data: T[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
+
+const MOCK_APPLICATIONS = Array.from({ length: 100 }, (_, i) => ({
+  _id: `${i + 1}`,
+  jobTitle: `Job Title ${i + 1}`,
+  applicationStatus: ['applied', 'interviewing', 'rejected', 'accepted'][Math.floor(Math.random() * 4)] as ApplicationStatus,
+  applyDate: Date.now() - Math.floor(Math.random() * 30) * 24 * 60 * 60 * 1000,
+  createdAt: Date.now(),
+  updatedAt: Date.now(),
+  appliedWith: {
+    resume: Math.random() > 0.5 ? 'https://www.orimi.com/pdf-test.pdf' : null,
+    coverLetter: Math.random() > 0.5 ? 'https://www.orimi.com/pdf-test.pdf' : null,
   },
-  getByStatus: async (status: ApplicationStatus): Promise<Application[]> => {
-    const allApplications = await applicationsApi.getAll();
-    return allApplications.filter(app => app.applicationStatus === status);
+  jobUrl: Math.random() > 0.3 ? `https://example.com/job${i + 1}` : null,
+}));
+
+export const applicationsApi = {
+  getAll: async (page = 1, pageSize = 50): Promise<PaginatedResponse<Application>> => {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    const start = (page - 1) * pageSize;
+    const end = start + pageSize;
+    const paginatedData = MOCK_APPLICATIONS.slice(start, end);
+    
+    return {
+      data: paginatedData,
+      total: MOCK_APPLICATIONS.length,
+      page,
+      pageSize,
+    };
+  },
+  getByStatus: async (status: ApplicationStatus, page = 1, pageSize = 50): Promise<PaginatedResponse<Application>> => {
+    const result = await applicationsApi.getAll(1, MOCK_APPLICATIONS.length);
+    const filteredData = result.data.filter(app => app.applicationStatus === status);
+    const start = (page - 1) * pageSize;
+    const end = start + pageSize;
+    
+    return {
+      data: filteredData.slice(start, end),
+      total: filteredData.length,
+      page,
+      pageSize,
+    };
   },
   updateStatus: async (applicationId: string, status: ApplicationStatus): Promise<Application> => {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1000));
-
-    // In a real implementation, this would be an API call
-    const allApplications = await applicationsApi.getAll();
-    const application = allApplications.find(app => app._id === applicationId);
-
+    
+    const application = MOCK_APPLICATIONS.find(app => app._id === applicationId);
+    
     if (!application) {
       throw new Error('Application not found');
     }
-
-    return {
-      ...application,
-      applicationStatus: status,
-      updatedAt: Date.now(),
-    };
+    
+    application.applicationStatus = status;
+    application.updatedAt = Date.now();
+    
+    return application;
   },
 };
 
