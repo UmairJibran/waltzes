@@ -1,4 +1,5 @@
 import { LinkedInData } from '@/lib/types/linkedin';
+import { EducationList } from './sections/EducationList';
 import { ExperienceList } from './sections/ExperienceList';
 import { Button } from '@/components/ui/button';
 
@@ -13,7 +14,12 @@ export function LinkedInForm({ data, onSave, isSaving }: LinkedInFormProps) {
     <div className="space-y-8">
       <ExperienceList
         items={data.experience || []}
-        onChange={(experience) => onSave({ ...data, experience })}
+        onChange={experience => onSave({ ...data, experience })}
+      />
+
+      <EducationList
+        items={data.education || []}
+        onChange={education => onSave({ ...data, education })}
       />
 
       {/* TODO: Add other sections (Education, Languages, etc.) */}
@@ -25,4 +31,4 @@ export function LinkedInForm({ data, onSave, isSaving }: LinkedInFormProps) {
       </div>
     </div>
   );
-} 
+}

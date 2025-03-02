@@ -28,6 +28,7 @@ export interface LinkedInEducation {
   logo_url: string | null;
   grade: string | null;
   activities_and_societies: string | null;
+  location: string | null
 }
 
 export interface LinkedInLanguage {
