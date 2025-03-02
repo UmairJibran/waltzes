@@ -4,14 +4,61 @@ import { useMutation } from '@tanstack/react-query';
 import { authApi } from '@/lib/api-client';
 import { LoginInput, RegisterInput } from '@/lib/validations/auth';
 import { useRouter } from 'next/navigation';
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+
+interface AuthState {
+  isAuthenticated: boolean;
+  user: {
+    id: string;
+    email: string;
+  } | null;
+  setUser: (user: AuthState['user']) => void;
+  login: (data: LoginInput) => Promise<void>;
+  logout: () => void;
+}
+
+export const useAuth = create<AuthState>()(
+  persist(
+    (set) => ({
+      isAuthenticated: false,
+      user: null,
+      setUser: (user) => set({ user, isAuthenticated: !!user }),
+      login: async (data) => {
+        const user = await authApi.login(data);
+        set({
+          isAuthenticated: true,
+          user: {
+            id: user.id,
+            email: user.email,
+          },
+        });
+      },
+      logout: () => {
+        set({
+          isAuthenticated: false,
+          user: null,
+        });
+      },
+    }),
+    {
+      name: 'auth-storage',
+    }
+  )
+);
 
 export function useLogin() {
   const router = useRouter();
+  const { login } = useAuth();
 
   return useMutation({
-    mutationFn: (data: LoginInput) => authApi.login(data),
-    onSuccess: () => {
-      router.push('/dashboard');
+    mutationFn: async (data: LoginInput) => {
+      await login(data);
+    },
+    onSuccess: (_, variables) => {
+      const searchParams = new URLSearchParams(window.location.search);
+      const from = searchParams.get('from') || '/applications';
+      router.push(from);
     },
   });
 }
