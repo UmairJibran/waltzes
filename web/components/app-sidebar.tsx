@@ -6,7 +6,6 @@ import {
   GalleryVerticalEnd,
   LifeBuoy,
   Send,
-  Settings2,
   SquareTerminal,
   PuzzleIcon,
   Globe,
@@ -81,24 +80,6 @@ const data = {
           title: 'Others',
           url: '#',
           enabled: false,
-        },
-      ],
-    },
-    {
-      title: 'Settings',
-      url: '/settings',
-      icon: Settings2,
-      isActive: true,
-      items: [
-        {
-          title: 'Profile',
-          url: '/settings/profile',
-          enabled: true,
-        },
-        {
-          title: 'Resume',
-          url: '/settings/resume',
-          enabled: true,
         },
       ],
     },
