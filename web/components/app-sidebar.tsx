@@ -86,18 +86,18 @@ const data = {
     },
     {
       title: 'Settings',
-      url: '#',
+      url: '/settings',
       icon: Settings2,
       isActive: true,
       items: [
         {
           title: 'Profile',
-          url: '#',
+          url: '/settings/profile',
           enabled: true,
         },
         {
           title: 'Resume',
-          url: '#',
+          url: '/settings/resume',
           enabled: true,
         },
       ],
