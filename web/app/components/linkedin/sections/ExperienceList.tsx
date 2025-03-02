@@ -4,7 +4,7 @@ import { LinkedInExperience } from '@/lib/types/linkedin';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Plus, Trash2, X } from 'lucide-react';
+import { Plus, Trash2, PencilLine } from 'lucide-react';
 import { useState } from 'react';
 import {
   Dialog,
@@ -114,7 +114,7 @@ export function ExperienceList({ items, onChange }: ExperienceListProps) {
                   setIsOpen(true);
                 }}
               >
-                <X className="h-4 w-4" />
+                <PencilLine className="h-4 w-4" />
               </Button>
               <Button
                 variant="ghost"
