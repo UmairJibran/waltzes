@@ -45,7 +45,7 @@ export const applicationsApi = {
         applyDate: Date.now(),
         createdAt: Date.now(),
         updatedAt: Date.now(),
-        appliedWith: { resume: 'https://resume.com/1', coverLetter: null },
+        appliedWith: { resume: 'https://www.orimi.com/pdf-test.pdf', coverLetter: null },
         jobUrl: 'https://example.com/job2',
       },
       {
@@ -55,7 +55,7 @@ export const applicationsApi = {
         applyDate: Date.now(),
         createdAt: Date.now(),
         updatedAt: Date.now(),
-        appliedWith: { resume: 'https://resume.com/1', coverLetter: 'https://cover.com/1' },
+        appliedWith: { resume: 'https://www.orimi.com/pdf-test.pdf', coverLetter: 'https://www.orimi.com/pdf-test.pdf' },
         jobUrl: 'https://example.com/job3',
       },
       {
@@ -65,7 +65,7 @@ export const applicationsApi = {
         applyDate: Date.now(),
         createdAt: Date.now(),
         updatedAt: Date.now(),
-        appliedWith: { resume: 'https://resume.com/1', coverLetter: null },
+        appliedWith: { resume: null, coverLetter: 'https://www.orimi.com/pdf-test.pdf' },
         jobUrl: 'https://example.com/job4',
       },
     ];
@@ -73,6 +73,24 @@ export const applicationsApi = {
   getByStatus: async (status: ApplicationStatus): Promise<Application[]> => {
     const allApplications = await applicationsApi.getAll();
     return allApplications.filter(app => app.applicationStatus === status);
+  },
+  updateStatus: async (applicationId: string, status: ApplicationStatus): Promise<Application> => {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    // In a real implementation, this would be an API call
+    const allApplications = await applicationsApi.getAll();
+    const application = allApplications.find(app => app._id === applicationId);
+
+    if (!application) {
+      throw new Error('Application not found');
+    }
+
+    return {
+      ...application,
+      applicationStatus: status,
+      updatedAt: Date.now(),
+    };
   },
 };
 

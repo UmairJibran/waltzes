@@ -1,6 +1,7 @@
 import { Application } from '@/lib/types/application';
 import { format } from 'date-fns';
-import { FileText, Link2 } from 'lucide-react';
+import { useState } from 'react';
+import { ApplicationDialog } from './ApplicationDialog';
 
 interface ApplicationListProps {
   applications: Application[];
@@ -14,75 +15,51 @@ const statusColors = {
 };
 
 export function ApplicationList({ applications }: ApplicationListProps) {
+  const [selectedApplication, setSelectedApplication] =
+    useState<Application | null>(null);
+
   return (
-    <div className="w-full">
-      <div className="rounded-md border">
-        <div className="grid grid-cols-[1fr,120px,120px,100px] gap-4 border-b bg-muted/50 p-4 font-medium">
-          <div>Job Title</div>
-          <div>Applied On</div>
-          <div>Documents</div>
-          <div>Status</div>
-        </div>
-        <div className="divide-y">
-          {applications.map((application) => (
-            <div
-              key={application._id}
-              className="grid grid-cols-[1fr,120px,120px,100px] items-center gap-4 p-4 hover:bg-muted/50"
-            >
-              <div className="flex flex-col">
-                <span className="font-medium">{application.jobTitle}</span>
-                {application.jobUrl && (
-                  <a
-                    href={application.jobUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-1 flex items-center gap-1 text-xs text-muted-foreground hover:underline"
+    <>
+      <div className="w-full">
+        <div className="rounded-md border">
+          <div className="grid grid-cols-[1fr,100px,80px] gap-4 border-b bg-muted/50 p-2 text-sm font-medium">
+            <div>Job Title</div>
+            <div>Applied On</div>
+            <div>Status</div>
+          </div>
+          <div className="divide-y">
+            {applications.map(application => (
+              <button
+                key={application._id}
+                className="w-full grid grid-cols-[1fr,100px,80px] items-center gap-4 p-2 hover:bg-muted/50 text-left"
+                onClick={() => setSelectedApplication(application)}
+              >
+                <div className="flex flex-col">
+                  <span className="font-medium truncate">
+                    {application.jobTitle}
+                  </span>
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  {format(application.applyDate, 'MMM d, yyyy')}
+                </div>
+                <div>
+                  <span
+                    className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${
+                      statusColors[application.applicationStatus]
+                    }`}
                   >
-                    <Link2 className="h-3 w-3" />
-                    View Job
-                  </a>
-                )}
-              </div>
-              <div className="text-sm text-muted-foreground">
-                {format(application.applyDate, 'MMM d, yyyy')}
-              </div>
-              <div className="flex gap-2">
-                {application.appliedWith.resume && (
-                  <a
-                    href={application.appliedWith.resume}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
-                  >
-                    <FileText className="h-4 w-4" />
-                    Resume
-                  </a>
-                )}
-                {application.appliedWith.coverLetter && (
-                  <a
-                    href={application.appliedWith.coverLetter}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
-                  >
-                    <FileText className="h-4 w-4" />
-                    Cover Letter
-                  </a>
-                )}
-              </div>
-              <div>
-                <span
-                  className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${
-                    statusColors[application.applicationStatus]
-                  }`}
-                >
-                  {application.applicationStatus}
-                </span>
-              </div>
-            </div>
-          ))}
+                    {application.applicationStatus}
+                  </span>
+                </div>
+              </button>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+      <ApplicationDialog
+        application={selectedApplication}
+        onClose={() => setSelectedApplication(null)}
+      />
+    </>
   );
-} 
+}
