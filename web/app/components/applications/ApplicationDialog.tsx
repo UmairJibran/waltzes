@@ -56,7 +56,7 @@ export function ApplicationDialog({
 
   return (
     <Dialog open={!!application} onOpenChange={() => onClose()}>
-      <DialogContent className="">
+      <DialogContent className="w-[90vw] max-w-[90%] md:max-w-[80%] lg:max-w-[80%] h-[80vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>{application.jobTitle}</DialogTitle>
         </DialogHeader>
