@@ -16,6 +16,8 @@ import {
   SidebarTrigger,
 } from '@/components/ui/sidebar';
 
+import internalPages from '@/lib/constants';
+
 import { usePathname } from 'next/navigation';
 
 export default function RootLayout({
@@ -42,21 +44,27 @@ export default function RootLayout({
               <BreadcrumbList>
                 {pages.length > 0 && (
                   <BreadcrumbItem className="hidden md:flex md:flex-row">
-                    {pages.map(page => (
-                      <div
-                        key={page}
-                        className="flex flex-row items-center gap-2"
-                      >
-                        <BreadcrumbLink
-                          href={`/${pages
-                            .slice(0, pages.indexOf(page) + 1)
-                            .join('/')}`}
+                    {pages.map(page => {
+                      const pageUrl = `/${pages
+                        .slice(0, pages.indexOf(page) + 1)
+                        .join('/')}`;
+                      const pageName = Object.keys(internalPages).includes(
+                        pageUrl
+                      )
+                        ? internalPages[pageUrl]
+                        : page;
+                      return (
+                        <div
+                          key={page}
+                          className="flex flex-row items-center gap-2"
                         >
-                          {page}
-                        </BreadcrumbLink>
-                        <BreadcrumbSeparator className="hidden md:block" />
-                      </div>
-                    ))}
+                          <BreadcrumbLink href={pageUrl}>
+                            {pageName}
+                          </BreadcrumbLink>
+                          <BreadcrumbSeparator className="hidden md:block" />
+                        </div>
+                      );
+                    })}
                   </BreadcrumbItem>
                 )}
                 {currentPage && (
