@@ -1,7 +1,7 @@
 'use client';
 
 import { ApplicationList } from '@/app/components/applications/ApplicationList';
-import { useApplications } from '@/lib/hooks/useApplications';
+import { useApplications } from '@/hooks/use-applications';
 
 export default function Page() {
   const { data: applications, isLoading } = useApplications('accepted');
