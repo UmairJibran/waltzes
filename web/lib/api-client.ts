@@ -2,6 +2,7 @@ import axios from 'axios';
 import { LoginInput, RegisterInput } from './validations/auth';
 import { Application, ApplicationStatus } from './types/application';
 import { LinkedInData } from './types/linkedin';
+import { UpdateUserData, User } from './types/user';
 import linkedinData from '@/app/(authenticated)/(dashboard-sub)/scraped/linkedin/data.json';
 
 if (!process.env.NEXT_PUBLIC_API_URL) {
@@ -26,16 +27,42 @@ export const authApi = {
   },
 };
 
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 export const linkedinApi = {
-  getData: async (): Promise<LinkedInData> => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 500));
-    return linkedinData.linkedin_data_raw;
+  async getData(): Promise<LinkedInData> {
+    await delay(500);
+    return linkedinData.linkedin_data_raw as unknown as LinkedInData;
   },
-  updateData: async (data: LinkedInData): Promise<LinkedInData> => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
+  async updateData(data: LinkedInData): Promise<LinkedInData> {
+    await delay(500);
     return data;
+  },
+};
+
+const mockUser: User = {
+  id: '1',
+  firstName: 'John',
+  lastName: 'Doe',
+  email: 'john@example.com',
+  phone: '+1234567890',
+  portfolioUrl: 'https://johndoe.com',
+  linkedinUsername: 'johndoe',
+  githubUsername: 'johndoe',
+  additionalInstructions: 'Please keep the tone professional.',
+};
+
+export const userApi = {
+  async getData(): Promise<User> {
+    await delay(500);
+    return mockUser;
+  },
+  async updateData(data: UpdateUserData): Promise<User> {
+    await delay(500);
+    return {
+      ...mockUser,
+      ...data,
+    };
   },
 };
 
