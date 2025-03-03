@@ -1,40 +1,40 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
+import { InjectModel } from '@nestjs/mongoose';
+import { User } from './schemas/user.schema';
+import { User as UserEntity } from './entities/user.entity';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class UsersService {
-  private readonly users: User[] = [
-    {
-      id: '1',
-      password: '12345678',
-      email: 'me@umairjibran.com',
-      role: 'admin',
-      firstName: 'Umair',
-      lastName: 'Jibran',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      id: '2',
-      password: 'guess',
-      email: 'john@guess.com',
-      role: 'admin',
-      firstName: 'Umair',
-      lastName: 'Jibran',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-  ];
+  constructor(@InjectModel(User.name) private users: Model<User>) {}
 
-  async findOneByEmail(email: string): Promise<User | undefined> {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    const user = this.users.find((user) => user.email === email);
+  async findOneByEmail(email: string): Promise<UserEntity | null> {
+    const user = await this.users.findOne({
+      email,
+    });
+
     if (user) {
-      return user;
+      const response: UserEntity = {
+        _id: String(user.id),
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phone: user.phone,
+        portfolioUrl: user.portfolioUrl,
+        linkedinUsername: user.linkedinUsername,
+        githubUsername: user.githubUsername,
+        additionalInstructions: user.additionalInstructions,
+        password: user.password,
+        role: user.role,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      };
+
+      return response;
     }
-    return undefined;
+    return null;
   }
 
   create(createUserDto: CreateUserDto) {

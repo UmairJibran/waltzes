@@ -15,7 +15,7 @@ export class AuthService {
       throw new UnauthorizedException();
     }
     const payload = {
-      sub: user.id,
+      sub: user._id,
       email: user.email,
       linkedinUsername: user.linkedinUsername,
     };
