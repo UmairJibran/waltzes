@@ -37,8 +37,27 @@ export class UsersService {
     return null;
   }
 
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  async create(createUserDto: CreateUserDto): Promise<UserEntity | null> {
+    const user = await this.users.create(createUserDto);
+    if (user) {
+      const response: UserEntity = {
+        _id: String(user.id),
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phone: user.phone,
+        portfolioUrl: user.portfolioUrl,
+        linkedinUsername: user.linkedinUsername,
+        githubUsername: user.githubUsername,
+        additionalInstructions: user.additionalInstructions,
+        password: user.password,
+        role: user.role,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      };
+      return response;
+    }
+    return null;
   }
 
   findAll() {

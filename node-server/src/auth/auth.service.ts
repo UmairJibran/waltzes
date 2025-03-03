@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from 'src/users/users.service';
+import { RegisterUserDto } from './dto/register-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -16,7 +17,7 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    // TODO: FIX `Unsafe assignment of an error typed value.`
+    // FIXME: `Unsafe assignment of an error typed value.`
     const isMatch = await bcrypt.compare(pass, user.password);
 
     if (!isMatch) {
@@ -32,5 +33,21 @@ export class AuthService {
     };
   }
 
-  async register(user: any) {}
+  async register(user: RegisterUserDto) {
+    // FIXME: `Unsafe assignment of an error typed value.`
+    const password = await bcrypt.hash(user.password, 10);
+    const createdUser = await this.usersService.create({ ...user, password });
+    if (!createdUser) {
+      throw new UnauthorizedException();
+    }
+
+    const payload = {
+      sub: createdUser._id,
+      email: createdUser.email,
+      linkedinUsername: createdUser.linkedinUsername,
+    };
+    return {
+      access_token: await this.jwtService.signAsync(payload),
+    };
+  }
 }
