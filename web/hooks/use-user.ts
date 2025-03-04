@@ -15,7 +15,7 @@ const useUserStore = create<UserStore>((set) => ({
   setUser: (user) => set({ user }),
 }));
 
-export function useUser() {
+export function useUser(overrideStore: boolean = false) {
   const { user, setUser } = useUserStore();
   const queryClient = useQueryClient();
 
@@ -26,7 +26,7 @@ export function useUser() {
       setUser(data);
       return data;
     },
-    enabled: !user, // Only fetch if we don't have user data
+    enabled: overrideStore || !user,
   });
 
   const { mutateAsync: updateUser, isPending } = useMutation({

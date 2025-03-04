@@ -29,6 +29,7 @@ export function AccountForm({ data, onSave }: AccountFormProps) {
     linkedinUsername: data.linkedinUsername || '',
     githubUsername: data.githubUsername || '',
     additionalInstructions: data.additionalInstructions || '',
+    _id: data._id || '',
   });
   const [newPassword, setNewPassword] = useState('');
   const [showLinkedInWarning, setShowLinkedInWarning] = useState(false);

@@ -6,7 +6,7 @@ import { useUser } from '@/hooks/use-user';
 import { UpdateUserData } from '@/lib/types/user';
 
 export default function AccountPage() {
-  const { user, isLoading, updateUser } = useUser();
+  const { user, isLoading, updateUser } = useUser(true);
   const { toast } = useToast();
 
   if (isLoading) {
