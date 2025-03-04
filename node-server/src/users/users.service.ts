@@ -10,6 +10,28 @@ import { Model } from 'mongoose';
 export class UsersService {
   constructor(@InjectModel(User.name) private users: Model<User>) {}
 
+  async findOne(id: string): Promise<Partial<UserEntity> | null> {
+    const user = await this.users.findById(id);
+
+    if (user) {
+      const response: Partial<UserEntity> = {
+        _id: String(user.id),
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phone: user.phone,
+        portfolioUrl: user.portfolioUrl,
+        linkedinUsername: user.linkedinUsername,
+        githubUsername: user.githubUsername,
+        additionalInstructions: user.additionalInstructions,
+        role: user.role,
+      };
+
+      return response;
+    }
+    return null;
+  }
+
   async findOneByEmail(email: string): Promise<UserEntity | null> {
     const user = await this.users.findOne({
       email,
