@@ -60,14 +60,6 @@ export class UsersService {
     return null;
   }
 
-  findAll() {
-    return `This action returns all users`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
-
   async update(id: string, updateUserDto: UpdateUserDto): Promise<void> {
     await this.users.findByIdAndUpdate(id, {
       githubUsername: updateUserDto.githubUsername,
@@ -78,9 +70,5 @@ export class UsersService {
       lastName: updateUserDto.lastName,
       firstName: updateUserDto.firstName,
     });
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
   }
 }
