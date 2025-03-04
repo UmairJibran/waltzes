@@ -1,0 +1,19 @@
+name: waltzes_dev
+
+services:
+  localstack:
+    container_name: "${COMPOSE_PROJECT_NAME}_localstack"
+    image: localstack/localstack
+    ports:
+      - "127.0.0.1:4566:4566"
+      - "127.0.0.1:4510-4559:4510-4559"
+    environment:
+      - SERVICES=sqs,s3,ses
+      - DEBUG=1
+      - DATA_DIR=/tmp/localstack/data
+      - PORT_WEB_UI=8080
+  mongo:
+    container_name: "${COMPOSE_PROJECT_NAME}_mongodb"
+    image: mongo:4.4
+    ports:
+      - "27017:27017"
