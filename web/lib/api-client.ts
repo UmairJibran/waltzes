@@ -1,33 +1,61 @@
-import axios from 'axios';
 import { LoginInput, RegisterInput } from './validations/auth';
-import { Application, ApplicationStatus } from './types/application';
 import { LinkedInData } from './types/linkedin';
 import { UpdateUserData, User } from './types/user';
 import linkedinData from '@/app/(authenticated)/(dashboard-sub)/scraped/linkedin/data.json';
+import { Application, ApplicationStatus } from './types/application';
 
-if (!process.env.NEXT_PUBLIC_API_URL) {
-  throw new Error('NEXT_PUBLIC_API_URL environment variable is not set');
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
+
+async function fetchWithAuth(endpoint: string, options: RequestInit = {}) {
+  const authToken = JSON.parse(localStorage.getItem('auth-storage') || '{}')
+    ?.state?.accessToken;
+
+  const headers = {
+    'Content-Type': 'application/json',
+    ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
+    ...options.headers,
+  };
+
+  const response = await fetch(`${API_URL}${endpoint}`, {
+    ...options,
+    headers,
+  });
+
+  if (!response.ok) {
+    throw new Error('API request failed');
+  }
+
+  return response.json();
 }
 
-const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
 export const authApi = {
-  login: async (data: LoginInput) => {
-    const response = await apiClient.post('/auth/login', data);
-    return response.data;
+  async login(data: LoginInput): Promise<{ access_token: string }> {
+    return fetchWithAuth('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
   },
-  register: async (data: RegisterInput) => {
-    const response = await apiClient.post('/auth/register', data);
-    return response.data;
+
+  async register(data: RegisterInput): Promise<void> {
+    return fetchWithAuth('/auth/register', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
   },
 };
 
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+export const userApi = {
+  async getMe(): Promise<User> {
+    return fetchWithAuth('/users/me');
+  },
+
+  async updateMe(data: UpdateUserData): Promise<User> {
+    return fetchWithAuth('/users/me', {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  },
+};
 
 export const linkedinApi = {
   async getData(): Promise<LinkedInData> {
@@ -40,31 +68,7 @@ export const linkedinApi = {
   },
 };
 
-const mockUser: User = {
-  id: '1',
-  firstName: 'John',
-  lastName: 'Doe',
-  email: 'john@example.com',
-  phone: '+1234567890',
-  portfolioUrl: 'https://johndoe.com',
-  linkedinUsername: 'johndoe',
-  githubUsername: 'johndoe',
-  additionalInstructions: 'Please keep the tone professional.',
-};
-
-export const userApi = {
-  async getData(): Promise<User> {
-    await delay(500);
-    return mockUser;
-  },
-  async updateData(data: UpdateUserData): Promise<User> {
-    await delay(500);
-    return {
-      ...mockUser,
-      ...data,
-    };
-  },
-};
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 interface PaginatedResponse<T> {
   data: T[];
@@ -77,19 +81,25 @@ const MOCK_APPLICATIONS = Array.from({ length: 100 }, (_, i) => ({
   _id: `${i + 1}`,
   jobTitle: `Job Title ${i + 1}`,
   companyName: `Company#${i + 1}`,
-  applicationStatus: ['applied', 'interviewing', 'rejected', 'accepted'][Math.floor(Math.random() * 4)] as ApplicationStatus,
+  applicationStatus: ['applied', 'interviewing', 'rejected', 'accepted'][
+    Math.floor(Math.random() * 4)
+  ] as ApplicationStatus,
   applyDate: Date.now() - Math.floor(Math.random() * 30) * 24 * 60 * 60 * 1000,
   createdAt: Date.now(),
   updatedAt: Date.now(),
   appliedWith: {
     resume: Math.random() > 0.5 ? 'https://www.orimi.com/pdf-test.pdf' : null,
-    coverLetter: Math.random() > 0.5 ? 'https://www.orimi.com/pdf-test.pdf' : null,
+    coverLetter:
+      Math.random() > 0.5 ? 'https://www.orimi.com/pdf-test.pdf' : null,
   },
   jobUrl: Math.random() > 0.3 ? `https://example.com/job${i + 1}` : null,
 }));
 
 export const applicationsApi = {
-  getAll: async (page = 1, pageSize = 50): Promise<PaginatedResponse<Application>> => {
+  getAll: async (
+    page = 1,
+    pageSize = 50
+  ): Promise<PaginatedResponse<Application>> => {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 500));
 
@@ -104,9 +114,15 @@ export const applicationsApi = {
       pageSize,
     };
   },
-  getByStatus: async (status: ApplicationStatus, page = 1, pageSize = 50): Promise<PaginatedResponse<Application>> => {
+  getByStatus: async (
+    status: ApplicationStatus,
+    page = 1,
+    pageSize = 50
+  ): Promise<PaginatedResponse<Application>> => {
     const result = await applicationsApi.getAll(1, MOCK_APPLICATIONS.length);
-    const filteredData = result.data.filter(app => app.applicationStatus === status);
+    const filteredData = result.data.filter(
+      app => app.applicationStatus === status
+    );
     const start = (page - 1) * pageSize;
     const end = start + pageSize;
 
@@ -117,11 +133,16 @@ export const applicationsApi = {
       pageSize,
     };
   },
-  updateStatus: async (applicationId: string, status: ApplicationStatus): Promise<Application> => {
+  updateStatus: async (
+    applicationId: string,
+    status: ApplicationStatus
+  ): Promise<Application> => {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1000));
 
-    const application = MOCK_APPLICATIONS.find(app => app._id === applicationId);
+    const application = MOCK_APPLICATIONS.find(
+      app => app._id === applicationId
+    );
 
     if (!application) {
       throw new Error('Application not found');
@@ -134,4 +155,4 @@ export const applicationsApi = {
   },
 };
 
-export default apiClient; 
+export default API_URL;

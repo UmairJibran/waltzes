@@ -24,13 +24,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import { useUser } from '@/hooks/use-user';
 
 const data = {
-  user: {
-    name: 'Umair Jibran',
-    email: 'me@umairjibran.com',
-    avatar: '/avatars/shadcn.jpg',
-  },
   navMain: [
     {
       title: 'Applications',
@@ -111,6 +107,8 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { user } = useUser();
+
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
@@ -136,7 +134,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        {user && (
+          <NavUser
+            user={{
+              name: `${user.firstName} ${user.lastName}`,
+              email: user.email,
+              avatar: '/avatars/shadcn.jpg', // Keep the default avatar
+            }}
+          />
+        )}
       </SidebarFooter>
     </Sidebar>
   );

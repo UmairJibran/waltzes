@@ -1,8 +1,9 @@
 export interface User {
-  id: string;
+  _id: string;
   firstName: string;
   lastName: string;
   email: string;
+  role: string;
   phone?: string;
   portfolioUrl?: string;
   linkedinUsername?: string;
@@ -10,6 +11,6 @@ export interface User {
   additionalInstructions?: string;
 }
 
-export type UpdateUserData = Omit<User, 'id' | 'email'> & {
+export type UpdateUserData = Omit<User, 'id' | 'email' | 'role'> & {
   newPassword?: string;
-}; 
+};

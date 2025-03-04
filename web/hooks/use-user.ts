@@ -1,25 +1,23 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+'use client';
+
+import { useQuery } from '@tanstack/react-query';
 import { userApi } from '@/lib/api-client';
-import { UpdateUserData, User } from '@/lib/types/user';
+import { User } from '@/lib/types/user';
+import { useAuth } from './use-auth';
 
 export function useUser() {
-  const queryClient = useQueryClient();
+  const { user, setUser, accessToken, isAuthenticated } = useAuth();
 
-  const { data, isLoading } = useQuery<User>({
+  const { data } = useQuery<User>({
     queryKey: ['user'],
-    queryFn: () => userApi.getData(),
+    queryFn: () => userApi.getMe(),
+    enabled: isAuthenticated && !user && !!accessToken,
+    staleTime: Infinity,
   });
 
-  const { mutateAsync: updateUser } = useMutation({
-    mutationFn: (data: UpdateUserData) => userApi.updateData(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['user'] });
-    },
-  });
+  if (data && !user) {
+    setUser(data);
+  }
 
-  return {
-    data,
-    isLoading,
-    updateUser,
-  };
+  return { user: user || data };
 } 
