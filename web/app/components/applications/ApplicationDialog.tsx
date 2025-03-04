@@ -69,7 +69,7 @@ export function ApplicationDialog({
               <div className="text-sm space-y-1">
                 <p>
                   <span className="text-muted-foreground">Applied on:</span>{' '}
-                  {format(application.applyDate, 'MMMM d, yyyy')}
+                  {format(application.appliedAt, 'MMMM d, yyyy')}
                 </p>
                 {application.jobUrl && (
                   <p>
@@ -124,8 +124,8 @@ export function ApplicationDialog({
           </div>
 
           <div className="flex-1 overflow-hidden">
-            {application.appliedWith.resume ||
-            application.appliedWith.coverLetter ? (
+            {application?.appliedWith?.resume ||
+            application?.appliedWith?.coverLetter ? (
               <div className="grid grid-cols-2 gap-4 h-full">
                 {application.appliedWith.resume && (
                   <div className="flex flex-col h-full">

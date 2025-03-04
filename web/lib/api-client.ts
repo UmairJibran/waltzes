@@ -77,81 +77,41 @@ interface PaginatedResponse<T> {
   pageSize: number;
 }
 
-const MOCK_APPLICATIONS = Array.from({ length: 100 }, (_, i) => ({
-  _id: `${i + 1}`,
-  jobTitle: `Job Title ${i + 1}`,
-  companyName: `Company#${i + 1}`,
-  applicationStatus: ['applied', 'interviewing', 'rejected', 'accepted'][
-    Math.floor(Math.random() * 4)
-  ] as ApplicationStatus,
-  applyDate: Date.now() - Math.floor(Math.random() * 30) * 24 * 60 * 60 * 1000,
-  createdAt: Date.now(),
-  updatedAt: Date.now(),
-  appliedWith: {
-    resume: Math.random() > 0.5 ? 'https://www.orimi.com/pdf-test.pdf' : null,
-    coverLetter:
-      Math.random() > 0.5 ? 'https://www.orimi.com/pdf-test.pdf' : null,
-  },
-  jobUrl: Math.random() > 0.3 ? `https://example.com/job${i + 1}` : null,
-}));
-
 export const applicationsApi = {
   getAll: async (
     page = 1,
     pageSize = 50
   ): Promise<PaginatedResponse<Application>> => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 500));
-
-    const start = (page - 1) * pageSize;
-    const end = start + pageSize;
-    const paginatedData = MOCK_APPLICATIONS.slice(start, end);
-
-    return {
-      data: paginatedData,
-      total: MOCK_APPLICATIONS.length,
-      page,
-      pageSize,
-    };
+    return fetchWithAuth(
+      '/applications?' +
+        new URLSearchParams({
+          page: page.toString(),
+          pageSize: pageSize.toString(),
+        }).toString()
+    );
   },
   getByStatus: async (
     status: ApplicationStatus,
     page = 1,
     pageSize = 50
   ): Promise<PaginatedResponse<Application>> => {
-    const result = await applicationsApi.getAll(1, MOCK_APPLICATIONS.length);
-    const filteredData = result.data.filter(
-      app => app.applicationStatus === status
+    return fetchWithAuth(
+      '/applications?' +
+        new URLSearchParams({
+          status,
+          page: page.toString(),
+          pageSize: pageSize.toString(),
+        }).toString()
     );
-    const start = (page - 1) * pageSize;
-    const end = start + pageSize;
-
-    return {
-      data: filteredData.slice(start, end),
-      total: filteredData.length,
-      page,
-      pageSize,
-    };
   },
   updateStatus: async (
     applicationId: string,
     status: ApplicationStatus
   ): Promise<Application> => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    const application = MOCK_APPLICATIONS.find(
-      app => app._id === applicationId
-    );
-
-    if (!application) {
-      throw new Error('Application not found');
-    }
-
-    application.applicationStatus = status;
-    application.updatedAt = Date.now();
-
-    return application;
+    return fetchWithAuth(`/applications/${applicationId}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ applicationStatus: status }),
+    });
   },
 };
 

@@ -1,8 +1,8 @@
 export type ApplicationStatus = 'applied' | 'interviewing' | 'rejected' | 'accepted';
 
 export interface AppliedWith {
-  resume: string | null;
-  coverLetter: string | null;
+  resume?: string | null;
+  coverLetter?: string | null;
 }
 
 export interface Application {
@@ -10,9 +10,9 @@ export interface Application {
   jobTitle: string;
   companyName: string;
   applicationStatus: ApplicationStatus;
-  applyDate: number;
+  appliedAt: number;
   createdAt: number;
   updatedAt: number;
-  appliedWith: AppliedWith;
+  appliedWith?: AppliedWith;
   jobUrl: string | null;
 } 
