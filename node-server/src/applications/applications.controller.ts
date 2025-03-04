@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ApplicationsService } from './applications.service';
 import { CreateApplicationDto } from './dto/create-application.dto';
@@ -25,8 +26,12 @@ export class ApplicationsController {
   }
 
   @Get()
-  findAll(@User() user: JwtPayload) {
-    return this.applicationsService.findAll(user.sub);
+  findAll(
+    @Query('status')
+    status: 'applied' | 'interviewing' | 'rejected' | 'accepted',
+    @User() user: JwtPayload,
+  ) {
+    return this.applicationsService.findAll(user.sub, { status });
   }
 
   @Get(':id')

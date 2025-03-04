@@ -15,8 +15,17 @@ export class ApplicationsService {
     return this.applications.create({ ...createApplicationDto, user });
   }
 
-  findAll(user: string) {
-    return this.applications.find({ user, deletedAt: null });
+  findAll(
+    user: string,
+    {
+      status,
+    }: { status: 'applied' | 'interviewing' | 'rejected' | 'accepted' },
+  ) {
+    return this.applications.find({
+      user,
+      deletedAt: null,
+      ...(status && { applicationStatus: status }),
+    });
   }
 
   findOne(id: string, user: string) {
