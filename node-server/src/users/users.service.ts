@@ -68,8 +68,16 @@ export class UsersService {
     return `This action returns a #${id} user`;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<void> {
+    await this.users.findByIdAndUpdate(id, {
+      githubUsername: updateUserDto.githubUsername,
+      linkedinUsername: updateUserDto.linkedinUsername,
+      portfolioUrl: updateUserDto.portfolioUrl,
+      additionalInstructions: updateUserDto.additionalInstructions,
+      phone: updateUserDto.phone,
+      lastName: updateUserDto.lastName,
+      firstName: updateUserDto.firstName,
+    });
   }
 
   remove(id: number) {

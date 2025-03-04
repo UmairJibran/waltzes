@@ -23,7 +23,7 @@ export class AuthService {
     if (!isMatch) {
       throw new UnauthorizedException();
     }
-    const payload = {
+    const payload: Partial<JwtPayload> = {
       sub: user._id,
       email: user.email,
       linkedinUsername: user.linkedinUsername,
@@ -41,7 +41,7 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    const payload = {
+    const payload: Partial<JwtPayload> = {
       sub: createdUser._id,
       email: createdUser.email,
       linkedinUsername: createdUser.linkedinUsername,
