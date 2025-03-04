@@ -131,7 +131,6 @@ export function LinkedInForm({
           </div>
         </div>
       </div>
-
       <ExperienceList
         items={data.experience}
         onChange={experience => updateField('experience', experience)}
@@ -166,9 +165,10 @@ export function LinkedInForm({
 
       <CertificationList
         items={data.certifications}
-        onChange={certifications => updateField('certifications', certifications)}
+        onChange={certifications =>
+          updateField('certifications', certifications)
+        }
       />
-
       <div className="flex justify-end">
         <Button type="submit" disabled={isSaving}>
           {isSaving ? 'Saving...' : 'Save All Changes'}

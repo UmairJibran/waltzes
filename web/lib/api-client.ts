@@ -1,7 +1,6 @@
 import { LoginInput, RegisterInput } from './validations/auth';
 import { LinkedInData } from './types/linkedin';
 import { UpdateUserData, User } from './types/user';
-import linkedinData from '@/app/(authenticated)/(dashboard-sub)/scraped/linkedin/data.json';
 import { Application, ApplicationStatus } from './types/application';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
@@ -59,16 +58,17 @@ export const userApi = {
 
 export const linkedinApi = {
   async getData(): Promise<LinkedInData> {
-    await delay(500);
-    return linkedinData.linkedin_data_raw as unknown as LinkedInData;
+    const response = await fetchWithAuth('/users/me/linkedin');
+    return response.linkedin_data_raw as unknown as LinkedInData;
   },
   async updateData(data: LinkedInData): Promise<LinkedInData> {
-    await delay(500);
-    return data;
+    const response = await fetchWithAuth('/users/me/linkedin', {
+      method: 'PATCH',
+      body: JSON.stringify({ linkedin_data_raw: data }),
+    });
+    return response.linkedin_data_raw as unknown as LinkedInData;
   },
 };
-
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 interface PaginatedResponse<T> {
   data: T[];
