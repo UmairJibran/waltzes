@@ -6,7 +6,7 @@ import { useUser } from '@/hooks/use-user';
 import { UpdateUserData } from '@/lib/types/user';
 
 export default function AccountPage() {
-  const { data: user, isLoading, updateUser } = useUser();
+  const { user, isLoading, updateUser } = useUser();
   const { toast } = useToast();
 
   if (isLoading) {
@@ -40,10 +40,7 @@ export default function AccountPage() {
 
   return (
     <div className="container py-8">
-      <AccountForm
-        data={user}
-        onSave={handleSave}
-      />
+      <AccountForm data={user} onSave={handleSave} />
     </div>
   );
-} 
+}

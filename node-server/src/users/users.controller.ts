@@ -13,7 +13,10 @@ export class UsersController {
   }
 
   @Patch('me')
-  update(@Body() updateUserDto: UpdateUserDto, @User() user: JwtPayload) {
-    return this.usersService.update(user.sub, updateUserDto);
+  async update(@Body() updateUserDto: UpdateUserDto, @User() user: JwtPayload) {
+    await this.usersService.update(user.sub, updateUserDto);
+    return {
+      message: 'User updated successfully',
+    };
   }
 }

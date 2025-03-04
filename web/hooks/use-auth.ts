@@ -1,31 +1,26 @@
 'use client';
 
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import { useRouter } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
 import { authApi } from '@/lib/api-client';
 import { LoginInput, RegisterInput } from '@/lib/validations/auth';
-import { User } from '@/lib/types/user';
-import { useRouter } from 'next/navigation';
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
 
-interface AuthState {
-  isAuthenticated: boolean;
+interface AuthStore {
   accessToken: string | null;
-  user: User | null;
-  setUser: (user: User | null) => void;
+  isAuthenticated: boolean;
   setAccessToken: (token: string | null) => void;
   login: (data: LoginInput) => Promise<void>;
   logout: () => void;
 }
 
-export const useAuth = create<AuthState>()(
+export const useAuthStore = create<AuthStore>()(
   persist(
     (set) => ({
-      isAuthenticated: false,
       accessToken: null,
-      user: null,
-      setUser: (user) => set({ user, isAuthenticated: !!user }),
-      setAccessToken: (accessToken) => set({ accessToken, isAuthenticated: !!accessToken }),
+      isAuthenticated: false,
+      setAccessToken: (token) => set({ accessToken: token, isAuthenticated: !!token }),
       login: async (data) => {
         const { access_token } = await authApi.login(data);
         set({
@@ -37,15 +32,26 @@ export const useAuth = create<AuthState>()(
         set({
           isAuthenticated: false,
           accessToken: null,
-          user: null,
         });
       },
     }),
     {
       name: 'auth-storage',
-    }
-  )
+    },
+  ),
 );
+
+export function useAuth() {
+  const { accessToken, isAuthenticated, setAccessToken, login, logout } = useAuthStore();
+
+  return {
+    accessToken,
+    isAuthenticated,
+    setAccessToken,
+    login,
+    logout,
+  };
+}
 
 export function useLogin() {
   const router = useRouter();
