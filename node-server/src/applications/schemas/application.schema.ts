@@ -60,7 +60,9 @@ export class Application {
   //   })
   //   jobDetails: MongooseSchema.Types.ObjectId;
 
-  @Prop()
+  @Prop({
+    default: () => new Date(),
+  })
   appliedAt: Date;
 
   @Prop()

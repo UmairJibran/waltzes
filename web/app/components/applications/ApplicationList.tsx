@@ -49,6 +49,14 @@ export function ApplicationList({
     useUpdateApplicationStatus();
   const totalPages = Math.ceil(total / pageSize);
 
+  if (applications.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-48 text-muted-foreground">
+        No applications found, let&apos;s start applying!
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="w-full">
@@ -88,7 +96,7 @@ export function ApplicationList({
                   </td>
                   <td className="py-1.5 px-3">
                     <span className="text-xs text-muted-foreground">
-                      {format(application.applyDate, 'MMM d, yyyy')}
+                      {format(application.appliedAt, 'MMM d, yyyy')}
                     </span>
                   </td>
                   <td className="py-1.5 px-3">

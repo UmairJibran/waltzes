@@ -32,6 +32,10 @@ export class ApplicationsService {
     });
     return {
       data: applications,
+
+      // total: ,
+      // page,
+      // pageSize,
     };
   }
 
@@ -52,7 +56,6 @@ export class ApplicationsService {
     const app = await this.applications.findOneAndUpdate(
       { _id: id, user, deletedAt: null },
       updateApplicationDto,
-      { new: true },
     );
     return app;
   }

@@ -29,6 +29,10 @@ export class ApplicationsController {
   findAll(
     @Query('status')
     status: 'applied' | 'interviewing' | 'rejected' | 'accepted',
+    @Query('page')
+    page: number,
+    @Query('pageSize')
+    pageSize: number,
     @User() user: JwtPayload,
   ) {
     return this.applicationsService.findAll(user.sub, { status });
