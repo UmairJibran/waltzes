@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Schema as MongooseSchema } from 'mongoose';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -46,6 +46,15 @@ export class User {
 
   @Prop()
   role: 'admin' | 'user';
+
+  @Prop({ type: MongooseSchema.Types.Mixed })
+  linkedinScrapedData?: Record<string, any>;
+
+  @Prop({ type: MongooseSchema.Types.Mixed })
+  githubScrapedData?: Record<string, any>;
+
+  @Prop({ type: MongooseSchema.Types.Mixed })
+  portfolioScrapedData?: Record<string, any>;
 
   @Prop()
   createdAt: Date;

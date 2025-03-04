@@ -17,4 +17,21 @@ export class UsersController {
     const updatedUser = await this.usersService.update(user.sub, updateUserDto);
     return updatedUser;
   }
+
+  @Get('me/linkedin')
+  getUserLinkedin(@User() user: JwtPayload) {
+    return this.usersService.getUserLinkedin(user.sub);
+  }
+
+  @Patch('me/linkedin')
+  async updateUserLinkedin(
+    @Body() updateUserDto: UpdateUserDto,
+    @User() user: JwtPayload,
+  ) {
+    const updatedUser = await this.usersService.updateUserLinkedin(
+      user.sub,
+      updateUserDto,
+    );
+    return updatedUser;
+  }
 }

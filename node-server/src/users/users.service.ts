@@ -32,6 +32,29 @@ export class UsersService {
     return null;
   }
 
+  async getUserLinkedin(id: string): Promise<object | undefined> {
+    const user = await this.users.findById(id);
+
+    if (user) {
+      return user.linkedinScrapedData;
+    }
+    return;
+  }
+
+  async updateUserLinkedin(
+    id: string,
+    linkedinScrapedData: object,
+  ): Promise<object | undefined> {
+    const user = await this.users.findById(id);
+
+    if (user) {
+      user.linkedinScrapedData = linkedinScrapedData;
+      await user.save();
+      return user.linkedinScrapedData;
+    }
+    return;
+  }
+
   async findOneByEmail(email: string): Promise<UserEntity | null> {
     const user = await this.users.findOne({
       email,
