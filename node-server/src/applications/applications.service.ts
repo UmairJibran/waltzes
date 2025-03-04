@@ -23,19 +23,33 @@ export class ApplicationsService {
     user: string,
     {
       status,
-    }: { status: 'applied' | 'interviewing' | 'rejected' | 'accepted' },
+      page = 1,
+      pageSize = 10,
+    }: {
+      status?: 'applied' | 'interviewing' | 'rejected' | 'accepted';
+      page?: number;
+      pageSize?: number;
+    },
   ) {
-    const applications = await this.applications.find({
+    const query = {
       user,
       deletedAt: null,
       ...(status && { applicationStatus: status }),
-    });
+    };
+
+    const skip = (page - 1) * pageSize;
+
+    const [applications, total] = await Promise.all([
+      this.applications.find(query).skip(skip).limit(pageSize).exec(),
+      this.applications.countDocuments(query),
+    ]);
+
     return {
       data: applications,
-
-      // total: ,
-      // page,
-      // pageSize,
+      total,
+      page,
+      pageSize,
+      totalPages: Math.ceil(total / pageSize),
     };
   }
 
