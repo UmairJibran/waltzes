@@ -19,15 +19,30 @@ import {
 import internalPages from '@/lib/constants';
 
 import { usePathname } from 'next/navigation';
+import { useUser } from '@/hooks/use-user';
+import { useAuth } from '@/hooks/use-auth';
+import { LoadingScreen } from '@/components/loading-screen';
 
-export default function RootLayout({
+export default function AuthenticatedLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   const pathname = usePathname();
   const pages = pathname.split('/').filter(Boolean);
   const currentPage = pages.pop();
+  const { isAuthenticated } = useAuth();
+  const { isLoading, user } = useUser();
+
+  // Only show loading screen if we're authenticated but still loading user data
+  if (isAuthenticated && (isLoading || !user)) {
+    return <LoadingScreen />;
+  }
+
+  // If not authenticated, let the auth protection handle the redirect
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
     <SidebarProvider>

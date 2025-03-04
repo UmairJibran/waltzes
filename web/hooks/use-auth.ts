@@ -2,7 +2,8 @@
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
+import { useEffect } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { authApi } from '@/lib/api-client';
 import { LoginInput, RegisterInput } from '@/lib/validations/auth';
@@ -41,6 +42,32 @@ export const useAuthStore = create<AuthStore>()(
   ),
 );
 
+// Hook to protect routes
+export function useAuthProtection() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const { isAuthenticated } = useAuthStore();
+
+  const publicPaths = ['/login', '/register'];
+  const isPublicPath = publicPaths.some((path) => pathname?.startsWith(path));
+
+  useEffect(() => {
+    // Only redirect to login if we're definitely not authenticated
+    if (!isAuthenticated && !isPublicPath) {
+      router.replace(`/login?from=${encodeURIComponent(pathname)}`);
+    }
+
+    // Only redirect away from login/register if we're definitely authenticated
+    if (isAuthenticated && isPublicPath) {
+      const searchParams = new URLSearchParams(window.location.search);
+      const from = searchParams.get('from');
+      router.replace(from || '/applications');
+    }
+  }, [isAuthenticated, isPublicPath, pathname, router]);
+
+  return { isAuthenticated, isPublicPath };
+}
+
 export function useAuth() {
   const { accessToken, isAuthenticated, setAccessToken, login, logout } = useAuthStore();
 
@@ -57,16 +84,18 @@ export function useLogin() {
   const router = useRouter();
   const { login } = useAuth();
 
-  return useMutation({
+  const mutation = useMutation({
     mutationFn: async (data: LoginInput) => {
       await login(data);
     },
     onSuccess: () => {
       const searchParams = new URLSearchParams(window.location.search);
-      const from = searchParams.get('from') || '/applications';
-      router.push(from);
+      const from = searchParams.get('from');
+      router.replace(decodeURIComponent(from || '/applications'));
     },
   });
+
+  return mutation;
 }
 
 export function useRegister() {
