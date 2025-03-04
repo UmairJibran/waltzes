@@ -30,9 +30,13 @@ export function useUser(overrideStore: boolean = false) {
   });
 
   const { mutateAsync: updateUser, isPending } = useMutation({
-    mutationFn: (data: UpdateUserData) => userApi.updateMe(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['user'] });
+    mutationFn: async (data: UpdateUserData) => {
+      const updatedUser = await userApi.updateMe(data);
+      setUser(updatedUser);
+      return updatedUser;
+    },
+    onSuccess: (updatedUser) => {
+      queryClient.setQueryData(['user'], updatedUser);
     },
   });
 

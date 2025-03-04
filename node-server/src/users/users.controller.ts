@@ -14,9 +14,7 @@ export class UsersController {
 
   @Patch('me')
   async update(@Body() updateUserDto: UpdateUserDto, @User() user: JwtPayload) {
-    await this.usersService.update(user.sub, updateUserDto);
-    return {
-      message: 'User updated successfully',
-    };
+    const updatedUser = await this.usersService.update(user.sub, updateUserDto);
+    return updatedUser;
   }
 }

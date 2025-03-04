@@ -82,15 +82,37 @@ export class UsersService {
     return null;
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<void> {
-    await this.users.findByIdAndUpdate(id, {
-      githubUsername: updateUserDto.githubUsername,
-      linkedinUsername: updateUserDto.linkedinUsername,
-      portfolioUrl: updateUserDto.portfolioUrl,
-      additionalInstructions: updateUserDto.additionalInstructions,
-      phone: updateUserDto.phone,
-      lastName: updateUserDto.lastName,
-      firstName: updateUserDto.firstName,
-    });
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<UserEntity> {
+    const user = await this.users.findById(id);
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    user.githubUsername = updateUserDto.githubUsername;
+    user.linkedinUsername = updateUserDto.linkedinUsername;
+    user.portfolioUrl = updateUserDto.portfolioUrl;
+    user.additionalInstructions = updateUserDto.additionalInstructions;
+    user.phone = updateUserDto.phone;
+    if (updateUserDto.firstName) user.firstName = updateUserDto.firstName;
+    if (updateUserDto.lastName) user.lastName = updateUserDto.lastName;
+
+    await user.save();
+    const response: UserEntity = {
+      _id: String(user.id),
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      phone: user.phone,
+      portfolioUrl: user.portfolioUrl,
+      linkedinUsername: user.linkedinUsername,
+      githubUsername: user.githubUsername,
+      additionalInstructions: user.additionalInstructions,
+      password: user.password,
+      role: user.role,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    };
+    return response;
   }
 }
