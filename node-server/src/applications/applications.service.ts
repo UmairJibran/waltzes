@@ -11,40 +11,58 @@ export class ApplicationsService {
     @InjectModel(Application.name) private applications: Model<Application>,
   ) {}
 
-  create(createApplicationDto: CreateApplicationDto, user: string) {
-    return this.applications.create({ ...createApplicationDto, user });
+  async create(createApplicationDto: CreateApplicationDto, user: string) {
+    const app = await this.applications.create({
+      ...createApplicationDto,
+      user,
+    });
+    return app;
   }
 
-  findAll(
+  async findAll(
     user: string,
     {
       status,
     }: { status: 'applied' | 'interviewing' | 'rejected' | 'accepted' },
   ) {
-    return this.applications.find({
+    const applications = await this.applications.find({
       user,
       deletedAt: null,
       ...(status && { applicationStatus: status }),
     });
+    return {
+      data: applications,
+    };
   }
 
-  findOne(id: string, user: string) {
-    return this.applications.findOne({ _id: id, user, deletedAt: null });
+  async findOne(id: string, user: string) {
+    const app = await this.applications.findOne({
+      _id: id,
+      user,
+      deletedAt: null,
+    });
+    return app;
   }
 
-  update(id: string, user: string, updateApplicationDto: UpdateApplicationDto) {
-    return this.applications.findOneAndUpdate(
+  async update(
+    id: string,
+    user: string,
+    updateApplicationDto: UpdateApplicationDto,
+  ) {
+    const app = await this.applications.findOneAndUpdate(
       { _id: id, user, deletedAt: null },
       updateApplicationDto,
       { new: true },
     );
+    return app;
   }
 
-  remove(id: string, user: string) {
-    return this.applications.findOneAndUpdate(
+  async remove(id: string, user: string) {
+    const app = await this.applications.findOneAndUpdate(
       { _id: id, user, deletedAt: null },
       { deletedAt: new Date() },
       { new: true },
     );
+    return app;
   }
 }
