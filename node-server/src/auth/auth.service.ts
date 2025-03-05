@@ -26,7 +26,6 @@ export class AuthService {
     const payload: Partial<JwtPayload> = {
       sub: user._id,
       email: user.email,
-      linkedinUsername: user.linkedinUsername,
     };
     return {
       access_token: await this.jwtService.signAsync(payload),
@@ -44,7 +43,6 @@ export class AuthService {
     const payload: Partial<JwtPayload> = {
       sub: createdUser._id,
       email: createdUser.email,
-      linkedinUsername: createdUser.linkedinUsername,
     };
     return {
       access_token: await this.jwtService.signAsync(payload),
