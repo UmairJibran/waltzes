@@ -3,6 +3,7 @@ import { SqsModule } from '@ssut/nestjs-sqs';
 import { SqsProducerService } from './sqs-producer.service';
 import { availableQueues } from './constant';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { SQSClient } from '@aws-sdk/client-sqs';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
           linkedinScraperQueueUrl: string;
           stripeMeterQueueUrl: string;
           region: string;
+          endpoint: string;
         } = await configService.getOrThrow('aws');
         return {
           consumers: [],
@@ -23,19 +25,28 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
               name: availableQueues.sendEmail,
               queueUrl: awsConfig.emailQueueUrl,
               region: awsConfig.region,
-              useQueueUrlAsEndpoint: true,
+              sqs: new SQSClient({
+                region: awsConfig.region,
+                endpoint: awsConfig.endpoint,
+              }),
             },
             {
               name: availableQueues.linkedinScraper,
               queueUrl: awsConfig.linkedinScraperQueueUrl,
               region: awsConfig.region,
-              useQueueUrlAsEndpoint: true,
+              sqs: new SQSClient({
+                region: awsConfig.region,
+                endpoint: awsConfig.endpoint,
+              }),
             },
             {
               name: availableQueues.stripeMetering,
               queueUrl: awsConfig.stripeMeterQueueUrl,
               region: awsConfig.region,
-              useQueueUrlAsEndpoint: true,
+              sqs: new SQSClient({
+                region: awsConfig.region,
+                endpoint: awsConfig.endpoint,
+              }),
             },
           ],
         };

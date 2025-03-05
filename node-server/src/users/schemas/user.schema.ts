@@ -101,13 +101,11 @@ export class User {
 
 export const UserSchema = SchemaFactory.createForClass(User);
 
-UserSchema.pre('save', async function (next) {
+UserSchema.pre('save', function (next) {
   if (this.isModified('linkedinUsername')) {
     this.linkedinScrapedData = defaultLinkedinProfileData;
-    // await 
   } else if (this.isNew) {
     this.linkedinScrapedData = defaultLinkedinProfileData;
-    // await 
   }
 
   next();
