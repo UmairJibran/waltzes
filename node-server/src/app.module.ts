@@ -5,11 +5,11 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ApplicationsModule } from './applications/applications.module';
-import { SqsProducerService } from './sqs-producer/sqs-producer.service';
-import { SqsProducerModule } from './sqs-producer/sqs-producer.module';
+import { SqsProducerService } from './aws/sqs-producer/sqs-producer.service';
+import { SqsProducerModule } from './aws/sqs-producer/sqs-producer.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { SqsConsumerService } from './sqs-consumer/sqs-consumer.service';
-import { SqsConsumerModule } from './sqs-consumer/sqs-consumer.module';
+import { SqsConsumerService } from './aws/sqs-consumer/sqs-consumer.service';
+import { SqsConsumerModule } from './aws/sqs-consumer/sqs-consumer.module';
 import configuration from './config';
 
 @Module({

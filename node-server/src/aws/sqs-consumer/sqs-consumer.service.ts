@@ -1,7 +1,7 @@
 import type { Message } from '@aws-sdk/client-sqs';
 import { Injectable } from '@nestjs/common';
 import { SqsMessageHandler } from '@ssut/nestjs-sqs';
-import { availableQueues } from 'src/sqs-producer/constant';
+import { availableQueues } from 'src/aws/sqs-producer/constant';
 
 @Injectable()
 export class SqsConsumerService {

@@ -3,8 +3,8 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from 'src/users/users.service';
 import { RegisterUserDto } from './dto/register-user.dto';
-import { SqsProducerService } from 'src/sqs-producer/sqs-producer.service';
-import { availableQueues } from 'src/sqs-producer/constant';
+import { SqsProducerService } from 'src/aws/sqs-producer/sqs-producer.service';
+import { availableQueues } from 'src/aws/sqs-producer/constant';
 
 @Injectable()
 export class AuthService {

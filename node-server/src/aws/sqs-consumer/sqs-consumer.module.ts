@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SqsModule } from '@ssut/nestjs-sqs';
 import { SqsConsumerService } from './sqs-consumer.service';
-import { availableQueues } from 'src/sqs-producer/constant';
+import { availableQueues } from 'src/aws/sqs-producer/constant';
 import { SQSClient } from '@aws-sdk/client-sqs';
 
 @Module({

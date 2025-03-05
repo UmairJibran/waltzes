@@ -5,8 +5,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schemas/user.schema';
 import { User as UserEntity } from './entities/user.entity';
 import { Model } from 'mongoose';
-import { SqsProducerService } from 'src/sqs-producer/sqs-producer.service';
-import { availableQueues } from 'src/sqs-producer/constant';
+import { SqsProducerService } from 'src/aws/sqs-producer/sqs-producer.service';
+import { availableQueues } from 'src/aws/sqs-producer/constant';
 
 @Injectable()
 export class UsersService {
