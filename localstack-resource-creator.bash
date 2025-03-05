@@ -11,6 +11,7 @@ done
 for bucket in "${buckets[@]}"
 do
   awslocal s3api create-bucket --bucket $bucket
+  awslocal s3api put-bucket-cors --bucket $bucket --cors-configuration file://local-stack-cors-policy.json
 done
 
 for email in "${ses_verified_emails[@]}"
