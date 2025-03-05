@@ -23,16 +23,19 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
               name: availableQueues.sendEmail,
               queueUrl: awsConfig.emailQueueUrl,
               region: awsConfig.region,
+              useQueueUrlAsEndpoint: true,
             },
             {
               name: availableQueues.linkedinScraper,
               queueUrl: awsConfig.linkedinScraperQueueUrl,
               region: awsConfig.region,
+              useQueueUrlAsEndpoint: true,
             },
             {
               name: availableQueues.stripeMetering,
               queueUrl: awsConfig.stripeMeterQueueUrl,
               region: awsConfig.region,
+              useQueueUrlAsEndpoint: true,
             },
           ],
         };
