@@ -18,3 +18,6 @@ for email in "${ses_verified_emails[@]}"
 do
   awslocal ses verify-email-identity --email-address $email
 done
+
+# populate the email templates
+sh ./pre-req/scripts/update-templates.sh awslocal
