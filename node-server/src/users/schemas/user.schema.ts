@@ -24,18 +24,16 @@ export class User {
   })
   email: string;
 
-  @Prop({
-    unique: true,
-  })
+  @Prop()
   phone?: string;
 
-  @Prop({ unique: true, lowercase: true, trim: true })
+  @Prop({ lowercase: true, trim: true })
   portfolioUrl?: string;
 
-  @Prop({ unique: true, lowercase: true, trim: true })
+  @Prop({ lowercase: true, trim: true })
   linkedinUsername?: string;
 
-  @Prop({ unique: true, lowercase: true, trim: true })
+  @Prop({ lowercase: true, trim: true })
   githubUsername?: string;
 
   @Prop()

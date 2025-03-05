@@ -3,11 +3,14 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from 'src/users/users.service';
 import { RegisterUserDto } from './dto/register-user.dto';
+import { SqsProducerService } from 'src/sqs-producer/sqs-producer.service';
+import { availableQueues } from 'src/sqs-producer/constant';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
+    private sqsProducerService: SqsProducerService,
     private jwtService: JwtService,
   ) {}
 
@@ -33,7 +36,6 @@ export class AuthService {
   }
 
   async register(user: RegisterUserDto) {
-    // FIXME: `Unsafe assignment of an error typed value.`
     const password = await bcrypt.hash(user.password, 10);
     const createdUser = await this.usersService.create({ ...user, password });
     if (!createdUser) {
@@ -44,6 +46,16 @@ export class AuthService {
       sub: createdUser._id,
       email: createdUser.email,
     };
+    await this.sqsProducerService.sendMessage(
+      {
+        to: createdUser.email,
+        subject: 'Welcome to Waltzes',
+        text: 'You have successfully registered!',
+      },
+      availableQueues.sendEmail,
+      createdUser._id,
+      createdUser._id,
+    );
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
