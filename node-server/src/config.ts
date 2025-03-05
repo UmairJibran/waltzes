@@ -8,5 +8,6 @@ export default () => ({
     stripeMeterQueueUrl: process.env.STRIPE_METER_QUEUE_URL || '',
     awsRegion: process.env.AWS_REGION || 'us-east-1',
     endpoint: process.env.SQS_ENDPOINT || 'http://localhost:9324',
+    sesSourceEmail: process.env.SES_SOURCE_EMAIL,
   },
 });

@@ -47,8 +47,13 @@ export class AuthService {
       email: createdUser.email,
     };
     const emailQueueMessage: EmailQueueMessage = {
-      to: createdUser._id,
-      emailType: 'welcome',
+      to: createdUser.email,
+      emailType: 'templated',
+      template: 'welcome',
+      templateData: {
+        firstName: createdUser.firstName,
+        verificationLink: '---',
+      },
     };
     await this.sqsProducerService.sendMessage(
       emailQueueMessage,

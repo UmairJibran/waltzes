@@ -4,10 +4,12 @@ import { SqsModule } from '@ssut/nestjs-sqs';
 import { SqsConsumerService } from './sqs-consumer.service';
 import { availableQueues } from 'src/aws/sqs-producer/constant';
 import { SQSClient } from '@aws-sdk/client-sqs';
+import { SesModule } from '../ses/ses.module';
 
 @Module({
   imports: [
     ConfigModule,
+    SesModule,
     SqsModule.registerAsync({
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {

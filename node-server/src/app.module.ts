@@ -10,6 +10,7 @@ import { SqsProducerModule } from './aws/sqs-producer/sqs-producer.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SqsConsumerService } from './aws/sqs-consumer/sqs-consumer.service';
 import { SqsConsumerModule } from './aws/sqs-consumer/sqs-consumer.module';
+import { SesModule } from './aws/ses/ses.module';
 import configuration from './config';
 
 @Module({
@@ -33,6 +34,7 @@ import configuration from './config';
     ApplicationsModule,
     SqsProducerModule,
     SqsConsumerModule,
+    SesModule,
   ],
   controllers: [AppController],
   providers: [AppService, SqsProducerService, SqsConsumerService],
