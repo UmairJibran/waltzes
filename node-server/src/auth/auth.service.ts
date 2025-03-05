@@ -46,12 +46,12 @@ export class AuthService {
       sub: createdUser._id,
       email: createdUser.email,
     };
+    const emailQueueMessage: EmailQueueMessage = {
+      to: createdUser._id,
+      emailType: 'welcome',
+    };
     await this.sqsProducerService.sendMessage(
-      {
-        to: createdUser.email,
-        subject: 'Welcome to Waltzes',
-        text: 'You have successfully registered!',
-      },
+      emailQueueMessage,
       availableQueues.sendEmail,
       createdUser._id,
       createdUser._id,
