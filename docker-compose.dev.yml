@@ -17,3 +17,5 @@ services:
     image: mongo:4.4
     ports:
       - "27017:27017"
+    volumes:
+      - ./docker-volume/mongodb:/data/db
