@@ -1,0 +1,35 @@
+"""Entry point for the application."""
+
+import datetime
+import json
+
+from aws.sqs import delete_message, fetch_messages
+from handlers.process_linkedin_message import process_linkedin_queue_message
+from utils.logger import logger
+
+
+def main():
+    """Entry point for the application."""
+    linkedin_queue_url = "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/linkedin-scraper.fifo"
+    while True:
+        logger.info(f"Current Time: {datetime.datetime.now()}")
+        message = fetch_messages(linkedin_queue_url)
+        try:
+            if message:
+                message_body = json.loads(message.get("Body"))
+                logger.info(f"Message Body: {message_body}")
+                linkedin_username = message_body.get("linkedinUsername")
+                user_id = message_body.get("userId")
+                callback_url = f"http://localhost:3000/api/linkedin-scraper/{user_id}"
+                process_linkedin_queue_message(linkedin_username, callback_url)
+                delete_message(
+                    queue_url=linkedin_queue_url,
+                    receipt_handle=message.get("ReceiptHandle"),
+                )
+        except Exception as e:
+            logger.error(f"Error: {e}")
+            continue
+
+
+if __name__ == "__main__":
+    main()
