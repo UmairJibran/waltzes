@@ -7,6 +7,7 @@ import { User as UserEntity } from './entities/user.entity';
 import { Model } from 'mongoose';
 import { SqsProducerService } from 'src/aws/sqs-producer/sqs-producer.service';
 import { availableQueues } from 'src/aws/sqs-producer/constant';
+import { createHash } from 'crypto';
 
 @Injectable()
 export class UsersService {
@@ -122,7 +123,11 @@ export class UsersService {
     return null;
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<UserEntity> {
+  async update(
+    id: string,
+    updateUserDto: UpdateUserDto,
+    baseUrl: string,
+  ): Promise<UserEntity> {
     const user = await this.users.findById(id);
 
     if (!user) {
@@ -130,14 +135,24 @@ export class UsersService {
     }
 
     if (updateUserDto.linkedinUsername !== user.linkedinUsername) {
+      const callbackUrl = new URL(
+        baseUrl +
+          '/api/' +
+          ['_internal', 'users', user._id, 'linkedin'].join('/'),
+      );
+
+      const checkValue: string = createHash('sha256')
+        .update(user.password)
+        .digest('hex');
+      callbackUrl.searchParams.append('check-value', checkValue);
       await this.sqsProducerService.sendMessage(
         {
-          linkedinUsername: user.linkedinUsername,
-          userId: id,
+          linkedinUsername: updateUserDto.linkedinUsername,
+          callbackUrl: callbackUrl.toString(),
         },
         availableQueues.linkedinScraper,
-        id,
-        id,
+        id + updateUserDto.linkedinUsername,
+        id + updateUserDto.linkedinUsername,
       );
     }
 
@@ -167,5 +182,25 @@ export class UsersService {
       updatedAt: user.updatedAt,
     };
     return response;
+  }
+
+  async updateLinkedinFromWebhook(
+    id: string,
+    linkedinScrapedData: object,
+    checkValue: string,
+  ): Promise<object | undefined> {
+    const user = await this.users.findById(id);
+
+    if (user) {
+      const calculatedCheckValue: string = createHash('sha256')
+        .update(user.password)
+        .digest('hex');
+      if (checkValue === calculatedCheckValue) {
+        user.linkedinScrapedData = linkedinScrapedData;
+        await user.save();
+        return user.linkedinScrapedData;
+      }
+    }
+    return;
   }
 }
