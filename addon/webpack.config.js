@@ -60,8 +60,8 @@ var options = {
             options: {
               postcssOptions: {
                 plugins: [
-                  require('tailwindcss'),
-                  require('autoprefixer'),
+                  'tailwindcss',
+                  'autoprefixer',
                 ],
               },
             },
@@ -119,7 +119,7 @@ var options = {
     new webpack.ProgressPlugin(),
     new webpack.EnvironmentPlugin(['NODE_ENV']),
     new MiniCssExtractPlugin({
-      filename: '[name].css',
+      filename: 'content.styles.css',
     }),
     new CopyWebpackPlugin({
       patterns: [
@@ -136,11 +136,6 @@ var options = {
               })
             );
           },
-        },
-        {
-          from: 'src/styles/content.styles.css',
-          to: path.join(__dirname, 'build'),
-          force: true,
         },
         {
           from: 'src/assets/img/icon-128.png',

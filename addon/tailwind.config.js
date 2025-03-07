@@ -6,6 +6,10 @@ module.exports = {
             fontFamily: {
                 sans: ['Inter', 'system-ui', 'sans-serif'],
             },
+            boxShadow: {
+                'neo': '4px 4px 0 0 #000',
+                'neo-lg': '8px 8px 0 0 #000',
+            },
         },
     },
     plugins: [],

@@ -78,9 +78,12 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50">
       <div className="neo-container max-w-md w-full mx-4">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-3xl font-black">Waltzes</h2>
-          <button onClick={onClose} className="neo-button">
+        <div className="flex justify-between items-center mb-6 border-b-4 border-black pb-4">
+          <h2 className="text-3xl font-black tracking-tight">Waltzes</h2>
+          <button
+            onClick={onClose}
+            className="neo-button w-10 h-10 !p-0 flex items-center justify-center"
+          >
             ×
           </button>
         </div>
