@@ -18,15 +18,7 @@
   },
   "options_page": "options.html",
 
-  "permissions": ["activeTab", "tabs", "sidePanel", "storage"],
-  "side_panel": {
-    "default_path": "sidebar.html"
-  },
-  "sidebar_action": {
-    "default_title": "Waltzes",
-    "default_panel": "sidebar.html",
-    "open_at_install": true
-  },
+  "permissions": ["activeTab", "tabs", "storage"],
 
   "content_scripts": [
     {
