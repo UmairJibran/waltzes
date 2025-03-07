@@ -42,9 +42,8 @@ def send_data_to_callback_url(data: dict, callback_url: str):
     """
     try:
         response = requests.post(callback_url, json=data)
-        print(f'''{response=}''')
+        logger.info(f'''{response.status_code=}''')
         response.raise_for_status()
     except requests.exceptions.RequestException as error:
         logger.error(f"Error sending data to callback URL: {str(error)}")
         return None
-    return response.json()

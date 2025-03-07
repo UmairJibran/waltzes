@@ -12,9 +12,7 @@ def fetch_user_linkedin_scraping_dog(linkedin_username: str):
     url = f"https://api.scrapingdog.com/linkedin/?api_key={os.getenv('SCRAPING_DOG_API_KEY')}&type=profile&linkId={linkedin_username}&private=false"
     try:
         response = requests.get(url, timeout=int(os.getenv("EXTERNAL_API_TIMEOUT")))
-        if response.status_code != 200:
-            logger.error(f"Error from Scraping Dog: {response.text}")
-            return None
+        response.raise_for_status()
         data = response.json()[0]
         linkedin_data_raw = {
             "first_name": data.get("first_name", None),
