@@ -26,6 +26,13 @@ export class InternalController {
     if (!userId || !checkValue) {
       return;
     }
+    if (typeof userId !== 'string' || userId.length === 0) {
+      return;
+    }
+
+    if (typeof checkValue !== 'string' || checkValue.length === 0) {
+      return;
+    }
     const updatedUser = await this.usersService.updateLinkedinFromWebhook(
       userId,
       updateUserDto,
