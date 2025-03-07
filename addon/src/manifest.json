@@ -1,8 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Waltzes",
-  "version": "1.0",
-
+  "version": "1.0.0",
   "description": "Get you a personalized cover letter for this job application",
   "homepage_url": "https://github.com/UmairJibran/waltzes",
 
@@ -13,17 +12,17 @@
 
   "action": {
     "default_title": "Waltzes",
-    "default_popup": "popup.html",
     "default_icon": "icon-34.png"
   },
-  "options_page": "options.html",
 
-  "permissions": ["activeTab", "tabs", "storage"],
+  "permissions": ["activeTab", "storage", "scripting"],
+
+  "host_permissions": ["<all_urls>"],
 
   "content_scripts": [
     {
-      "matches": ["http://*/*", "https://*/*", "<all_urls>"],
-      "js": ["contentScript.bundle.js"],
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
       "css": ["content.styles.css"]
     }
   ],
@@ -31,7 +30,7 @@
   "web_accessible_resources": [
     {
       "resources": ["content.styles.css", "icon-128.png", "icon-34.png"],
-      "matches": []
+      "matches": ["<all_urls>"]
     }
   ],
 
@@ -39,5 +38,9 @@
     "gecko": {
       "id": "me@umairjibran.com"
     }
+  },
+
+  "background": {
+    "service_worker": "background.js"
   }
 }

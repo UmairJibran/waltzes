@@ -1,11 +1,11 @@
 import React from 'react';
-import Greetings from '../../containers/Greetings/Greetings';
+import { JobApplicationPopup } from '../../containers/JobApplicationPopup';
 import './Popup.css';
 
 const Popup = () => {
   return (
     <div className="App">
-      <Greetings />
+      <JobApplicationPopup />
     </div>
   );
 };

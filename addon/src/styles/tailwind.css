@@ -1,3 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html {
+    @apply antialiased;
+  }
+
+  input[type='checkbox'] {
+    @apply appearance-none bg-white border-4 border-black checked:bg-black relative cursor-pointer m-0;
+  }
+
+  input[type='checkbox']:checked::after {
+    content: '✓';
+    @apply text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-base;
+  }
+}
