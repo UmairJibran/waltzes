@@ -58,9 +58,7 @@ def fetch_user_linkedin_scrapin_io(linkedin_username: str):
     url = f"https://api.scrapin.io/enrichment/profile/?apikey={os.getenv('SCRAPIN_IO_API_KEY')}&linkedInUrl=https%3A%2F%2Flinkedin.com%2Fin%2F{linkedin_username}"
     try:
         response = requests.get(url, timeout=int(os.getenv("EXTERNAL_API_TIMEOUT")))
-        if response.status_code != 200:
-            logger.error(f"Error from ScrapinIO: {response.text}")
-            return None
+        response.raise_for_status()
         data = response.json()
         profile = data.get("person", {})
         company = profile.get("company", {})
@@ -126,9 +124,7 @@ def fetch_user_linkedin_proxy_curl(linkedin_username: str):
             headers=headers,
             timeout=int(os.getenv("EXTERNAL_API_TIMEOUT")),
         )
-        if response.status_code != 200:
-            logger.error(f"Error from Proxy Curl: {response.text}")
-            return None
+        response.raise_for_status()
         profile = response.json()
         linkedin_data_raw = {
             "first_name": profile.get("first_name", None),
