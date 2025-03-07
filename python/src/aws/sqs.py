@@ -4,7 +4,13 @@ import os
 
 import boto3
 
-sqs = boto3.client("sqs", endpoint_url=os.environ.get("AWS_ENDPOINT"))
+# Initialize SQS client with both endpoint_url and region_name
+sqs = boto3.client(
+    "sqs",
+    endpoint_url=os.environ.get("AWS_ENDPOINT"), 
+    region_name=os.environ.get("AWS_DEFAULT_REGION", "us-east-1")
+)
+
 def fetch_messages(queue_url):
     """Fetch messages from an SQS queue.
 
