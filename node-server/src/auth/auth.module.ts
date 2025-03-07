@@ -5,10 +5,12 @@ import { UsersModule } from '../users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
 import { AuthGuard } from './auth.guard';
+import { SqsProducerModule } from 'src/aws/sqs-producer/sqs-producer.module';
 
 @Module({
   imports: [
     UsersModule,
+    SqsProducerModule,
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,

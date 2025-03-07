@@ -3,6 +3,41 @@ import { HydratedDocument, Schema as MongooseSchema } from 'mongoose';
 
 export type UserDocument = HydratedDocument<User>;
 
+const defaultLinkedinProfileData = {
+  linkedin_data_raw: {
+    first_name: '',
+    last_name: '',
+    full_name: '',
+    occupation: '',
+    headline: '',
+    location: '',
+    about: '',
+    country: '',
+    country_full_name: '',
+    city: '',
+    state: '',
+    skills: [],
+    experience: [],
+    education: [],
+    languages_and_proficiencies: [],
+    accomplishment_organisations: [],
+    accomplishment_publications: [],
+    accomplishment_honors_awards: [],
+    accomplishment_courses: [],
+    accomplishment_patents: [],
+    accomplishment_projects: [],
+    accomplishment_test_scores: [],
+    volunteer_work: [],
+    recommendations: [],
+    certifications: [],
+    activities: [],
+    articles: [],
+    industry: '',
+    extra: '',
+    interests: [],
+  },
+};
+
 @Schema({
   timestamps: true,
 })
@@ -24,18 +59,16 @@ export class User {
   })
   email: string;
 
-  @Prop({
-    unique: true,
-  })
+  @Prop()
   phone?: string;
 
-  @Prop({ unique: true, lowercase: true, trim: true })
+  @Prop({ lowercase: true, trim: true })
   portfolioUrl?: string;
 
-  @Prop({ unique: true, lowercase: true, trim: true })
+  @Prop({ lowercase: true, trim: true })
   linkedinUsername?: string;
 
-  @Prop({ unique: true, lowercase: true, trim: true })
+  @Prop({ lowercase: true, trim: true })
   githubUsername?: string;
 
   @Prop()
@@ -47,7 +80,10 @@ export class User {
   @Prop()
   role: 'admin' | 'user';
 
-  @Prop({ type: MongooseSchema.Types.Mixed })
+  @Prop({
+    type: MongooseSchema.Types.Mixed,
+    default: defaultLinkedinProfileData,
+  })
   linkedinScrapedData?: Record<string, any>;
 
   @Prop({ type: MongooseSchema.Types.Mixed })
@@ -64,3 +100,13 @@ export class User {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+
+UserSchema.pre('save', function (next) {
+  if (this.isModified('linkedinUsername')) {
+    this.linkedinScrapedData = defaultLinkedinProfileData;
+  } else if (this.isNew) {
+    this.linkedinScrapedData = defaultLinkedinProfileData;
+  }
+
+  next();
+});

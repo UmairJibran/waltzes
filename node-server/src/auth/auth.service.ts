@@ -3,11 +3,14 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from 'src/users/users.service';
 import { RegisterUserDto } from './dto/register-user.dto';
+import { SqsProducerService } from 'src/aws/sqs-producer/sqs-producer.service';
+import { availableQueues } from 'src/aws/sqs-producer/constant';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
+    private sqsProducerService: SqsProducerService,
     private jwtService: JwtService,
   ) {}
 
@@ -26,7 +29,6 @@ export class AuthService {
     const payload: Partial<JwtPayload> = {
       sub: user._id,
       email: user.email,
-      linkedinUsername: user.linkedinUsername,
     };
     return {
       access_token: await this.jwtService.signAsync(payload),
@@ -34,7 +36,6 @@ export class AuthService {
   }
 
   async register(user: RegisterUserDto) {
-    // FIXME: `Unsafe assignment of an error typed value.`
     const password = await bcrypt.hash(user.password, 10);
     const createdUser = await this.usersService.create({ ...user, password });
     if (!createdUser) {
@@ -44,8 +45,22 @@ export class AuthService {
     const payload: Partial<JwtPayload> = {
       sub: createdUser._id,
       email: createdUser.email,
-      linkedinUsername: createdUser.linkedinUsername,
     };
+    const emailQueueMessage: EmailQueueMessage = {
+      to: createdUser.email,
+      emailType: 'templated',
+      template: 'welcome',
+      templateData: {
+        firstName: createdUser.firstName,
+        verificationLink: '---',
+      },
+    };
+    await this.sqsProducerService.sendMessage(
+      emailQueueMessage,
+      availableQueues.sendEmail,
+      createdUser._id,
+      createdUser._id,
+    );
     return {
       access_token: await this.jwtService.signAsync(payload),
     };

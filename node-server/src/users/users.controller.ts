@@ -1,4 +1,5 @@
-import { Controller, Body, Patch, Get } from '@nestjs/common';
+import { Controller, Body, Patch, Get, Request } from '@nestjs/common';
+import type { Request as ExpressRequest } from 'express';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from 'src/auth/constants';
@@ -13,8 +14,17 @@ export class UsersController {
   }
 
   @Patch('me')
-  async update(@Body() updateUserDto: UpdateUserDto, @User() user: JwtPayload) {
-    const updatedUser = await this.usersService.update(user.sub, updateUserDto);
+  async update(
+    @Body() updateUserDto: UpdateUserDto,
+    @User() user: JwtPayload,
+    @Request() req: ExpressRequest,
+  ) {
+    const baseUrl = req.protocol + '://' + req.get('host');
+    const updatedUser = await this.usersService.update(
+      user.sub,
+      updateUserDto,
+      baseUrl,
+    );
     return updatedUser;
   }
 
