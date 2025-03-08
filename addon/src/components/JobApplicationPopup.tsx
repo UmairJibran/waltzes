@@ -112,7 +112,12 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
         ) : (
           <div className="space-y-6">
             <div className="neo-container">
-              <h3 className="font-bold text-xl mb-2">Current Page</h3>
+              <h3 className="font-bold text-xl mb-2">
+                Current Page{' '}
+                <small className="text-gray-600 text-sm">
+                  Page must be public for best results
+                </small>
+              </h3>
               <p className="text-gray-600">{document.title}</p>
               <p className="text-gray-600 truncate">{window.location.href}</p>
             </div>
