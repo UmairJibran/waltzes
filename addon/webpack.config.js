@@ -6,15 +6,17 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const Dotenv = require('dotenv-webpack');
 
 const ASSET_PATH = process.env.ASSET_PATH || '/';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 module.exports = {
-  mode: process.env.NODE_ENV || 'development',
+  mode: isDevelopment ? 'development' : 'production',
   entry: {
     background: path.join(__dirname, 'src', 'background.ts'),
     content: path.join(__dirname, 'src', 'content.tsx'),
+    popup: path.join(__dirname, 'src', 'content.tsx'),
   },
   output: {
     filename: '[name].js',
@@ -96,6 +98,7 @@ module.exports = {
         },
       ],
     }),
+    new Dotenv(),
   ],
   optimization: {
     minimize: !isDevelopment,
@@ -105,5 +108,8 @@ module.exports = {
       }),
     ],
   },
-  devtool: isDevelopment ? 'cheap-module-source-map' : false,
+  devtool: isDevelopment ? 'inline-source-map' : false,
+  devServer: {
+    allowedHosts: 'all',
+  },
 };
