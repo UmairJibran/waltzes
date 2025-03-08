@@ -13,10 +13,13 @@ const root = createRoot(container);
 
 // Function to remove the popup
 const removePopup = () => {
-  const root = document.getElementById('job-application-extension-root');
-  if (root) {
-    root.remove();
-  }
+  root.unmount();
+  container.remove();
+};
+
+// Handle cleanup when extension is clicked again
+const cleanup = () => {
+  removePopup();
 };
 
 // Render the popup
