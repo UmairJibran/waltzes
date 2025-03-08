@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useAuthStore } from '../store/auth';
 import { signIn } from '../api/auth';
 import { generateApplication, getJobStatus, type JobStatus } from '../api/jobs';
+import { StatusPanel } from './StatusPanel';
+import { DownloadPanel } from './DownloadPanel';
+import { OptionCheckbox } from './OptionCheckbox';
 
 const POLL_INTERVAL = 1000;
 
@@ -31,11 +34,6 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
   };
 
   const handleApply = async () => {
-    if (!selectedOptions.resume && !selectedOptions.coverLetter) {
-      alert('Please select at least one option');
-      return;
-    }
-
     setIsLoading(true);
     try {
       const response = await generateApplication({
@@ -75,6 +73,9 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
     };
   }, [jobId, jobStatus?.status]);
 
+  const isGenerateDisabled =
+    isLoading || (!selectedOptions.resume && !selectedOptions.coverLetter);
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50">
       <div className="neo-container max-w-md w-full mx-4">
@@ -89,97 +90,23 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
         </div>
 
         {!isAuthenticated ? (
-          <button
-            onClick={handleLogin}
-            disabled={isLoading}
-            className="neo-button w-full"
-          >
-            {isLoading ? 'Signing in...' : 'Sign in to Continue'}
-          </button>
+          <div className="space-y-4">
+            <p className="text-gray-600">
+              Sign in to start generating your personalized job applications.
+            </p>
+            <button
+              onClick={handleLogin}
+              disabled={isLoading}
+              className="neo-button w-full"
+            >
+              {isLoading ? 'Signing in...' : 'Sign in to Continue'}
+            </button>
+          </div>
         ) : jobStatus ? (
           <div className="space-y-6">
-            <div className="neo-container">
-              <h3 className="font-bold text-xl mb-4">
-                Status: {jobStatus.status}
-              </h3>
-              <div className="space-y-3">
-                <div className="flex items-center space-x-3">
-                  <div
-                    className={`w-3 h-3 rounded-full ${
-                      jobStatus.steps.scraping === 'done'
-                        ? 'bg-green-500'
-                        : jobStatus.steps.scraping === 'processing'
-                        ? 'bg-yellow-500'
-                        : 'bg-gray-300'
-                    }`}
-                  />
-                  <span className="font-bold">Scraping Job Post</span>
-                </div>
-                {selectedOptions.resume && (
-                  <div className="flex items-center space-x-3">
-                    <div
-                      className={`w-3 h-3 rounded-full ${
-                        jobStatus.steps.resume === 'done'
-                          ? 'bg-green-500'
-                          : jobStatus.steps.resume === 'processing'
-                          ? 'bg-yellow-500'
-                          : 'bg-gray-300'
-                      }`}
-                    />
-                    <span className="font-bold">Generating Resume</span>
-                  </div>
-                )}
-                {selectedOptions.coverLetter && (
-                  <div className="flex items-center space-x-3">
-                    <div
-                      className={`w-3 h-3 rounded-full ${
-                        jobStatus.steps.coverLetter === 'done'
-                          ? 'bg-green-500'
-                          : jobStatus.steps.coverLetter === 'processing'
-                          ? 'bg-yellow-500'
-                          : 'bg-gray-300'
-                      }`}
-                    />
-                    <span className="font-bold">Generating Cover Letter</span>
-                  </div>
-                )}
-                <div className="flex items-center space-x-3">
-                  <div
-                    className={`w-3 h-3 rounded-full ${
-                      jobStatus.steps.pdf === 'done'
-                        ? 'bg-green-500'
-                        : jobStatus.steps.pdf === 'processing'
-                        ? 'bg-yellow-500'
-                        : 'bg-gray-300'
-                    }`}
-                  />
-                  <span className="font-bold">Creating PDF</span>
-                </div>
-              </div>
-            </div>
+            <StatusPanel status={jobStatus} selectedOptions={selectedOptions} />
             {jobStatus.status === 'finished' && jobStatus.downloadUrls && (
-              <div className="space-y-3">
-                {jobStatus.downloadUrls.resume && (
-                  <a
-                    href={jobStatus.downloadUrls.resume}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="neo-button w-full block text-center"
-                  >
-                    Download Resume
-                  </a>
-                )}
-                {jobStatus.downloadUrls.coverLetter && (
-                  <a
-                    href={jobStatus.downloadUrls.coverLetter}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="neo-button w-full block text-center"
-                  >
-                    Download Cover Letter
-                  </a>
-                )}
-              </div>
+              <DownloadPanel downloadUrls={jobStatus.downloadUrls} />
             )}
           </div>
         ) : (
@@ -191,46 +118,28 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
             </div>
 
             <div className="space-y-3">
-              <label className="neo-container block cursor-pointer">
-                <div className="flex items-center space-x-3">
-                  <input
-                    type="checkbox"
-                    checked={selectedOptions.resume}
-                    onChange={(e) =>
-                      setSelectedOptions((prev) => ({
-                        ...prev,
-                        resume: e.target.checked,
-                      }))
-                    }
-                    className="neo-checkbox"
-                  />
-                  <span className="font-bold text-lg">Resume (1 credit)</span>
-                </div>
-              </label>
-
-              <label className="neo-container block cursor-pointer">
-                <div className="flex items-center space-x-3">
-                  <input
-                    type="checkbox"
-                    checked={selectedOptions.coverLetter}
-                    onChange={(e) =>
-                      setSelectedOptions((prev) => ({
-                        ...prev,
-                        coverLetter: e.target.checked,
-                      }))
-                    }
-                    className="neo-checkbox"
-                  />
-                  <span className="font-bold text-lg">
-                    Cover Letter (0.5 credit)
-                  </span>
-                </div>
-              </label>
+              <OptionCheckbox
+                checked={selectedOptions.resume}
+                onChange={(checked) =>
+                  setSelectedOptions((prev) => ({ ...prev, resume: checked }))
+                }
+                label="Resume (1 credit)"
+              />
+              <OptionCheckbox
+                checked={selectedOptions.coverLetter}
+                onChange={(checked) =>
+                  setSelectedOptions((prev) => ({
+                    ...prev,
+                    coverLetter: checked,
+                  }))
+                }
+                label="Cover Letter (0.5 credit)"
+              />
             </div>
 
             <button
               onClick={handleApply}
-              disabled={isLoading}
+              disabled={isGenerateDisabled}
               className="neo-button w-full"
             >
               {isLoading ? 'Generating...' : 'Generate Application'}
