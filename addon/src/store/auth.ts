@@ -8,7 +8,7 @@ interface AuthState {
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
-    isAuthenticated: true,
+    isAuthenticated: false,
     accessToken: null,
     setAuth: (token: string) => set({ isAuthenticated: true, accessToken: token }),
     clearAuth: () => set({ isAuthenticated: false, accessToken: null }),

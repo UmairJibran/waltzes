@@ -1,42 +1,16 @@
-var webpack = require('webpack'),
-  path = require('path'),
-  fileSystem = require('fs-extra'),
-  env = require('./utils/env'),
-  CopyWebpackPlugin = require('copy-webpack-plugin'),
-  HtmlWebpackPlugin = require('html-webpack-plugin'),
-  TerserPlugin = require('terser-webpack-plugin');
-var { CleanWebpackPlugin } = require('clean-webpack-plugin');
-var ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
-var ReactRefreshTypeScript = require('react-refresh-typescript');
-var MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const webpack = require('webpack');
+const path = require('path');
+const fileSystem = require('fs-extra');
+const env = require('./utils/env');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const ASSET_PATH = process.env.ASSET_PATH || '/';
-
-var alias = {};
-
-// load the secrets
-var secretsPath = path.join(__dirname, 'secrets.' + env.NODE_ENV + '.js');
-
-var fileExtensions = [
-  'jpg',
-  'jpeg',
-  'png',
-  'gif',
-  'eot',
-  'otf',
-  'svg',
-  'ttf',
-  'woff',
-  'woff2',
-];
-
-if (fileSystem.existsSync(secretsPath)) {
-  alias['secrets'] = secretsPath;
-}
-
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
-var options = {
+module.exports = {
   mode: process.env.NODE_ENV || 'development',
   entry: {
     background: path.join(__dirname, 'src', 'background.ts'),
@@ -59,23 +33,15 @@ var options = {
             loader: 'postcss-loader',
             options: {
               postcssOptions: {
-                plugins: [
-                  'tailwindcss',
-                  'autoprefixer',
-                ],
+                plugins: ['tailwindcss', 'autoprefixer'],
               },
             },
           },
         ],
       },
       {
-        test: new RegExp('.(' + fileExtensions.join('|') + ')$'),
+        test: /\.(png|jpg|jpeg|gif|svg)$/,
         type: 'asset/resource',
-        exclude: /node_modules/,
-      },
-      {
-        test: /\.html$/,
-        loader: 'html-loader',
         exclude: /node_modules/,
       },
       {
@@ -90,31 +56,12 @@ var options = {
           },
         ],
       },
-      {
-        test: /\.(js|jsx)$/,
-        use: [
-          'source-map-loader',
-          {
-            loader: require.resolve('babel-loader'),
-            options: {
-              plugins: [
-                isDevelopment && require.resolve('react-refresh/babel'),
-              ].filter(Boolean),
-            },
-          },
-        ],
-        exclude: /node_modules/,
-      },
     ],
   },
   resolve: {
-    alias: alias,
-    extensions: fileExtensions
-      .map((extension) => '.' + extension)
-      .concat(['.js', '.jsx', '.ts', '.tsx', '.css']),
+    extensions: ['.js', '.jsx', '.ts', '.tsx', '.css'],
   },
   plugins: [
-    isDevelopment && new ReactRefreshWebpackPlugin(),
     new CleanWebpackPlugin({ verbose: false }),
     new webpack.ProgressPlugin(),
     new webpack.EnvironmentPlugin(['NODE_ENV']),
@@ -127,7 +74,7 @@ var options = {
           from: 'src/manifest.json',
           to: path.join(__dirname, 'build'),
           force: true,
-          transform: function (content, path) {
+          transform: function (content) {
             return Buffer.from(
               JSON.stringify({
                 description: process.env.npm_package_description,
@@ -149,7 +96,7 @@ var options = {
         },
       ],
     }),
-  ].filter(Boolean),
+  ],
   optimization: {
     minimize: !isDevelopment,
     minimizer: [
@@ -158,10 +105,5 @@ var options = {
       }),
     ],
   },
+  devtool: isDevelopment ? 'cheap-module-source-map' : false,
 };
-
-if (isDevelopment) {
-  options.devtool = 'cheap-module-source-map';
-}
-
-module.exports = options;
