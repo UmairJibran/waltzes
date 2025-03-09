@@ -219,14 +219,6 @@ export class ApplicationsService {
         },
       ]);
 
-    interface IMessage {
-      applicationId: string;
-      callbackUrl: string;
-      jobDetails: Partial<Job>;
-      applicantDetails: object;
-      resume: boolean;
-      coverLetter: boolean;
-    }
     const messages: IMessage[] = [];
     for (const app of pendingApplications) {
       messages.push({
