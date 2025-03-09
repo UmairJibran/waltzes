@@ -1,24 +1,24 @@
-import { Application, ApplicationStatus } from '@/lib/types/application';
+import { Application, ApplicationStatus } from "@/lib/types/application";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { format } from 'date-fns';
-import { Link2, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+} from "@/components/ui/dialog";
+import { format } from "date-fns";
+import { Link2, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { useState } from 'react';
-import { useUpdateApplicationStatus } from '@/hooks/use-applications';
-import { PDFViewer } from './PDFViewer';
-import { DialogDescription } from '@radix-ui/react-dialog';
+} from "@/components/ui/select";
+import { useState } from "react";
+import { useUpdateApplicationStatus } from "@/hooks/use-applications";
+import { PDFViewer } from "./PDFViewer";
+import { DialogDescription } from "@radix-ui/react-dialog";
 
 interface ApplicationDialogProps {
   application: Application | null;
@@ -26,10 +26,10 @@ interface ApplicationDialogProps {
 }
 
 const STATUS_OPTIONS: ApplicationStatus[] = [
-  'applied',
-  'interviewing',
-  'accepted',
-  'rejected',
+  "applied",
+  "interviewing",
+  "accepted",
+  "rejected",
 ];
 
 export function ApplicationDialog({
@@ -59,8 +59,8 @@ export function ApplicationDialog({
     <Dialog open={!!application} onOpenChange={() => onClose()}>
       <DialogContent className="w-[90vw] max-w-[90%] md:max-w-[80%] lg:max-w-[80%] h-[80vh] flex flex-col">
         <DialogHeader>
-          <DialogTitle>{application.jobTitle}</DialogTitle>
-          <DialogDescription>{application.companyName}</DialogDescription>
+          <DialogTitle>{application.job.title}</DialogTitle>
+          <DialogDescription>{application.job.companyName}</DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-6 flex-1 overflow-hidden">
           <div className="grid grid-cols-2 gap-4">
@@ -68,13 +68,13 @@ export function ApplicationDialog({
               <p className="text-sm font-medium">Application Details</p>
               <div className="text-sm space-y-1">
                 <p>
-                  <span className="text-muted-foreground">Applied on:</span>{' '}
-                  {format(application.appliedAt, 'MMMM d, yyyy')}
+                  <span className="text-muted-foreground">Applied on:</span>{" "}
+                  {format(application.appliedAt, "MMMM d, yyyy")}
                 </p>
-                {application.jobUrl && (
+                {application.job.url && (
                   <p>
                     <a
-                      href={application.jobUrl}
+                      href={application.job.url}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-1 text-sm hover:underline text-blue-500"
@@ -99,7 +99,7 @@ export function ApplicationDialog({
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {STATUS_OPTIONS.map(status => (
+                    {STATUS_OPTIONS.map((status) => (
                       <SelectItem key={status} value={status}>
                         {status.charAt(0).toUpperCase() + status.slice(1)}
                       </SelectItem>

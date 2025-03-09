@@ -86,12 +86,12 @@ export function ApplicationList({
                 <tr key={application._id} className="hover:bg-muted/50">
                   <td className="py-1.5 px-3">
                     <span className="text-sm font-medium truncate block">
-                      {application.jobTitle}
+                      {application.job.title}
                     </span>
                   </td>
                   <td className="py-1.5 px-3">
                     <span className="text-xs text-muted-foreground">
-                      {application.companyName}
+                      {application.job.companyName}
                     </span>
                   </td>
                   <td className="py-1.5 px-3">
