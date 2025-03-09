@@ -331,7 +331,8 @@ def create_resume(segments, font_family="Times"):
     return "output.pdf"
 
 
-def convert_text_to_pdf(text, title, font_family="Arial"):
+def create_cover_letter(text, title, font_family="Times"):
+    """Create a cover letter PDF."""
     if not isinstance(text, str):
         text = ""
 
@@ -343,10 +344,16 @@ def convert_text_to_pdf(text, title, font_family="Arial"):
     pdf.add_page()
     pdf.set_font(font_family, "", 12)
 
-    lines = text.split("\n")
-    for line in lines:
-        if isinstance(line, str):
-            pdf.multi_cell(0, 5, line)
+    paragraphs = text.split("\n\n")
+    
+    for paragraph in paragraphs:
+        lines = paragraph.split("\n")
+        
+        for line in lines:
+            if isinstance(line, str):
+                available_width = pdf.w - pdf.l_margin - pdf.r_margin
+                pdf.multi_cell(available_width, 5, line)
+        pdf.ln(5)
 
     pdf.output("output.pdf")
     return "output.pdf"
