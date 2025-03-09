@@ -1,6 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { JobApplicationPopup } from './components/JobApplicationPopup';
+import { useAuthStore } from './store/auth';
 import './styles/tailwind.css';
 
 // Create container for our app
@@ -22,9 +23,13 @@ const cleanup = () => {
   removePopup();
 };
 
-// Render the popup
-root.render(
-  <React.StrictMode>
-    <JobApplicationPopup onClose={removePopup} />
-  </React.StrictMode>
-);
+useAuthStore
+  .getState()
+  .initializeFromStorage()
+  .then(() => {
+    root.render(
+      <React.StrictMode>
+        <JobApplicationPopup onClose={removePopup} />
+      </React.StrictMode>
+    );
+  });

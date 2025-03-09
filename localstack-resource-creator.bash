@@ -1,5 +1,5 @@
 # QUEUES
-queues=(linkedin-scraper stripe-meterer email-sender)
+queues=(linkedin-scraper stripe-meter email-sender job-scraper cover-letter-creator resume-creator pdf-processor)
 buckets=(waltzes-resources waltzes-logs)
 ses_verified_emails=("hello@waltzes.umairjibran.com" "no-reply@waltzes.umairjibran.com")
 

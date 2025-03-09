@@ -1,7 +1,5 @@
 const webpack = require('webpack');
 const path = require('path');
-const fileSystem = require('fs-extra');
-const env = require('./utils/env');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
@@ -64,6 +62,7 @@ module.exports = {
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.css'],
   },
   plugins: [
+    new Dotenv(),
     new CleanWebpackPlugin({ verbose: false }),
     new webpack.ProgressPlugin(),
     new webpack.EnvironmentPlugin(['NODE_ENV']),
@@ -98,7 +97,6 @@ module.exports = {
         },
       ],
     }),
-    new Dotenv(),
   ],
   optimization: {
     minimize: !isDevelopment,

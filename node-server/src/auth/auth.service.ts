@@ -4,7 +4,6 @@ import * as bcrypt from 'bcrypt';
 import { UsersService } from 'src/users/users.service';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { SqsProducerService } from 'src/aws/sqs-producer/sqs-producer.service';
-import { availableQueues } from 'src/aws/sqs-producer/constant';
 
 @Injectable()
 export class AuthService {
@@ -20,7 +19,6 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    // FIXME: `Unsafe assignment of an error typed value.`
     const isMatch = await bcrypt.compare(pass, user.password);
 
     if (!isMatch) {
@@ -57,7 +55,7 @@ export class AuthService {
     };
     await this.sqsProducerService.sendMessage(
       emailQueueMessage,
-      availableQueues.sendEmail,
+      'sendEmail',
       createdUser._id,
       createdUser._id,
     );

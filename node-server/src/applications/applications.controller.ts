@@ -7,8 +7,10 @@ import {
   Param,
   Delete,
   Query,
+  Request,
 } from '@nestjs/common';
 import { ApplicationsService } from './applications.service';
+import type { Request as ExpressRequest } from 'express';
 import { CreateApplicationDto } from './dto/create-application.dto';
 import { UpdateApplicationDto } from './dto/update-application.dto';
 import { User } from 'src/auth/constants';
@@ -21,8 +23,14 @@ export class ApplicationsController {
   create(
     @Body() createApplicationDto: CreateApplicationDto,
     @User() user: JwtPayload,
+    @Request() req: ExpressRequest,
   ) {
-    return this.applicationsService.create(createApplicationDto, user.sub);
+    const baseUrl = req.protocol + '://' + req.get('host');
+    return this.applicationsService.create(
+      createApplicationDto,
+      user.sub,
+      baseUrl,
+    );
   }
 
   @Get()
@@ -35,7 +43,19 @@ export class ApplicationsController {
     pageSize: number,
     @User() user: JwtPayload,
   ) {
-    return this.applicationsService.findAll(user.sub, { status });
+    return this.applicationsService.findAll(user.sub, {
+      status,
+      page,
+      pageSize,
+    });
+  }
+
+  @Get(':id')
+  findApplication(
+    @Param('id')
+    id: string,
+  ) {
+    return this.applicationsService.getApplication(id);
   }
 
   @Get(':id')

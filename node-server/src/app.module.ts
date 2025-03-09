@@ -12,6 +12,7 @@ import { SqsConsumerService } from './aws/sqs-consumer/sqs-consumer.service';
 import { SqsConsumerModule } from './aws/sqs-consumer/sqs-consumer.module';
 import { SesModule } from './aws/ses/ses.module';
 import { InternalController } from './_internal/_internal.controller';
+import { JobsModule } from './jobs/jobs.module';
 import configuration from './config';
 
 @Module({
@@ -36,6 +37,7 @@ import configuration from './config';
     SqsProducerModule,
     SqsConsumerModule,
     SesModule,
+    JobsModule,
   ],
   controllers: [AppController, InternalController],
   providers: [AppService, SqsProducerService, SqsConsumerService],

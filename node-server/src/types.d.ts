@@ -25,4 +25,8 @@ interface AwsConfig {
   awsRegion: string;
   endpoint: string;
   sesSourceEmail: string;
+  jobScraperQueueUrl: string;
+  coverLetterCreatorQueueUrl: string;
+  resumeCreatorQueueUrl: string;
+  pdfProcessorQueueUrl: string;
 }

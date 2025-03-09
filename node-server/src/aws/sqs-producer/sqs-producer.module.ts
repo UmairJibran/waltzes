@@ -11,40 +11,70 @@ import { SQSClient } from '@aws-sdk/client-sqs';
     SqsModule.registerAsync({
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
-        const awsConfig: {
-          emailQueueUrl: string;
-          linkedinScraperQueueUrl: string;
-          stripeMeterQueueUrl: string;
-          region: string;
-          endpoint: string;
-        } = await configService.getOrThrow('aws');
+        const awsConfig: AwsConfig = await configService.getOrThrow('aws');
         return {
           consumers: [],
           producers: [
             {
               name: availableQueues.sendEmail,
               queueUrl: awsConfig.emailQueueUrl,
-              region: awsConfig.region,
+              region: awsConfig.awsRegion,
               sqs: new SQSClient({
-                region: awsConfig.region,
+                region: awsConfig.awsRegion,
                 endpoint: awsConfig.endpoint,
               }),
             },
             {
               name: availableQueues.linkedinScraper,
               queueUrl: awsConfig.linkedinScraperQueueUrl,
-              region: awsConfig.region,
+              region: awsConfig.awsRegion,
               sqs: new SQSClient({
-                region: awsConfig.region,
+                region: awsConfig.awsRegion,
+                endpoint: awsConfig.endpoint,
+              }),
+            },
+            {
+              name: availableQueues.jobScraper,
+              queueUrl: awsConfig.jobScraperQueueUrl,
+              region: awsConfig.awsRegion,
+              sqs: new SQSClient({
+                region: awsConfig.awsRegion,
+                endpoint: awsConfig.endpoint,
+              }),
+            },
+            {
+              name: availableQueues.coverLetterCreator,
+              queueUrl: awsConfig.coverLetterCreatorQueueUrl,
+              region: awsConfig.awsRegion,
+              sqs: new SQSClient({
+                region: awsConfig.awsRegion,
+                endpoint: awsConfig.endpoint,
+              }),
+            },
+            {
+              name: availableQueues.resumeCreator,
+              queueUrl: awsConfig.resumeCreatorQueueUrl,
+              region: awsConfig.awsRegion,
+              sqs: new SQSClient({
+                region: awsConfig.awsRegion,
+                endpoint: awsConfig.endpoint,
+              }),
+            },
+            {
+              name: availableQueues.pdfProcessor,
+              queueUrl: awsConfig.pdfProcessorQueueUrl,
+              region: awsConfig.awsRegion,
+              sqs: new SQSClient({
+                region: awsConfig.awsRegion,
                 endpoint: awsConfig.endpoint,
               }),
             },
             {
               name: availableQueues.stripeMetering,
               queueUrl: awsConfig.stripeMeterQueueUrl,
-              region: awsConfig.region,
+              region: awsConfig.awsRegion,
               sqs: new SQSClient({
-                region: awsConfig.region,
+                region: awsConfig.awsRegion,
                 endpoint: awsConfig.endpoint,
               }),
             },

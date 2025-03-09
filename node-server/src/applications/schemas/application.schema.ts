@@ -15,16 +15,6 @@ export class Application {
   user: MongooseSchema.Types.ObjectId;
 
   @Prop({
-    required: true,
-  })
-  jobTitle: string;
-
-  @Prop({
-    required: true,
-  })
-  companyName: string;
-
-  @Prop({
     default: 'applied',
   })
   applicationStatus: 'applied' | 'interviewing' | 'rejected' | 'accepted';
@@ -53,12 +43,22 @@ export class Application {
   @Prop()
   coverLetterProgress: number;
 
-  //   @Prop({
-  //     type: MongooseSchema.Types.ObjectId,
-  //     ref: 'JobDetails',
-  //     required: false,
-  //   })
-  //   jobDetails: MongooseSchema.Types.ObjectId;
+  @Prop({
+    default: false,
+  })
+  generateResume: boolean;
+
+  @Prop({
+    default: false,
+  })
+  generateCoverLetter: boolean;
+
+  @Prop({
+    type: MongooseSchema.Types.ObjectId,
+    ref: 'Job',
+    required: false,
+  })
+  job: MongooseSchema.Types.ObjectId;
 
   @Prop({
     default: () => new Date(),

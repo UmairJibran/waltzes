@@ -6,15 +6,23 @@ export interface AuthResponse {
     };
 }
 
-export const signIn = async (redirectUrl: string): Promise<AuthResponse> => {
-    // Simulate API call delay
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+interface LoginCredentials {
+    email: string;
+    password: string;
+}
 
-    return {
-        access_token: "mock_access_token_123",
-        user: {
-            id: "1",
-            email: "user@example.com"
-        }
-    };
+export const signIn = async (credentials: LoginCredentials): Promise<AuthResponse> => {
+    const response = await fetch(`${process.env.API_URL}/auth/login`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(credentials),
+    });
+
+    if (!response.ok) {
+        throw new Error('Authentication failed');
+    }
+
+    return response.json();
 }; 

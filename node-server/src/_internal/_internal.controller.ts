@@ -9,11 +9,16 @@ import {
 } from '@nestjs/common';
 import { Public } from 'src/auth/constants';
 import { UpdateUserDto } from 'src/users/dto/update-user.dto';
+import { UpdateJobDto } from 'src/jobs/dto/update-job.dto';
 import { UsersService } from 'src/users/users.service';
+import { JobsService } from 'src/jobs/jobs.service';
 
 @Controller('_internal')
 export class InternalController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly jobsService: JobsService,
+  ) {}
 
   @HttpCode(HttpStatus.OK)
   @Public()
@@ -39,5 +44,15 @@ export class InternalController {
       checkValue,
     );
     return updatedUser;
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Public()
+  @Post('job-scraper')
+  async storeJobDetails(
+    @Body() jobDetailsDto: UpdateJobDto,
+    @Query('job-url') jobUrl: string,
+  ) {
+    await this.jobsService.updateFromWebhook(jobUrl, jobDetailsDto);
   }
 }

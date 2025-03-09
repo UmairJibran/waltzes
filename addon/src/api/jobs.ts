@@ -1,3 +1,5 @@
+import { useAuthStore } from '../store/auth';
+
 export interface GenerateApplicationRequest {
     jobUrl: string;
     generateResume: boolean;
@@ -18,62 +20,46 @@ export interface JobStatus {
     };
 }
 
-export const generateApplication = async (data: GenerateApplicationRequest): Promise<{ jobId: string }> => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    return { jobId: "mock_job_123" };
+export const generateApplication = async (data: GenerateApplicationRequest): Promise<{ applicationId: string }> => {
+    const { accessToken } = useAuthStore.getState();
+
+    if (!accessToken) {
+        throw new Error('Authentication required');
+    }
+
+    const response = await fetch(`${process.env.API_URL}/applications`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`
+        },
+        body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to generate application');
+    }
+
+    return response.json();
 };
 
-export const getJobStatus = async (jobId: string): Promise<JobStatus> => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+export const getApplicationStatus = async (applicationId: string): Promise<JobStatus> => {
+    const { accessToken } = useAuthStore.getState();
 
-    // Mock different states based on time
-    const now = Date.now();
-    const phase = Math.floor((now / 1000) % 4);
-
-    switch (phase) {
-        case 0:
-            return {
-                status: 'enqueue',
-                steps: {
-                    scraping: 'processing',
-                    resume: 'pending',
-                    coverLetter: 'pending',
-                    pdf: 'pending'
-                }
-            };
-        case 1:
-            return {
-                status: 'processing',
-                steps: {
-                    scraping: 'done',
-                    resume: 'processing',
-                    coverLetter: 'processing',
-                    pdf: 'pending'
-                }
-            };
-        case 2:
-            return {
-                status: 'processing',
-                steps: {
-                    scraping: 'done',
-                    resume: 'done',
-                    coverLetter: 'done',
-                    pdf: 'processing'
-                }
-            };
-        default:
-            return {
-                status: 'finished',
-                steps: {
-                    scraping: 'done',
-                    resume: 'done',
-                    coverLetter: 'done',
-                    pdf: 'done'
-                },
-                downloadUrls: {
-                    resume: 'https://example.com/resume.pdf',
-                    coverLetter: 'https://example.com/cover-letter.pdf'
-                }
-            };
+    if (!accessToken) {
+        throw new Error('Authentication required');
     }
+
+    const response = await fetch(`${process.env.API_URL}/applications/${applicationId}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to fetch application status');
+    }
+
+    return response.json();
 }; 

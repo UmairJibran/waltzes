@@ -12,7 +12,9 @@ interface Props {
 
 export const StatusPanel: React.FC<Props> = ({ status, selectedOptions }) => (
   <div className="neo-container">
-    <h3 className="font-bold text-xl mb-4">Status: {status.status}</h3>
+    <h3 className="font-bold text-xl mb-4">
+      Status: {status.status.charAt(0).toUpperCase() + status.status.slice(1)}
+    </h3>
     <div className="space-y-3">
       <StatusIndicator
         status={status.steps.scraping}
