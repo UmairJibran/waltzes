@@ -9,6 +9,7 @@ import { JobsService } from 'src/jobs/jobs.service';
 import { Job } from 'src/jobs/entities/job.entity';
 import { JobDocument } from 'src/jobs/schemas/job.schema';
 import { UserDocument } from 'src/users/schemas/user.schema';
+import { S3Service } from 'src/aws/s3/s3.service';
 
 @Injectable()
 export class ApplicationsService {
@@ -17,6 +18,7 @@ export class ApplicationsService {
     @Inject(forwardRef(() => JobsService))
     private readonly jobsService: JobsService,
     private readonly sqsProducerService: SqsProducerService,
+    private readonly s3Service: S3Service,
   ) {}
 
   async create(
@@ -123,6 +125,19 @@ export class ApplicationsService {
     )
       ? 'finished'
       : 'processing';
+
+    if (downloadUrls.resume) {
+      downloadUrls.resume = await this.s3Service.getPreSignedUrl(
+        downloadUrls.resume,
+        {},
+      );
+    }
+    if (downloadUrls.coverLetter) {
+      downloadUrls.coverLetter = await this.s3Service.getPreSignedUrl(
+        downloadUrls.coverLetter,
+        {},
+      );
+    }
 
     return {
       status: steps.scraping == 'done' ? overallStatus : 'enqueue',
