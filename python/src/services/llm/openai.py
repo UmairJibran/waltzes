@@ -24,8 +24,6 @@ def call_openai_api(
     Returns:
         str: The generated content from OpenAI
     """
-
-    if messages is None:
     if api_key is None:
         api_key = os.environ.get("OPENAI_API_KEY")
 

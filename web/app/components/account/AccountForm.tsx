@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
-import { User, UpdateUserData } from '@/lib/types/user';
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { User, UpdateUserData } from "@/lib/types/user";
 
 interface AccountFormProps {
   data: User;
@@ -24,22 +24,29 @@ export function AccountForm({ data, onSave }: AccountFormProps) {
   const [formData, setFormData] = useState<UpdateUserData>({
     firstName: data.firstName,
     lastName: data.lastName,
-    phone: data.phone || '',
-    portfolioUrl: data.portfolioUrl || '',
-    linkedinUsername: data.linkedinUsername || '',
-    githubUsername: data.githubUsername || '',
-    additionalInstructions: data.additionalInstructions || '',
-    _id: data._id || '',
+    phone: data.phone || "",
+    portfolioUrl: data.portfolioUrl || "",
+    linkedinUsername: data.linkedinUsername || "",
+    githubUsername: data.githubUsername || "",
+    additionalInstructions: data.additionalInstructions || "",
+    _id: data._id || "",
   });
-  const [newPassword, setNewPassword] = useState('');
+  const [newPassword, setNewPassword] = useState("");
   const [showLinkedInWarning, setShowLinkedInWarning] = useState(false);
+  const [linkedinWarningDismissed, setLinkedinWarningDismissed] =
+    useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   const handleChange = (field: keyof UpdateUserData, value: string) => {
-    if (field === 'linkedinUsername' && value !== data.linkedinUsername) {
+    if (
+      field === "linkedinUsername" &&
+      value !== data.linkedinUsername &&
+      !linkedinWarningDismissed
+    ) {
       setShowLinkedInWarning(true);
+      setLinkedinWarningDismissed(true);
     }
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = async () => {
@@ -51,7 +58,7 @@ export function AccountForm({ data, onSave }: AccountFormProps) {
       };
       await onSave(updateData);
       setIsEditing(false);
-      setNewPassword('');
+      setNewPassword("");
     } finally {
       setIsSaving(false);
     }
@@ -75,7 +82,7 @@ export function AccountForm({ data, onSave }: AccountFormProps) {
                 Cancel
               </Button>
               <Button onClick={handleSubmit} disabled={isSaving}>
-                {isSaving ? 'Saving...' : 'Save'}
+                {isSaving ? "Saving..." : "Save"}
               </Button>
             </div>
           )}
@@ -89,7 +96,7 @@ export function AccountForm({ data, onSave }: AccountFormProps) {
               <Input
                 id="firstName"
                 value={formData.firstName}
-                onChange={e => handleChange('firstName', e.target.value)}
+                onChange={(e) => handleChange("firstName", e.target.value)}
               />
             ) : (
               <p className="text-base py-2 border-b">{formData.firstName}</p>
@@ -101,7 +108,7 @@ export function AccountForm({ data, onSave }: AccountFormProps) {
               <Input
                 id="lastName"
                 value={formData.lastName}
-                onChange={e => handleChange('lastName', e.target.value)}
+                onChange={(e) => handleChange("lastName", e.target.value)}
               />
             ) : (
               <p className="text-base py-2 border-b">{formData.lastName}</p>
@@ -130,7 +137,9 @@ export function AccountForm({ data, onSave }: AccountFormProps) {
                 <Input
                   id="githubUsername"
                   value={formData.githubUsername}
-                  onChange={e => handleChange('githubUsername', e.target.value)}
+                  onChange={(e) =>
+                    handleChange("githubUsername", e.target.value)
+                  }
                   className="rounded-l-none"
                   placeholder="username"
                 />
@@ -159,8 +168,8 @@ export function AccountForm({ data, onSave }: AccountFormProps) {
                 <Input
                   id="linkedinUsername"
                   value={formData.linkedinUsername}
-                  onChange={e =>
-                    handleChange('linkedinUsername', e.target.value)
+                  onChange={(e) =>
+                    handleChange("linkedinUsername", e.target.value)
                   }
                   className="rounded-l-none"
                   placeholder="username"
@@ -192,7 +201,7 @@ export function AccountForm({ data, onSave }: AccountFormProps) {
               <Input
                 id="phone"
                 value={formData.phone}
-                onChange={e => handleChange('phone', e.target.value)}
+                onChange={(e) => handleChange("phone", e.target.value)}
                 type="tel"
                 placeholder="+1 (555) 000-0000"
               />
@@ -214,7 +223,7 @@ export function AccountForm({ data, onSave }: AccountFormProps) {
               <Input
                 id="portfolioUrl"
                 value={formData.portfolioUrl}
-                onChange={e => handleChange('portfolioUrl', e.target.value)}
+                onChange={(e) => handleChange("portfolioUrl", e.target.value)}
                 type="url"
                 placeholder="https://your-website.com"
               />
@@ -236,7 +245,7 @@ export function AccountForm({ data, onSave }: AccountFormProps) {
               <Input
                 id="newPassword"
                 value={newPassword}
-                onChange={e => setNewPassword(e.target.value)}
+                onChange={(e) => setNewPassword(e.target.value)}
                 type="password"
                 placeholder="Leave blank to keep current password"
               />
@@ -254,8 +263,8 @@ export function AccountForm({ data, onSave }: AccountFormProps) {
               <Textarea
                 id="additionalInstructions"
                 value={formData.additionalInstructions}
-                onChange={e =>
-                  handleChange('additionalInstructions', e.target.value)
+                onChange={(e) =>
+                  handleChange("additionalInstructions", e.target.value)
                 }
                 placeholder="Add any specific instructions for generating resumes/cover letters"
                 className="h-32"
@@ -290,7 +299,7 @@ export function AccountForm({ data, onSave }: AccountFormProps) {
             <Button
               variant="outline"
               onClick={() => {
-                setFormData(prev => ({
+                setFormData((prev) => ({
                   ...prev,
                   linkedinUsername: data.linkedinUsername,
                 }));
