@@ -6,7 +6,6 @@ import { User } from './schemas/user.schema';
 import { User as UserEntity } from './entities/user.entity';
 import { Model } from 'mongoose';
 import { SqsProducerService } from 'src/aws/sqs-producer/sqs-producer.service';
-import { availableQueues } from 'src/aws/sqs-producer/constant';
 import { createHash } from 'crypto';
 
 @Injectable()
@@ -98,7 +97,7 @@ export class UsersService {
             linkedinUsername: user.linkedinUsername,
             userId: createdId,
           },
-          availableQueues.linkedinScraper,
+          'linkedinScraper',
           createdId,
           createdId,
         );
@@ -150,7 +149,7 @@ export class UsersService {
           linkedinUsername: updateUserDto.linkedinUsername,
           callbackUrl: callbackUrl.toString(),
         },
-        availableQueues.linkedinScraper,
+        'linkedinScraper',
         id + updateUserDto.linkedinUsername,
         id + updateUserDto.linkedinUsername,
       );
