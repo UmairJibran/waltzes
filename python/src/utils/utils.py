@@ -40,6 +40,7 @@ def send_data_to_callback_url(data: dict, callback_url: str):
         data: Data to send
         callback_url: URL to send data to
     """
+    logger.warn(f'''{callback_url=}''')
     try:
         response = requests.post(callback_url, json=data)
         logger.info(f'''{response.status_code=}''')
