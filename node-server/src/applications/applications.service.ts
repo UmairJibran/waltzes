@@ -48,23 +48,74 @@ export class ApplicationsService {
   }
 
   async getApplication(applicationId: string) {
-    const app = await this.applications.findById({
-      _id: applicationId,
-    });
+    const app = await this.applications
+      .findById({
+        _id: applicationId,
+      })
+      .populate<{ job: { status: string } }>([
+        {
+          path: 'job',
+          model: 'Job',
+          select: 'status',
+        },
+      ]);
 
     if (!app) {
       return null;
     }
 
+    const requiresResume = app.generateResume;
+    const requiresCoverLetter = app.generateCoverLetter;
+
+    const steps = {
+      scraping: 'pending',
+      resume: 'pending',
+      coverLetter: 'pending',
+      pdf: 'pending',
+    };
+
+    const downloadUrls = {
+      resume: '',
+      coverLetter: '',
+    };
+
+    if (app.job?.status === 'done') {
+      steps.scraping = 'done';
+    }
+
+    if (!requiresResume) {
+      steps.resume = 'skipped';
+      downloadUrls.resume = 'skipped';
+    } else if (app.appliedWith?.resume) {
+      steps.resume = 'done';
+      downloadUrls.resume = app.appliedWith.resume;
+    }
+
+    if (!requiresCoverLetter) {
+      steps.coverLetter = 'skipped';
+      downloadUrls.coverLetter = 'skipped';
+    } else if (app.appliedWith?.coverLetter) {
+      steps.coverLetter = 'done';
+      downloadUrls.coverLetter = app.appliedWith.coverLetter;
+    }
+
+    if (
+      ['done', 'skipped'].includes(steps.resume) &&
+      ['done', 'skipped'].includes(steps.coverLetter)
+    ) {
+      steps.pdf = 'done';
+    }
+
+    const overallStatus = Object.values(steps).every(
+      (step) => step === 'done' || step === 'skipped',
+    )
+      ? 'finished'
+      : 'processing';
+
     return {
-      status: 'finished', // | 'processing' | 'finished',
-      steps: {
-        scraping: 'done', // "done" | 'processing' | 'pending',
-        resume: 'done', // | 'processing' | 'pending',
-        coverLetter: 'done', // | 'processing' | 'pending',
-        pdf: 'done', // | 'processing' | 'pending',
-      },
-      downloadUrls: { resume: 'xyz', coverLetter: 'xyz' },
+      status: steps.scraping == 'done' ? overallStatus : 'enqueue',
+      steps,
+      downloadUrls,
     };
   }
 
