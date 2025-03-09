@@ -176,9 +176,5 @@ def fetch_user_linkedin_proxy_curl(linkedin_username: str):
 
 def fetch_user_linkedin(linkedin_username: str):
     """Fetch User's profile from ScrapingDog or ScrapinIO."""
-    linkedin_data = fetch_user_linkedin_scraping_dog(linkedin_username)
-    if linkedin_data is None:
-        linkedin_data = fetch_user_linkedin_scrapin_io(linkedin_username)
-    if linkedin_data is None:
-        linkedin_data = fetch_user_linkedin_proxy_curl(linkedin_username)
+    linkedin_data = fetch_user_linkedin_proxy_curl(linkedin_username)
     return linkedin_data if linkedin_data else None
