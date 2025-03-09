@@ -74,9 +74,12 @@ export class ApplicationsService {
       pdf: 'pending',
     };
 
-    const downloadUrls = {
-      resume: '',
-      coverLetter: '',
+    const downloadUrls: {
+      resume?: string;
+      coverLetter?: string;
+    } = {
+      resume: undefined,
+      coverLetter: undefined,
     };
 
     if (app.job?.status === 'done') {
@@ -85,25 +88,32 @@ export class ApplicationsService {
 
     if (!requiresResume) {
       steps.resume = 'skipped';
-      downloadUrls.resume = 'skipped';
-    } else if (app.appliedWith?.resume) {
+    } else if (app.resumeRaw) {
       steps.resume = 'done';
-      downloadUrls.resume = app.appliedWith.resume;
+    } else if (app.resumeStarted) {
+      steps.resume = 'processing';
     }
 
     if (!requiresCoverLetter) {
       steps.coverLetter = 'skipped';
-      downloadUrls.coverLetter = 'skipped';
-    } else if (app.appliedWith?.coverLetter) {
+    } else if (app.coverLetterRaw) {
       steps.coverLetter = 'done';
-      downloadUrls.coverLetter = app.appliedWith.coverLetter;
+    } else if (app.coverLetterStarted) {
+      steps.coverLetter = 'processing';
     }
 
-    if (
-      ['done', 'skipped'].includes(steps.resume) &&
-      ['done', 'skipped'].includes(steps.coverLetter)
-    ) {
+    const coverLetterStatus =
+      (steps.coverLetter === 'done' && app.appliedWith?.coverLetter) ||
+      steps.coverLetter === 'skipped';
+
+    const resumeStatus =
+      (steps.resume === 'done' && app.appliedWith?.resume) ||
+      steps.resume === 'skipped';
+
+    if (resumeStatus && coverLetterStatus) {
       steps.pdf = 'done';
+      downloadUrls.resume = app.appliedWith?.resume;
+      downloadUrls.coverLetter = app.appliedWith?.coverLetter;
     }
 
     const overallStatus = Object.values(steps).every(

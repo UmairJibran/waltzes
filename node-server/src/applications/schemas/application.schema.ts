@@ -26,6 +26,18 @@ export class Application {
   };
 
   @Prop()
+  resumeRaw: string;
+
+  @Prop()
+  coverLetterRaw: string;
+
+  @Prop()
+  resumeStarted: boolean;
+
+  @Prop()
+  coverLetterStarted: boolean;
+
+  @Prop()
   jobUrl: string;
 
   @Prop()
