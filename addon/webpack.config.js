@@ -64,6 +64,7 @@ module.exports = {
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.css'],
   },
   plugins: [
+    new Dotenv(),
     new CleanWebpackPlugin({ verbose: false }),
     new webpack.ProgressPlugin(),
     new webpack.EnvironmentPlugin(['NODE_ENV']),
@@ -98,7 +99,6 @@ module.exports = {
         },
       ],
     }),
-    new Dotenv(),
   ],
   optimization: {
     minimize: !isDevelopment,
