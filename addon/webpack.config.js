@@ -1,7 +1,5 @@
 const webpack = require('webpack');
 const path = require('path');
-const fileSystem = require('fs-extra');
-const env = require('./utils/env');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
