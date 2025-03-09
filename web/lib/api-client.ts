@@ -1,16 +1,16 @@
-import { LoginInput, RegisterInput } from './validations/auth';
-import { LinkedInData } from './types/linkedin';
-import { UpdateUserData, User } from './types/user';
-import { Application, ApplicationStatus } from './types/application';
+import { LoginInput, RegisterInput } from "./validations/auth";
+import { LinkedInData } from "./types/linkedin";
+import { UpdateUserData, User } from "./types/user";
+import { Application, ApplicationStatus } from "./types/application";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api";
 
 async function fetchWithAuth(endpoint: string, options: RequestInit = {}) {
-  const authToken = JSON.parse(localStorage.getItem('auth-storage') || '{}')
+  const authToken = JSON.parse(localStorage.getItem("auth-storage") || "{}")
     ?.state?.accessToken;
 
   const headers = {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
     ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
     ...options.headers,
   };
@@ -21,7 +21,7 @@ async function fetchWithAuth(endpoint: string, options: RequestInit = {}) {
   });
 
   if (!response.ok) {
-    throw new Error('API request failed');
+    throw new Error("API request failed");
   }
 
   return response.json();
@@ -29,15 +29,15 @@ async function fetchWithAuth(endpoint: string, options: RequestInit = {}) {
 
 export const authApi = {
   async login(data: LoginInput): Promise<{ access_token: string }> {
-    return fetchWithAuth('/auth/login', {
-      method: 'POST',
+    return fetchWithAuth("/auth/login", {
+      method: "POST",
       body: JSON.stringify(data),
     });
   },
 
   async register(data: RegisterInput): Promise<void> {
-    return fetchWithAuth('/auth/register', {
-      method: 'POST',
+    return fetchWithAuth("/auth/register", {
+      method: "POST",
       body: JSON.stringify(data),
     });
   },
@@ -45,12 +45,12 @@ export const authApi = {
 
 export const userApi = {
   async getMe(): Promise<User> {
-    return fetchWithAuth('/users/me');
+    return fetchWithAuth("/users/me");
   },
 
   async updateMe(data: UpdateUserData): Promise<User> {
-    return fetchWithAuth('/users/me', {
-      method: 'PATCH',
+    return fetchWithAuth("/users/me", {
+      method: "PATCH",
       body: JSON.stringify(data),
     });
   },
@@ -58,12 +58,15 @@ export const userApi = {
 
 export const linkedinApi = {
   async getData(): Promise<LinkedInData> {
-    const response = await fetchWithAuth('/users/me/linkedin');
-    return response.linkedin_data_raw as unknown as LinkedInData;
+    const response = await fetchWithAuth("/users/me/linkedin");
+    if ("linkedin_data_raw" in response) {
+      return response.linkedin_data_raw as unknown as LinkedInData;
+    }
+    return response as unknown as LinkedInData;
   },
   async updateData(data: LinkedInData): Promise<LinkedInData> {
-    const response = await fetchWithAuth('/users/me/linkedin', {
-      method: 'PATCH',
+    const response = await fetchWithAuth("/users/me/linkedin", {
+      method: "PATCH",
       body: JSON.stringify({ linkedin_data_raw: data }),
     });
     return response.linkedin_data_raw as unknown as LinkedInData;
@@ -83,7 +86,7 @@ export const applicationsApi = {
     pageSize = 50
   ): Promise<PaginatedResponse<Application>> => {
     return fetchWithAuth(
-      '/applications?' +
+      "/applications?" +
         new URLSearchParams({
           page: page.toString(),
           pageSize: pageSize.toString(),
@@ -96,7 +99,7 @@ export const applicationsApi = {
     pageSize = 50
   ): Promise<PaginatedResponse<Application>> => {
     return fetchWithAuth(
-      '/applications?' +
+      "/applications?" +
         new URLSearchParams({
           status,
           page: page.toString(),
@@ -109,7 +112,7 @@ export const applicationsApi = {
     status: ApplicationStatus
   ): Promise<Application> => {
     return fetchWithAuth(`/applications/${applicationId}`, {
-      method: 'PATCH',
+      method: "PATCH",
       body: JSON.stringify({ applicationStatus: status }),
     });
   },
