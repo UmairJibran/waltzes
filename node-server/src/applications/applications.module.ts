@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { ApplicationsService } from './applications.service';
 import { ApplicationsController } from './applications.controller';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -12,7 +12,7 @@ import { JobsModule } from 'src/jobs/jobs.module';
       { name: Application.name, schema: ApplicationSchema },
     ]),
     SqsProducerModule,
-    JobsModule,
+    forwardRef(() => JobsModule),
   ],
   controllers: [ApplicationsController],
   providers: [ApplicationsService],

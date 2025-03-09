@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { CreateApplicationDto } from './dto/create-application.dto';
 import { UpdateApplicationDto } from './dto/update-application.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -6,11 +6,13 @@ import { Application } from './schemas/application.schema';
 import { Model } from 'mongoose';
 import { SqsProducerService } from 'src/aws/sqs-producer/sqs-producer.service';
 import { JobsService } from 'src/jobs/jobs.service';
+import { Job } from 'src/jobs/entities/job.entity';
 
 @Injectable()
 export class ApplicationsService {
   constructor(
     @InjectModel(Application.name) private applications: Model<Application>,
+    @Inject(forwardRef(() => JobsService))
     private readonly jobsService: JobsService,
     private readonly sqsProducerService: SqsProducerService,
   ) {}
@@ -142,28 +144,71 @@ export class ApplicationsService {
     return app;
   }
 
-  // async startProcessingByUrl(url: string, jobDetails: Job) {
-  //   const pendingApplications = await this.applications.find({
-  //     jobUrl: url,
-  //   });
-  //   const messages: unknown[] = [];
-  //   for (const app of pendingApplications) {
-  //     messages.push({
-  //       app,
-  //       callbackUrl: '',
-  //       jobDetails: {
-  //         companyName: jobDetails.companyName,
-  //         description: jobDetails.description,
-  //         location: jobDetails.location,
-  //         jobTitle: jobDetails.title,
-  //         skills: jobDetails.skills,
-  //       },
-  //       applicantDetails: {},
-  //     });
-  //   }
-  //   console.log(
-  //     '🚀 ~ ApplicationsService ~ startProcessingByUrl ~ messages:',
-  //     messages,
-  //   );
-  // }
+  async startProcessingByUrl(url: string, jobDetails: Job) {
+    const pendingApplications = await this.applications
+      .find({
+        jobUrl: url,
+      })
+      .populate([
+        {
+          path: 'user',
+          model: 'User',
+          select:
+            'linkedinScrapedData firstName lastName email phone portfolioUrl linkedinUsername githubUsername additionalInstructions',
+        },
+      ]);
+
+    interface IMessage {
+      applicationId: string;
+      callbackUrl: string;
+      jobDetails: Partial<Job>;
+      applicantDetails: object;
+      resume: boolean;
+      coverLetter: boolean;
+    }
+    const messages: IMessage[] = [];
+    for (const app of pendingApplications) {
+      messages.push({
+        applicationId: app._id.toString(),
+        callbackUrl: '',
+        jobDetails: {
+          companyName: jobDetails.companyName,
+          description: jobDetails.description,
+          location: jobDetails.location,
+          skills: jobDetails.skills,
+          title: jobDetails.title,
+        },
+        applicantDetails: app.user,
+        resume: app.generateResume,
+        coverLetter: app.generateCoverLetter,
+      });
+    }
+
+    for (const message of messages) {
+      if (message.resume) {
+        await this.sqsProducerService.sendMessage(
+          {
+            jobDetails: message.jobDetails,
+            applicantDetails: message.applicantDetails,
+            callbackUrl: message.callbackUrl,
+          },
+          'resumeCreator',
+          message.applicationId,
+          message.applicationId,
+        );
+      }
+      if (message.coverLetter) {
+        await this.sqsProducerService.sendMessage(
+          {
+            jobDetails: message.jobDetails,
+            applicantDetails: message.applicantDetails,
+            callbackUrl: message.callbackUrl,
+          },
+          'coverLetterCreator',
+          message.applicationId,
+          message.applicationId,
+        );
+      }
+    }
+  }
 }

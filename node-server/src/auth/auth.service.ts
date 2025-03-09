@@ -19,7 +19,6 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    // FIXME: `Unsafe assignment of an error typed value.`
     const isMatch = await bcrypt.compare(pass, user.password);
 
     if (!isMatch) {

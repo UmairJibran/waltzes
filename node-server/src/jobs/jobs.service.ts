@@ -1,16 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { UpdateJobDto } from './dto/update-job.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Job } from './schemas/job.schema';
 import { Model } from 'mongoose';
 import { SqsProducerService } from 'src/aws/sqs-producer/sqs-producer.service';
-// import { ApplicationsService } from 'src/applications/applications.service';
+import { ApplicationsService } from 'src/applications/applications.service';
 
 @Injectable()
 export class JobsService {
   constructor(
     @InjectModel(Job.name) private jobs: Model<Job>,
-    // private readonly applicationsService: ApplicationsService,
+    @Inject(forwardRef(() => ApplicationsService))
+    private readonly applicationsService: ApplicationsService,
     private readonly sqsProducerService: SqsProducerService,
   ) {}
 
@@ -51,10 +52,6 @@ export class JobsService {
     job.skills = updateJobDto.skills;
     job.status = 'done';
     await job.save();
-
-    // await this.applicationsService.startProcessingByUrl(
-    //   url,
-    //   job._id.toString(),
-    // );
+    await this.applicationsService.startProcessingByUrl(url, job);
   }
 }
