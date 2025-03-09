@@ -15,13 +15,13 @@
     "default_icon": "icon-34.png"
   },
 
-  "permissions": ["activeTab", "scripting"],
+  "permissions": ["activeTab", "scripting", "storage", "tabs"],
 
   "host_permissions": ["<all_urls>"],
 
   "web_accessible_resources": [
     {
-      "resources": ["content.styles.css"],
+      "resources": ["content.styles.css", "login.html"],
       "matches": ["<all_urls>"]
     }
   ],

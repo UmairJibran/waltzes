@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuthStore } from '../store/auth';
-import { signIn } from '../api/auth';
 import { generateApplication, getJobStatus, type JobStatus } from '../api/jobs';
+import { signIn } from '../api/auth';
 import { StatusPanel } from './StatusPanel';
 import { DownloadPanel } from './DownloadPanel';
 import { OptionCheckbox } from './OptionCheckbox';
@@ -15,6 +15,8 @@ interface Props {
 export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
   const { isAuthenticated, setAuth } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [selectedOptions, setSelectedOptions] = useState({
     resume: false,
     coverLetter: false,
@@ -22,15 +24,17 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
   const [jobStatus, setJobStatus] = useState<JobStatus | null>(null);
   const [jobId, setJobId] = useState<string | null>(null);
 
-  const handleLogin = async () => {
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await signIn(process.env.LOGIN_URL || '');
-      setAuth(response.access_token);
+      const response = await signIn({ email, password });
+      setAuth(response.access_token, email);
     } catch (error) {
       console.error('Login failed:', error);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   const handleApply = async () => {
@@ -90,24 +94,47 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
         </div>
 
         {!isAuthenticated ? (
-          <div className="space-y-4">
+          <div className="space-y-6">
             <p className="text-gray-600">
               Sign in to start generating your personalized job applications.
             </p>
-            <button
-              onClick={handleLogin}
-              disabled={isLoading}
-              className="neo-button w-full"
-            >
-              {isLoading ? 'Signing in...' : 'Sign in to Continue'}
-            </button>
-          </div>
-        ) : jobStatus ? (
-          <div className="space-y-6">
-            <StatusPanel status={jobStatus} selectedOptions={selectedOptions} />
-            {jobStatus.status === 'finished' && jobStatus.downloadUrls && (
-              <DownloadPanel downloadUrls={jobStatus.downloadUrls} />
-            )}
+            <form onSubmit={handleLogin} className="space-y-6">
+              <div className="space-y-2">
+                <label htmlFor="email" className="block font-bold">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full border-4 border-black p-3 focus:outline-none"
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="password" className="block font-bold">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full border-4 border-black p-3 focus:outline-none"
+                  required
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="neo-button w-full"
+              >
+                {isLoading ? 'Logging in...' : 'Login'}
+              </button>
+            </form>
           </div>
         ) : (
           <div className="space-y-6">
@@ -149,6 +176,18 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
             >
               {isLoading ? 'Generating...' : 'Generate Application'}
             </button>
+
+            {jobStatus && (
+              <>
+                <StatusPanel
+                  status={jobStatus}
+                  selectedOptions={selectedOptions}
+                />
+                {jobStatus.status === 'finished' && jobStatus.downloadUrls && (
+                  <DownloadPanel downloadUrls={jobStatus.downloadUrls} />
+                )}
+              </>
+            )}
           </div>
         )}
       </div>
