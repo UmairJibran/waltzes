@@ -1,4 +1,6 @@
-system_prompt_linkedin_profile_segmentation = """
+"""Prompts for the LLM service."""
+
+system_prompt_resume_segmentation = """
 You are a head hunter with over 10 years of experience in the recruitment industry.
 You have a proven track record of successfully placing candidates in various roles across different industries.
 You are passionate about helping people find their dream jobs and thrive in their careers.
@@ -75,14 +77,15 @@ The segments should be a json object with the following structure (NOT MARKDOWN,
 
 user_prompt_for_resume_creation = """
 <User's Linkedin Data>
-{}
+{user_linkedin_data}
 </User's Linkedin Data>
 
 <Job Details>
-{}
+{job_details}
 </Job Details>
 
+Contact Information and additional details from <Additional Info> must take precedence over the rest of the information. If the user's LinkedIn data is missing any information, you should make an assumption based on the user's profile and the job posting, but do not hallucinate information.
 <Additional Info>
-{}
+{additional_info}
 </Additional Info>
 """
