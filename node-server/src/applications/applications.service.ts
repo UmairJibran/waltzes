@@ -304,7 +304,7 @@ export class ApplicationsService {
     await this.createPdf(applicationId);
   }
 
-  async storeCoverLetterSegments(applicationId: string, segments: object) {
+  async storeCoverLetterSegments(applicationId: string, segments: string) {
     await this.applications.updateOne(
       { _id: applicationId },
       { coverLetterRaw: segments },

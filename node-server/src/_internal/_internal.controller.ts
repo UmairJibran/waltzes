@@ -75,12 +75,12 @@ export class InternalController {
   @Public()
   @Post('cover-letter-segments')
   async storeCoverLetterRaw(
-    @Body() coverLetterRaw: object,
+    @Body() coverLetterRaw: { content: string },
     @Query('application-id') applicationId: string,
   ) {
     await this.applicationsService.storeCoverLetterSegments(
       applicationId,
-      coverLetterRaw,
+      coverLetterRaw.content,
     );
   }
 
