@@ -83,4 +83,18 @@ export class InternalController {
       coverLetterRaw,
     );
   }
+
+  @HttpCode(HttpStatus.OK)
+  @Public()
+  @Post('pdf-processed')
+  async storePdf(
+    @Body()
+    pdfFiles: {
+      resumePdf: string;
+      coverLetterPdf: string;
+    },
+    @Query('application-id') applicationId: string,
+  ) {
+    await this.applicationsService.storeDocumentLinks(applicationId, pdfFiles);
+  }
 }

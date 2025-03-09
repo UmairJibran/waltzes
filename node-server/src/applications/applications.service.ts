@@ -7,6 +7,8 @@ import { Model } from 'mongoose';
 import { SqsProducerService } from 'src/aws/sqs-producer/sqs-producer.service';
 import { JobsService } from 'src/jobs/jobs.service';
 import { Job } from 'src/jobs/entities/job.entity';
+import { JobDocument } from 'src/jobs/schemas/job.schema';
+import { UserDocument } from 'src/users/schemas/user.schema';
 
 @Injectable()
 export class ApplicationsService {
@@ -275,17 +277,83 @@ export class ApplicationsService {
     );
   }
 
+  async storeDocumentLinks(
+    applicationId: string,
+    pdfFiles: {
+      resumePdf: string | null;
+      coverLetterPdf: string | null;
+    },
+  ) {
+    const { resumePdf, coverLetterPdf } = pdfFiles;
+    await this.applications.updateOne(
+      { _id: applicationId },
+      {
+        appliedWith: {
+          resume: resumePdf,
+          coverLetter: coverLetterPdf,
+        },
+      },
+    );
+  }
+
   async storeResumeSegments(applicationId: string, segments: object) {
     await this.applications.updateOne(
       { _id: applicationId },
       { resumeRaw: segments },
     );
+    await this.createPdf(applicationId);
   }
 
   async storeCoverLetterSegments(applicationId: string, segments: object) {
     await this.applications.updateOne(
       { _id: applicationId },
       { coverLetterRaw: segments },
+    );
+    await this.createPdf(applicationId);
+  }
+
+  async createPdf(applicationId: string) {
+    const app = await this.applications
+      .findById(applicationId)
+      .populate<{ job: JobDocument; user: UserDocument }>([
+        {
+          path: 'job',
+          model: 'Job',
+          select: 'title companyName',
+        },
+        {
+          path: 'user',
+          model: 'User',
+          select: 'firstName lastName email',
+        },
+      ]);
+    if (!app) return;
+    if (app.generateResume && !app.resumeRaw) return;
+    if (app.generateCoverLetter && !app.coverLetterRaw) return;
+
+    const messageBody = {
+      callbackUrl:
+        'http://localhost:3000/api/_internal/pdf-processed?application-id=' +
+        applicationId.toString(),
+      jobDetails: {
+        title: app.job.title,
+        companyName: app.job.companyName,
+      },
+      applicantDetails: {
+        firstName: app.user.firstName,
+        lastName: app.user.lastName,
+        email: app.user.email,
+      },
+      path: `generated/users/${app.user._id.toString()}/applications/${applicationId}`,
+      resume: app.generateResume ? app.resumeRaw : null,
+      coverLetter: app.generateCoverLetter ? app.coverLetterRaw : null,
+    };
+
+    await this.sqsProducerService.sendMessage(
+      messageBody,
+      'pdfProcessor',
+      applicationId,
+      applicationId,
     );
   }
 }
