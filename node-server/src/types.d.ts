@@ -33,7 +33,6 @@ interface AwsConfig {
 
 interface IMessage {
   applicationId: string;
-  callbackUrl: string;
   jobDetails: object;
   applicantDetails: object;
   resume: boolean;

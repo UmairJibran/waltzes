@@ -25,11 +25,11 @@ export class Application {
     coverLetter?: string;
   };
 
-  @Prop()
-  resumeRaw: string;
+  @Prop({ type: MongooseSchema.Types.Mixed })
+  resumeRaw: Record<string, any>;
 
-  @Prop()
-  coverLetterRaw: string;
+  @Prop({ type: MongooseSchema.Types.Mixed })
+  coverLetterRaw: Record<string, any>;
 
   @Prop()
   resumeStarted: boolean;

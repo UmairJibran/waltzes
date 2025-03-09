@@ -223,7 +223,6 @@ export class ApplicationsService {
     for (const app of pendingApplications) {
       messages.push({
         applicationId: app._id.toString(),
-        callbackUrl: '',
         jobDetails: {
           companyName: jobDetails.companyName,
           description: jobDetails.description,
@@ -239,11 +238,14 @@ export class ApplicationsService {
 
     for (const message of messages) {
       if (message.resume) {
+        const callbackUrl =
+          'http://localhost:3000/api/_internal/resume-segments?application-id=' +
+          message.applicationId.toString();
         await this.sqsProducerService.sendMessage(
           {
             jobDetails: message.jobDetails,
             applicantDetails: message.applicantDetails,
-            callbackUrl: message.callbackUrl,
+            callbackUrl,
           },
           'resumeCreator',
           message.applicationId,
@@ -251,11 +253,14 @@ export class ApplicationsService {
         );
       }
       if (message.coverLetter) {
+        const callbackUrl =
+          'http://localhost:3000/api/_internal/cover-letter-segments?application-id=' +
+          message.applicationId.toString();
         await this.sqsProducerService.sendMessage(
           {
             jobDetails: message.jobDetails,
             applicantDetails: message.applicantDetails,
-            callbackUrl: message.callbackUrl,
+            callbackUrl,
           },
           'coverLetterCreator',
           message.applicationId,
@@ -267,6 +272,20 @@ export class ApplicationsService {
     await this.applications.updateMany(
       { jobUrl: url },
       { resumeStarted: true, coverLetterStarted: true },
+    );
+  }
+
+  async storeResumeSegments(applicationId: string, segments: object) {
+    await this.applications.updateOne(
+      { _id: applicationId },
+      { resumeRaw: segments },
+    );
+  }
+
+  async storeCoverLetterSegments(applicationId: string, segments: object) {
+    await this.applications.updateOne(
+      { _id: applicationId },
+      { coverLetterRaw: segments },
     );
   }
 }
