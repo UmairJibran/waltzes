@@ -14,5 +14,6 @@ export default () => ({
       process.env.COVER_LETTER_CREATOR_QUEUE_URL || '',
     resumeCreatorQueueUrl: process.env.RESUME_CREATOR_QUEUE_URL || '',
     pdfProcessorQueueUrl: process.env.PDF_PROCESSOR_QUEUE_URL || '',
+    s3ResourceBucketName: process.env.AWS_RES_BUCKET || '',
   },
 });

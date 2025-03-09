@@ -29,6 +29,7 @@ interface AwsConfig {
   coverLetterCreatorQueueUrl: string;
   resumeCreatorQueueUrl: string;
   pdfProcessorQueueUrl: string;
+  s3ResourceBucketName: string;
 }
 
 interface IMessage {

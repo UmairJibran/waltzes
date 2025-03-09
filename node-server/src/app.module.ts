@@ -11,6 +11,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SqsConsumerService } from './aws/sqs-consumer/sqs-consumer.service';
 import { SqsConsumerModule } from './aws/sqs-consumer/sqs-consumer.module';
 import { SesModule } from './aws/ses/ses.module';
+import { S3Module } from './aws/s3/s3.module';
 import { InternalController } from './_internal/_internal.controller';
 import { JobsModule } from './jobs/jobs.module';
 import configuration from './config';
@@ -37,6 +38,7 @@ import configuration from './config';
     SqsProducerModule,
     SqsConsumerModule,
     SesModule,
+    S3Module,
     JobsModule,
   ],
   controllers: [AppController, InternalController],
