@@ -2,8 +2,8 @@ import { useAuthStore } from '../store/auth';
 
 export interface GenerateApplicationRequest {
     jobUrl: string;
-    requiresResume: boolean;
-    requiresCoverLetter: boolean;
+    generateResume: boolean;
+    generateCoverLetter: boolean;
 }
 
 export interface JobStatus {

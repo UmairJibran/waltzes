@@ -59,6 +59,16 @@ export class Application {
   //     required: false,
   //   })
   //   jobDetails: MongooseSchema.Types.ObjectId;
+  @Prop({
+    default: false,
+  })
+  generateResume: boolean;
+
+  @Prop({
+    default: false,
+  })
+  generateCoverLetter: boolean;
+
 
   @Prop({
     default: () => new Date(),

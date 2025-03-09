@@ -46,8 +46,8 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
     try {
       const response = await generateApplication({
         jobUrl: window.location.href,
-        requiresResume: selectedOptions.resume,
-        requiresCoverLetter: selectedOptions.coverLetter,
+        generateResume: selectedOptions.resume,
+        generateCoverLetter: selectedOptions.coverLetter,
       });
       setApplicationId(response.applicationId);
     } catch (error) {
