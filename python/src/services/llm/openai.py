@@ -1,4 +1,6 @@
+"""OpenAI API service for making LLM calls."""
 import os
+
 from openai import OpenAI
 
 
@@ -10,8 +12,7 @@ def call_openai_api(
     api_key=None,
     messages=[],
 ):
-    """
-    Make an independent call to OpenAI API
+    """Make an independent call to OpenAI API.
 
     Args:
         prompt (str): The prompt to send to OpenAI
