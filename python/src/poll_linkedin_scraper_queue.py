@@ -3,9 +3,13 @@
 import datetime
 import os
 
+from dotenv import load_dotenv
+
 from aws.sqs import delete_message, fetch_messages
 from handlers.process_linkedin_message import process_linkedin_queue_message
 from utils.logger import logger
+
+load_dotenv(dotenv_path=".env", override=True)
 
 
 def main():
