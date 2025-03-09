@@ -263,5 +263,10 @@ export class ApplicationsService {
         );
       }
     }
+
+    await this.applications.updateMany(
+      { jobUrl: url },
+      { resumeStarted: true, coverLetterStarted: true },
+    );
   }
 }
