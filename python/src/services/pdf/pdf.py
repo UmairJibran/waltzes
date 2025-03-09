@@ -1,4 +1,7 @@
+"""PDF generation service."""
 from fpdf import FPDF
+
+from utils.utils import generate_file_path
 
 
 class PDF(FPDF):
@@ -23,6 +26,7 @@ class PDF(FPDF):
 
 
 def create_resume(segments, font_family="Times"):
+    """Create a resume PDF."""
     if not isinstance(segments, dict):
         segments = {}
 
@@ -327,8 +331,9 @@ def create_resume(segments, font_family="Times"):
     if "education" in segments:
         add_education_section(segments["education"])
 
-    pdf.output("output.pdf")
-    return "output.pdf"
+    output_file = generate_file_path()
+    pdf.output(output_file)
+    return output_file
 
 
 def create_cover_letter(text, title, font_family="Times"):
@@ -345,19 +350,19 @@ def create_cover_letter(text, title, font_family="Times"):
     pdf.set_font(font_family, "", 12)
 
     closing_keywords = ["sincerely", "regards"]
-    
+
     paragraphs = text.split("\n\n")
-    
+
     for paragraph in paragraphs:
         lines = paragraph.split("\n")
-        
+
         is_signature = False
         if len(lines) >= 2:
             for keyword in closing_keywords:
                 if keyword in lines[0].lower():
                     is_signature = True
                     break
-        
+
         if is_signature:
             pdf.cell(0, 5, lines[0], 0, 1)
             pdf.ln(1)
@@ -371,5 +376,6 @@ def create_cover_letter(text, title, font_family="Times"):
                     pdf.multi_cell(available_width, 5, line)
         pdf.ln(5)
 
-    pdf.output("output.pdf")
-    return "output.pdf"
+    output_file = generate_file_path()
+    pdf.output(output_file)
+    return output_file
