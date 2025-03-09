@@ -7,6 +7,9 @@ import { Model } from 'mongoose';
 import { SqsProducerService } from 'src/aws/sqs-producer/sqs-producer.service';
 import { JobsService } from 'src/jobs/jobs.service';
 import { Job } from 'src/jobs/entities/job.entity';
+import { JobDocument } from 'src/jobs/schemas/job.schema';
+import { UserDocument } from 'src/users/schemas/user.schema';
+import { S3Service } from 'src/aws/s3/s3.service';
 
 @Injectable()
 export class ApplicationsService {
@@ -15,6 +18,7 @@ export class ApplicationsService {
     @Inject(forwardRef(() => JobsService))
     private readonly jobsService: JobsService,
     private readonly sqsProducerService: SqsProducerService,
+    private readonly s3Service: S3Service,
   ) {}
 
   async create(
@@ -74,9 +78,12 @@ export class ApplicationsService {
       pdf: 'pending',
     };
 
-    const downloadUrls = {
-      resume: '',
-      coverLetter: '',
+    const downloadUrls: {
+      resume?: string;
+      coverLetter?: string;
+    } = {
+      resume: undefined,
+      coverLetter: undefined,
     };
 
     if (app.job?.status === 'done') {
@@ -85,25 +92,32 @@ export class ApplicationsService {
 
     if (!requiresResume) {
       steps.resume = 'skipped';
-      downloadUrls.resume = 'skipped';
-    } else if (app.appliedWith?.resume) {
+    } else if (app.resumeRaw) {
       steps.resume = 'done';
-      downloadUrls.resume = app.appliedWith.resume;
+    } else if (app.resumeStarted) {
+      steps.resume = 'processing';
     }
 
     if (!requiresCoverLetter) {
       steps.coverLetter = 'skipped';
-      downloadUrls.coverLetter = 'skipped';
-    } else if (app.appliedWith?.coverLetter) {
+    } else if (app.coverLetterRaw) {
       steps.coverLetter = 'done';
-      downloadUrls.coverLetter = app.appliedWith.coverLetter;
+    } else if (app.coverLetterStarted) {
+      steps.coverLetter = 'processing';
     }
 
-    if (
-      ['done', 'skipped'].includes(steps.resume) &&
-      ['done', 'skipped'].includes(steps.coverLetter)
-    ) {
+    const coverLetterStatus =
+      (steps.coverLetter === 'done' && app.appliedWith?.coverLetter) ||
+      steps.coverLetter === 'skipped';
+
+    const resumeStatus =
+      (steps.resume === 'done' && app.appliedWith?.resume) ||
+      steps.resume === 'skipped';
+
+    if (resumeStatus && coverLetterStatus) {
       steps.pdf = 'done';
+      downloadUrls.resume = app.appliedWith?.resume;
+      downloadUrls.coverLetter = app.appliedWith?.coverLetter;
     }
 
     const overallStatus = Object.values(steps).every(
@@ -111,6 +125,19 @@ export class ApplicationsService {
     )
       ? 'finished'
       : 'processing';
+
+    if (downloadUrls.resume) {
+      downloadUrls.resume = await this.s3Service.getPreSignedUrl(
+        downloadUrls.resume,
+        {},
+      );
+    }
+    if (downloadUrls.coverLetter) {
+      downloadUrls.coverLetter = await this.s3Service.getPreSignedUrl(
+        downloadUrls.coverLetter,
+        {},
+      );
+    }
 
     return {
       status: steps.scraping == 'done' ? overallStatus : 'enqueue',
@@ -209,19 +236,10 @@ export class ApplicationsService {
         },
       ]);
 
-    interface IMessage {
-      applicationId: string;
-      callbackUrl: string;
-      jobDetails: Partial<Job>;
-      applicantDetails: object;
-      resume: boolean;
-      coverLetter: boolean;
-    }
     const messages: IMessage[] = [];
     for (const app of pendingApplications) {
       messages.push({
         applicationId: app._id.toString(),
-        callbackUrl: '',
         jobDetails: {
           companyName: jobDetails.companyName,
           description: jobDetails.description,
@@ -237,11 +255,14 @@ export class ApplicationsService {
 
     for (const message of messages) {
       if (message.resume) {
+        const callbackUrl =
+          'http://localhost:3000/api/_internal/resume-segments?application-id=' +
+          message.applicationId.toString();
         await this.sqsProducerService.sendMessage(
           {
             jobDetails: message.jobDetails,
             applicantDetails: message.applicantDetails,
-            callbackUrl: message.callbackUrl,
+            callbackUrl,
           },
           'resumeCreator',
           message.applicationId,
@@ -249,11 +270,14 @@ export class ApplicationsService {
         );
       }
       if (message.coverLetter) {
+        const callbackUrl =
+          'http://localhost:3000/api/_internal/cover-letter-segments?application-id=' +
+          message.applicationId.toString();
         await this.sqsProducerService.sendMessage(
           {
             jobDetails: message.jobDetails,
             applicantDetails: message.applicantDetails,
-            callbackUrl: message.callbackUrl,
+            callbackUrl,
           },
           'coverLetterCreator',
           message.applicationId,
@@ -261,5 +285,90 @@ export class ApplicationsService {
         );
       }
     }
+
+    await this.applications.updateMany(
+      { jobUrl: url },
+      { resumeStarted: true, coverLetterStarted: true },
+    );
+  }
+
+  async storeDocumentLinks(
+    applicationId: string,
+    pdfFiles: {
+      resumePdf: string | null;
+      coverLetterPdf: string | null;
+    },
+  ) {
+    const { resumePdf, coverLetterPdf } = pdfFiles;
+    await this.applications.updateOne(
+      { _id: applicationId },
+      {
+        appliedWith: {
+          resume: resumePdf,
+          coverLetter: coverLetterPdf,
+        },
+      },
+    );
+  }
+
+  async storeResumeSegments(applicationId: string, segments: object) {
+    await this.applications.updateOne(
+      { _id: applicationId },
+      { resumeRaw: segments },
+    );
+    await this.createPdf(applicationId);
+  }
+
+  async storeCoverLetterSegments(applicationId: string, segments: string) {
+    await this.applications.updateOne(
+      { _id: applicationId },
+      { coverLetterRaw: segments },
+    );
+    await this.createPdf(applicationId);
+  }
+
+  async createPdf(applicationId: string) {
+    const app = await this.applications
+      .findById(applicationId)
+      .populate<{ job: JobDocument; user: UserDocument }>([
+        {
+          path: 'job',
+          model: 'Job',
+          select: 'title companyName',
+        },
+        {
+          path: 'user',
+          model: 'User',
+          select: 'firstName lastName email',
+        },
+      ]);
+    if (!app) return;
+    if (app.generateResume && !app.resumeRaw) return;
+    if (app.generateCoverLetter && !app.coverLetterRaw) return;
+
+    const messageBody = {
+      callbackUrl:
+        'http://localhost:3000/api/_internal/pdf-processed?application-id=' +
+        applicationId.toString(),
+      jobDetails: {
+        title: app.job.title,
+        companyName: app.job.companyName,
+      },
+      applicantDetails: {
+        firstName: app.user.firstName,
+        lastName: app.user.lastName,
+        email: app.user.email,
+      },
+      path: `generated/users/${app.user._id.toString()}/applications/${applicationId}`,
+      resume: app.generateResume ? app.resumeRaw : null,
+      coverLetter: app.generateCoverLetter ? app.coverLetterRaw : null,
+    };
+
+    await this.sqsProducerService.sendMessage(
+      messageBody,
+      'pdfProcessor',
+      applicationId,
+      applicationId,
+    );
   }
 }

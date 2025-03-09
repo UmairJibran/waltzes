@@ -1,4 +1,7 @@
+"""PDF generation service."""
 from fpdf import FPDF
+
+from utils.utils import generate_file_path
 
 
 class PDF(FPDF):
@@ -23,6 +26,7 @@ class PDF(FPDF):
 
 
 def create_resume(segments, font_family="Times"):
+    """Create a resume PDF."""
     if not isinstance(segments, dict):
         segments = {}
 
@@ -327,11 +331,13 @@ def create_resume(segments, font_family="Times"):
     if "education" in segments:
         add_education_section(segments["education"])
 
-    pdf.output("output.pdf")
-    return "output.pdf"
+    output_file = generate_file_path()
+    pdf.output(output_file)
+    return output_file
 
 
-def convert_text_to_pdf(text, title, font_family="Arial"):
+def create_cover_letter(text, title, font_family="Times"):
+    """Create a cover letter PDF."""
     if not isinstance(text, str):
         text = ""
 
@@ -343,10 +349,33 @@ def convert_text_to_pdf(text, title, font_family="Arial"):
     pdf.add_page()
     pdf.set_font(font_family, "", 12)
 
-    lines = text.split("\n")
-    for line in lines:
-        if isinstance(line, str):
-            pdf.multi_cell(0, 5, line)
+    closing_keywords = ["sincerely", "regards"]
 
-    pdf.output("output.pdf")
-    return "output.pdf"
+    paragraphs = text.split("\n\n")
+
+    for paragraph in paragraphs:
+        lines = paragraph.split("\n")
+
+        is_signature = False
+        if len(lines) >= 2:
+            for keyword in closing_keywords:
+                if keyword in lines[0].lower():
+                    is_signature = True
+                    break
+
+        if is_signature:
+            pdf.cell(0, 5, lines[0], 0, 1)
+            pdf.ln(1)
+            pdf.set_x(pdf.l_margin)
+            for i in range(1, len(lines)):
+                pdf.cell(0, 5, lines[i], 0, 1)
+        else:
+            for line in lines:
+                if isinstance(line, str):
+                    available_width = pdf.w - pdf.l_margin - pdf.r_margin
+                    pdf.multi_cell(available_width, 5, line)
+        pdf.ln(5)
+
+    output_file = generate_file_path()
+    pdf.output(output_file)
+    return output_file

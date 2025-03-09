@@ -12,11 +12,13 @@ import { UpdateUserDto } from 'src/users/dto/update-user.dto';
 import { UpdateJobDto } from 'src/jobs/dto/update-job.dto';
 import { UsersService } from 'src/users/users.service';
 import { JobsService } from 'src/jobs/jobs.service';
+import { ApplicationsService } from 'src/applications/applications.service';
 
 @Controller('_internal')
 export class InternalController {
   constructor(
     private readonly usersService: UsersService,
+    private readonly applicationsService: ApplicationsService,
     private readonly jobsService: JobsService,
   ) {}
 
@@ -54,5 +56,45 @@ export class InternalController {
     @Query('job-url') jobUrl: string,
   ) {
     await this.jobsService.updateFromWebhook(jobUrl, jobDetailsDto);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Public()
+  @Post('resume-segments')
+  async storeResumeRaw(
+    @Body() resumeRaw: object,
+    @Query('application-id') applicationId: string,
+  ) {
+    await this.applicationsService.storeResumeSegments(
+      applicationId,
+      resumeRaw,
+    );
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Public()
+  @Post('cover-letter-segments')
+  async storeCoverLetterRaw(
+    @Body() coverLetterRaw: { content: string },
+    @Query('application-id') applicationId: string,
+  ) {
+    await this.applicationsService.storeCoverLetterSegments(
+      applicationId,
+      coverLetterRaw.content,
+    );
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Public()
+  @Post('pdf-processed')
+  async storePdf(
+    @Body()
+    pdfFiles: {
+      resumePdf: string;
+      coverLetterPdf: string;
+    },
+    @Query('application-id') applicationId: string,
+  ) {
+    await this.applicationsService.storeDocumentLinks(applicationId, pdfFiles);
   }
 }

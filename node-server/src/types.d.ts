@@ -29,4 +29,13 @@ interface AwsConfig {
   coverLetterCreatorQueueUrl: string;
   resumeCreatorQueueUrl: string;
   pdfProcessorQueueUrl: string;
+  s3ResourceBucketName: string;
+}
+
+interface IMessage {
+  applicationId: string;
+  jobDetails: object;
+  applicantDetails: object;
+  resume: boolean;
+  coverLetter: boolean;
 }

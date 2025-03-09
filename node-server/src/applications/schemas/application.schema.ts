@@ -25,6 +25,18 @@ export class Application {
     coverLetter?: string;
   };
 
+  @Prop({ type: MongooseSchema.Types.Mixed })
+  resumeRaw: Record<string, any>;
+
+  @Prop({ type: MongooseSchema.Types.Mixed })
+  coverLetterRaw: Record<string, any>;
+
+  @Prop()
+  resumeStarted: boolean;
+
+  @Prop()
+  coverLetterStarted: boolean;
+
   @Prop()
   jobUrl: string;
 

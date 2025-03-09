@@ -1,7 +1,9 @@
 """Utility functions."""
 
 import json
+import os
 from typing import List, Optional
+import uuid
 
 import requests
 
@@ -40,10 +42,30 @@ def send_data_to_callback_url(data: dict, callback_url: str):
         data: Data to send
         callback_url: URL to send data to
     """
+    logger.warn(f"""{callback_url=}""")
     try:
         response = requests.post(callback_url, json=data)
-        logger.info(f'''{response.status_code=}''')
+        logger.info(f"""{response.status_code=}""")
         response.raise_for_status()
     except requests.exceptions.RequestException as error:
         logger.error(f"Error sending data to callback URL: {str(error)}")
+        return None
+
+
+def generate_file_path():
+    """Generate a unique file path for the output file."""
+    output_file = os.path.join("lib", f"{str(uuid.uuid4())}.pdf")
+    if not os.path.exists("lib"):
+        os.makedirs("lib")
+    return output_file
+
+
+def delete_file(file_path: str):
+    """Delete the file."""
+    try:
+        os.remove(file_path)
+    except FileNotFoundError:
+        logger.error(f"File {file_path} not found.")
+    except Exception as e:
+        logger.error(f"Error deleting file: {e}")
         return None
