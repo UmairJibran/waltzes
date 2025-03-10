@@ -142,6 +142,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               lastName: user.lastName,
               firstName: user.firstName,
               email: user.email,
+              isPro: user.isPro,
             }}
           />
         )}

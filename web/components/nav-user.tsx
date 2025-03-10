@@ -85,9 +85,10 @@ export function NavUser({ user }: { user: Partial<User> }) {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup hidden={user.isPro}>
+            <DropdownMenuGroup>
               <DropdownMenuItem
                 onClick={() => navigate(process.env.NEXT_PUBLIC_CHARGEBEE_LINK)}
+                hidden={user.isPro}
               >
                 <Sparkles />
                 Upgrade to Pro
