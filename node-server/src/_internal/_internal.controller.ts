@@ -12,7 +12,9 @@ import { UpdateUserDto } from 'src/users/dto/update-user.dto';
 import { UpdateJobDto } from 'src/jobs/dto/update-job.dto';
 import { UsersService } from 'src/users/users.service';
 import { JobsService } from 'src/jobs/jobs.service';
+import { SubscriptionsService } from 'src/subscriptions/subscriptions.service';
 import { ApplicationsService } from 'src/applications/applications.service';
+import { CreationEventDto } from 'src/subscriptions/dto/create-subscription.dto';
 
 @Controller('_internal')
 export class InternalController {
@@ -20,6 +22,7 @@ export class InternalController {
     private readonly usersService: UsersService,
     private readonly applicationsService: ApplicationsService,
     private readonly jobsService: JobsService,
+    private readonly subscriptionService: SubscriptionsService,
   ) {}
 
   @HttpCode(HttpStatus.OK)
@@ -96,5 +99,12 @@ export class InternalController {
     @Query('application-id') applicationId: string,
   ) {
     await this.applicationsService.storeDocumentLinks(applicationId, pdfFiles);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Public()
+  @Post('chargebee-subscription-alert')
+  async updateUserSubscription(@Body() body: CreationEventDto) {
+    await this.subscriptionService.createSubscription(body);
   }
 }
