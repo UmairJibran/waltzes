@@ -7,19 +7,27 @@ import { User as UserEntity } from './entities/user.entity';
 import { Model } from 'mongoose';
 import { SqsProducerService } from 'src/aws/sqs-producer/sqs-producer.service';
 import { createHash } from 'crypto';
+import { SubscriptionsService } from 'src/subscriptions/subscriptions.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User.name) private users: Model<User>,
     private readonly sqsProducerService: SqsProducerService,
+    private readonly subscriptionsService: SubscriptionsService,
   ) {}
 
   async findOne(id: string): Promise<Partial<UserEntity> | null> {
     const user = await this.users.findById(id);
 
     if (user) {
-      const response: Partial<UserEntity> = {
+      const isUserPro = await this.subscriptionsService.findByEmail(
+        user.email,
+        {
+          active: true,
+        },
+      );
+      const response: Partial<UserEntity & { isPro: boolean }> = {
         _id: String(user.id),
         firstName: user.firstName,
         lastName: user.lastName,
@@ -30,6 +38,7 @@ export class UsersService {
         githubUsername: user.githubUsername,
         additionalInstructions: user.additionalInstructions,
         role: user.role,
+        isPro: isUserPro ? true : false,
       };
 
       return response;
