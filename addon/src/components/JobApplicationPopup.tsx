@@ -10,6 +10,7 @@ import { StatusPanel } from './StatusPanel';
 import { DownloadPanel } from './DownloadPanel';
 import { OptionCheckbox } from './OptionCheckbox';
 import { getErrorMessage } from '../utils/errors';
+import { randomLoadingFact } from '../constants';
 
 const POLL_INTERVAL = 1000;
 
@@ -111,8 +112,7 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
           <div className="space-y-6">
             <div className="neo-container">
               <h3 className="font-bold text-xl mb-2 animate-pulse text-secondary-text">
-                Did you know that 90% of job applications are rejected before
-                they even reach the hiring manager?
+                {randomLoadingFact()}
               </h3>
             </div>
           </div>
