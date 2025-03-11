@@ -1,8 +1,11 @@
+import { ApiResponse } from '../types/api';
+
 export class APIError extends Error {
     constructor(
         message: string,
         public statusCode?: number,
-        public code?: string
+        public code?: string,
+        public details?: Record<string, any>
     ) {
         super(message);
         this.name = 'APIError';
@@ -19,14 +22,17 @@ export const getErrorMessage = (error: unknown): string => {
     return 'An unexpected error occurred';
 };
 
-export const handleAPIResponse = async (response: Response) => {
-    if (!response.ok) {
-        const data = await response.json().catch(() => ({}));
+export const handleAPIResponse = async <T>(response: Response): Promise<ApiResponse<T>> => {
+    const data: ApiResponse<T> = await response.json();
+
+    if (!data.success) {
         throw new APIError(
-            data.message || 'An error occurred while processing your request',
+            data.error?.message || 'An error occurred while processing your request',
             response.status,
-            data.code
+            data.error?.code,
+            data.error?.details
         );
     }
-    return response;
+
+    return data;
 }; 

@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { forwardRef, HttpException, Inject, Injectable } from '@nestjs/common';
 import { CreateApplicationDto } from './dto/create-application.dto';
 import { UpdateApplicationDto } from './dto/update-application.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -30,7 +30,10 @@ export class ApplicationsService {
   ) {
     const isUserPro = await this.usersService.isUserPro({ id: user });
     if (!isUserPro) {
-      throw new Error('User is not a pro user');
+      throw new HttpException(
+        'You need to have an active subscription to use this feature, head over to the web app to subscribe',
+        402,
+      );
     }
     const existingJob = await this.jobsService.findByUrl(
       createApplicationDto.jobUrl,

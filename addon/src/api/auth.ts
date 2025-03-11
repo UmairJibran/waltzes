@@ -1,4 +1,5 @@
 import { handleAPIResponse } from '../utils/errors';
+import { ApiResponse } from '../types/api';
 
 export interface AuthResponse {
     access_token: string;
@@ -22,6 +23,6 @@ export const signIn = async (credentials: LoginCredentials): Promise<AuthRespons
         body: JSON.stringify(credentials),
     });
 
-    await handleAPIResponse(response);
-    return response.json();
+    const apiResponse = await handleAPIResponse<AuthResponse>(response);
+    return apiResponse.data!;
 }; 

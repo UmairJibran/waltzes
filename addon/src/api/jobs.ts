@@ -21,7 +21,11 @@ export interface JobStatus {
     };
 }
 
-export const generateApplication = async (data: GenerateApplicationRequest): Promise<{ applicationId: string }> => {
+interface GenerateApplicationResponse {
+    applicationId: string;
+}
+
+export const generateApplication = async (data: GenerateApplicationRequest): Promise<GenerateApplicationResponse> => {
     const { accessToken } = useAuthStore.getState();
 
     if (!accessToken) {
@@ -37,8 +41,8 @@ export const generateApplication = async (data: GenerateApplicationRequest): Pro
         body: JSON.stringify(data),
     });
 
-    await handleAPIResponse(response);
-    return response.json();
+    const apiResponse = await handleAPIResponse<GenerateApplicationResponse>(response);
+    return apiResponse.data!;
 };
 
 export const getApplicationStatus = async (applicationId: string): Promise<JobStatus> => {
@@ -55,6 +59,6 @@ export const getApplicationStatus = async (applicationId: string): Promise<JobSt
         },
     });
 
-    await handleAPIResponse(response);
-    return response.json();
+    const apiResponse = await handleAPIResponse<JobStatus>(response);
+    return apiResponse.data!;
 }; 
