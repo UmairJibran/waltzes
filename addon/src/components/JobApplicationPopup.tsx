@@ -9,6 +9,7 @@ import { signIn } from '../api/auth';
 import { StatusPanel } from './StatusPanel';
 import { DownloadPanel } from './DownloadPanel';
 import { OptionCheckbox } from './OptionCheckbox';
+import { getErrorMessage } from '../utils/errors';
 
 const POLL_INTERVAL = 1000;
 
@@ -19,6 +20,7 @@ interface Props {
 export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
   const { isAuthenticated, setAuth } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [selectedOptions, setSelectedOptions] = useState({
@@ -28,14 +30,17 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
   const [jobStatus, setJobStatus] = useState<JobStatus | null>(null);
   const [applicationId, setApplicationId] = useState<string | null>(null);
 
+  const clearError = () => setError(null);
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    clearError();
     try {
       const response = await signIn({ email, password });
       setAuth(response.access_token, email);
     } catch (error) {
-      console.error('Login failed:', error);
+      setError(getErrorMessage(error));
     } finally {
       setIsLoading(false);
     }
@@ -43,6 +48,7 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
 
   const handleApply = async () => {
     setIsLoading(true);
+    clearError();
     try {
       const response = await generateApplication({
         jobUrl: window.location.href,
@@ -51,7 +57,9 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
       });
       setApplicationId(response.applicationId);
     } catch (error) {
-      console.error('Application generation failed:', error);
+      setError(getErrorMessage(error));
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -67,7 +75,7 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
             clearInterval(interval);
           }
         } catch (error) {
-          console.error('Failed to fetch application status:', error);
+          setError(getErrorMessage(error));
           clearInterval(interval);
         } finally {
           if (isLoading) setIsLoading(false);
@@ -123,6 +131,13 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
             ×
           </button>
         </div>
+
+        {error && (
+          <div className="mb-6 p-4 bg-red-100 border-l-4 border-red-500 text-red-700">
+            <p className="font-medium">Error</p>
+            <p>{error}</p>
+          </div>
+        )}
 
         {!isAuthenticated ? (
           <div className="space-y-6">

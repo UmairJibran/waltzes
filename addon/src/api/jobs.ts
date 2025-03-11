@@ -1,4 +1,5 @@
 import { useAuthStore } from '../store/auth';
+import { handleAPIResponse } from '../utils/errors';
 
 export interface GenerateApplicationRequest {
     jobUrl: string;
@@ -36,10 +37,7 @@ export const generateApplication = async (data: GenerateApplicationRequest): Pro
         body: JSON.stringify(data),
     });
 
-    if (!response.ok) {
-        throw new Error('Failed to generate application');
-    }
-
+    await handleAPIResponse(response);
     return response.json();
 };
 
@@ -57,9 +55,6 @@ export const getApplicationStatus = async (applicationId: string): Promise<JobSt
         },
     });
 
-    if (!response.ok) {
-        throw new Error('Failed to fetch application status');
-    }
-
+    await handleAPIResponse(response);
     return response.json();
 }; 
