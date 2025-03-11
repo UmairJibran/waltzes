@@ -37,6 +37,9 @@ export class Application {
   @Prop()
   coverLetterStarted: boolean;
 
+  @Prop({ default: false })
+  jobScrapingStarted: boolean;
+
   @Prop()
   jobUrl: string;
 

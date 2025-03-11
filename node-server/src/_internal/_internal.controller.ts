@@ -63,13 +63,18 @@ export class InternalController {
   async storeJobDetails(
     @Body() jobDetailsDto: UpdateJobDto,
     @Query('job-url') jobUrl: string,
+    @Query('just-started') justStarted: boolean,
   ) {
     console.log(
-      `[${new Date().toISOString()}] Starting updateFromWebhook for job URL: ${jobUrl}`,
+      `[${new Date().toISOString()}] Starting updateFromWebhook for job URL: ${jobUrl} with justStarted: ${justStarted}`,
     );
-    await this.jobsService.updateFromWebhook(jobUrl, jobDetailsDto);
+    if (justStarted) {
+      await this.applicationsService.scrapingStarted(jobUrl);
+    } else {
+      await this.jobsService.updateFromWebhook(jobUrl, jobDetailsDto);
+    }
     console.log(
-      `[${new Date().toISOString()}] Completed updateFromWebhook for job URL: ${jobUrl}`,
+      `[${new Date().toISOString()}] Completed updateFromWebhook for job URL: ${jobUrl} with justStarted: ${justStarted}`,
     );
   }
 
@@ -79,16 +84,21 @@ export class InternalController {
   async storeResumeRaw(
     @Body() resumeRaw: object,
     @Query('application-id') applicationId: string,
+    @Query('just-started') justStarted: boolean,
   ) {
     console.log(
-      `[${new Date().toISOString()}] Starting storeResumeSegments for applicationId: ${applicationId}`,
+      `[${new Date().toISOString()}] Starting storeResumeSegments for applicationId: ${applicationId} with justStarted: ${justStarted}`,
     );
-    await this.applicationsService.storeResumeSegments(
-      applicationId,
-      resumeRaw,
-    );
+    if (justStarted) {
+      await this.applicationsService.resumeProcessingStarted(applicationId);
+    } else {
+      await this.applicationsService.storeResumeSegments(
+        applicationId,
+        resumeRaw,
+      );
+    }
     console.log(
-      `[${new Date().toISOString()}] Completed storeResumeSegments for applicationId: ${applicationId}`,
+      `[${new Date().toISOString()}] Completed storeResumeSegments for applicationId: ${applicationId} with justStarted: ${justStarted}`,
     );
   }
 
@@ -98,16 +108,23 @@ export class InternalController {
   async storeCoverLetterRaw(
     @Body() coverLetterRaw: { content: string },
     @Query('application-id') applicationId: string,
+    @Query('just-started') justStarted: boolean,
   ) {
     console.log(
-      `[${new Date().toISOString()}] Starting storeCoverLetterSegments for applicationId: ${applicationId}`,
+      `[${new Date().toISOString()}] Starting storeCoverLetterSegments for applicationId: ${applicationId} with justStarted: ${justStarted}`,
     );
-    await this.applicationsService.storeCoverLetterSegments(
-      applicationId,
-      coverLetterRaw.content,
-    );
+    if (justStarted) {
+      await this.applicationsService.coverLetterProcessingStarted(
+        applicationId,
+      );
+    } else {
+      await this.applicationsService.storeCoverLetterSegments(
+        applicationId,
+        coverLetterRaw.content,
+      );
+    }
     console.log(
-      `[${new Date().toISOString()}] Completed storeCoverLetterSegments for applicationId: ${applicationId}`,
+      `[${new Date().toISOString()}] Completed storeCoverLetterSegments for applicationId: ${applicationId} with justStarted: ${justStarted}`,
     );
   }
 

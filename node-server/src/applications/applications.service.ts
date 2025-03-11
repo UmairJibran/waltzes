@@ -99,6 +99,8 @@ export class ApplicationsService {
 
     if (app.job?.status === 'done') {
       steps.scraping = 'done';
+    } else if (app.jobScrapingStarted) {
+      steps.scraping = 'processing';
     }
 
     if (!requiresResume) {
@@ -135,7 +137,9 @@ export class ApplicationsService {
       (step) => step === 'done' || step === 'skipped',
     )
       ? 'finished'
-      : 'processing';
+      : Object.values(steps).some((step) => step === 'processing')
+        ? 'processing'
+        : 'enqueue';
 
     if (downloadUrls.resume) {
       downloadUrls.resume = await this.s3Service.getPreSignedUrl(
@@ -151,7 +155,7 @@ export class ApplicationsService {
     }
 
     return {
-      status: steps.scraping == 'done' ? overallStatus : 'enqueue',
+      status: overallStatus,
       steps,
       downloadUrls,
     };
@@ -296,11 +300,6 @@ export class ApplicationsService {
         );
       }
     }
-
-    await this.applications.updateMany(
-      { jobUrl: url },
-      { resumeStarted: true, coverLetterStarted: true },
-    );
   }
 
   async storeDocumentLinks(
@@ -389,6 +388,27 @@ export class ApplicationsService {
       'pdfProcessor',
       applicationId,
       applicationId,
+    );
+  }
+
+  async scrapingStarted(jobUrl: string) {
+    await this.applications.updateMany(
+      { jobUrl },
+      { $set: { jobScrapingStarted: true } },
+    );
+  }
+
+  async resumeProcessingStarted(applicationId: string) {
+    await this.applications.updateOne(
+      { _id: applicationId },
+      { $set: { resumeStarted: true } },
+    );
+  }
+
+  async coverLetterProcessingStarted(applicationId: string) {
+    await this.applications.updateOne(
+      { _id: applicationId },
+      { $set: { coverLetterStarted: true } },
     );
   }
 }

@@ -8,7 +8,7 @@ from services.llm.prompts import (
     user_prompt_for_resume_creation,
 )
 from utils import logger
-from utils.utils import parse_json_from_llm, send_data_to_callback_url
+from utils.utils import add_query_param, parse_json_from_llm, send_data_to_callback_url
 
 
 def process_resume_creator_message(sqs_message: str):
@@ -33,6 +33,8 @@ def process_resume_creator_message(sqs_message: str):
     applicant_last_name = applicatnt_details.get("lastName")
     applicant_additional_instructions = applicatnt_details.get("additionalInstructions")
 
+    start_notification_url = add_query_param(callback_url, "just-started", "true")
+    send_data_to_callback_url({}, start_notification_url)
     # log all the details
     logger.info(f"Applicant Details: {applicatnt_details}")
     logger.info(f"Job Details: {job_details}")
