@@ -19,7 +19,7 @@ export const OptionCheckbox: React.FC<Props> = ({
         onChange={(e) => onChange(e.target.checked)}
         className="neo-checkbox"
       />
-      <span className="font-bold text-lg">{label}</span>
+      <span className="font-bold text-lg text-primary-text">{label}</span>
     </div>
   </label>
 );

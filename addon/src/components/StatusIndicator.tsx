@@ -12,12 +12,12 @@ export const StatusIndicator: React.FC<Props> = ({ status, label }) => (
     <div
       className={`w-3 h-3 rounded-full ${
         status === 'done'
-          ? 'bg-green-500'
+          ? 'bg-accent-success'
           : status === 'processing'
-            ? 'bg-yellow-500'
-            : 'bg-gray-300'
+            ? 'bg-accent-warning'
+            : 'bg-secondary-label'
       }`}
     />
-    <span className="font-bold">{label}</span>
+    <span className="font-bold text-primary-text">{label}</span>
   </div>
 );

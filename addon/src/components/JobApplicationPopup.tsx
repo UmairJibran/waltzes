@@ -98,7 +98,9 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
       <div className="fixed inset-0 flex items-center justify-center bg-black/50">
         <div className="neo-container max-w-md w-full mx-4">
           <div className="flex justify-between items-center mb-6 border-b-4 border-black pb-4">
-            <h2 className="text-3xl font-black tracking-tight">Waltzes</h2>
+            <h2 className="text-3xl font-black tracking-tight text-primary-heading">
+              Waltzes
+            </h2>
             <button
               onClick={onClose}
               className="neo-button w-10 h-10 !p-0 flex items-center justify-center"
@@ -108,7 +110,7 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
           </div>
           <div className="space-y-6">
             <div className="neo-container">
-              <h3 className="font-bold text-xl mb-2 animate-pulse">
+              <h3 className="font-bold text-xl mb-2 animate-pulse text-secondary-text">
                 Did you know that 90% of job applications are rejected before
                 they even reach the hiring manager?
               </h3>
@@ -123,7 +125,9 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
     <div className="fixed inset-0 flex items-center justify-center bg-black/50">
       <div className="neo-container max-w-md w-full mx-4">
         <div className="flex justify-between items-center mb-6 border-b-4 border-black pb-4">
-          <h2 className="text-3xl font-black tracking-tight">Waltzes</h2>
+          <h2 className="text-3xl font-black tracking-tight text-primary-heading">
+            Waltzes
+          </h2>
           <button
             onClick={onClose}
             className="neo-button w-10 h-10 !p-0 flex items-center justify-center"
@@ -133,7 +137,7 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-red-100 border-l-4 border-red-500 text-red-700">
+          <div className="mb-6 p-4 bg-red-100 border-l-4 border-accent-error text-accent-error">
             <p className="font-medium">Error</p>
             <p>{error}</p>
           </div>
@@ -141,12 +145,15 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
 
         {!isAuthenticated ? (
           <div className="space-y-6">
-            <p className="text-gray-600">
+            <p className="text-secondary-text">
               Sign in to start generating your personalized job applications.
             </p>
             <form onSubmit={handleLogin} className="space-y-6">
               <div className="space-y-2">
-                <label htmlFor="email" className="block font-bold">
+                <label
+                  htmlFor="email"
+                  className="block font-bold text-primary-text"
+                >
                   Email
                 </label>
                 <input
@@ -160,7 +167,10 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="password" className="block font-bold">
+                <label
+                  htmlFor="password"
+                  className="block font-bold text-primary-text"
+                >
                   Password
                 </label>
                 <input
@@ -187,14 +197,14 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
             {!applicationId && (
               <div className="space-y-6">
                 <div className="neo-container">
-                  <h3 className="font-bold text-xl mb-2">
+                  <h3 className="font-bold text-xl mb-2 text-primary-heading">
                     Current Page{' '}
-                    <small className="text-gray-600 text-sm">
+                    <small className="text-secondary-label text-sm">
                       Page must be public for best results
                     </small>
                   </h3>
-                  <p className="text-gray-600">{document.title}</p>
-                  <p className="text-gray-600 truncate">
+                  <p className="text-secondary-text">{document.title}</p>
+                  <p className="text-secondary-text truncate">
                     {window.location.href}
                   </p>
                 </div>
