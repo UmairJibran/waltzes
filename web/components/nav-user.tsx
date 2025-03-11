@@ -87,7 +87,13 @@ export function NavUser({ user }: { user: Partial<User> }) {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem
-                onClick={() => navigate(process.env.NEXT_PUBLIC_CHARGEBEE_LINK)}
+                onClick={() =>
+                  navigate(
+                    process.env.NEXT_PUBLIC_CHARGEBEE_LINK?.concat(
+                      `&customer[first_name]=${user.firstName}&customer[last_name]=${user.lastName}&customer[email]=${user.email}`
+                    )
+                  )
+                }
                 hidden={user.isPro}
               >
                 <Sparkles />
