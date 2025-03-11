@@ -9,6 +9,8 @@ import { signIn } from '../api/auth';
 import { StatusPanel } from './StatusPanel';
 import { DownloadPanel } from './DownloadPanel';
 import { OptionCheckbox } from './OptionCheckbox';
+import { getErrorMessage } from '../utils/errors';
+import { randomLoadingFact } from '../constants';
 
 const POLL_INTERVAL = 1000;
 
@@ -19,6 +21,7 @@ interface Props {
 export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
   const { isAuthenticated, setAuth } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [selectedOptions, setSelectedOptions] = useState({
@@ -28,14 +31,17 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
   const [jobStatus, setJobStatus] = useState<JobStatus | null>(null);
   const [applicationId, setApplicationId] = useState<string | null>(null);
 
+  const clearError = () => setError(null);
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    clearError();
     try {
       const response = await signIn({ email, password });
       setAuth(response.access_token, email);
     } catch (error) {
-      console.error('Login failed:', error);
+      setError(getErrorMessage(error));
     } finally {
       setIsLoading(false);
     }
@@ -43,6 +49,7 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
 
   const handleApply = async () => {
     setIsLoading(true);
+    clearError();
     try {
       const response = await generateApplication({
         jobUrl: window.location.href,
@@ -51,7 +58,9 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
       });
       setApplicationId(response.applicationId);
     } catch (error) {
-      console.error('Application generation failed:', error);
+      setError(getErrorMessage(error));
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -67,7 +76,7 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
             clearInterval(interval);
           }
         } catch (error) {
-          console.error('Failed to fetch application status:', error);
+          setError(getErrorMessage(error));
           clearInterval(interval);
         } finally {
           if (isLoading) setIsLoading(false);
@@ -90,7 +99,9 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
       <div className="fixed inset-0 flex items-center justify-center bg-black/50">
         <div className="neo-container max-w-md w-full mx-4">
           <div className="flex justify-between items-center mb-6 border-b-4 border-black pb-4">
-            <h2 className="text-3xl font-black tracking-tight">Waltzes</h2>
+            <h2 className="text-3xl font-black tracking-tight text-primary-heading">
+              Waltzes
+            </h2>
             <button
               onClick={onClose}
               className="neo-button w-10 h-10 !p-0 flex items-center justify-center"
@@ -100,9 +111,8 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
           </div>
           <div className="space-y-6">
             <div className="neo-container">
-              <h3 className="font-bold text-xl mb-2 animate-pulse">
-                Did you know that 90% of job applications are rejected before
-                they even reach the hiring manager?
+              <h3 className="font-bold text-xl mb-2 animate-pulse text-secondary-text">
+                {randomLoadingFact()}
               </h3>
             </div>
           </div>
@@ -115,7 +125,9 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
     <div className="fixed inset-0 flex items-center justify-center bg-black/50">
       <div className="neo-container max-w-md w-full mx-4">
         <div className="flex justify-between items-center mb-6 border-b-4 border-black pb-4">
-          <h2 className="text-3xl font-black tracking-tight">Waltzes</h2>
+          <h2 className="text-3xl font-black tracking-tight text-primary-heading">
+            Waltzes
+          </h2>
           <button
             onClick={onClose}
             className="neo-button w-10 h-10 !p-0 flex items-center justify-center"
@@ -124,14 +136,33 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
           </button>
         </div>
 
+        {error && (
+          <div className="mb-4 p-3 max-w-sm mx-auto bg-red-100 border-l-4 border-accent-error text-accent-error text-sm">
+            <p className="break-words">{error}</p>
+          </div>
+        )}
+
         {!isAuthenticated ? (
           <div className="space-y-6">
-            <p className="text-gray-600">
+            <p className="text-secondary-text">
               Sign in to start generating your personalized job applications.
+              <br />
+              To create an account, visit{' '}
+              <a
+                href={process.env.WEB_APP_URL + '/register'}
+                target="_blank"
+                rel="noreferrer"
+                className="text-primary-text underline"
+              >
+                the web app
+              </a>
             </p>
             <form onSubmit={handleLogin} className="space-y-6">
               <div className="space-y-2">
-                <label htmlFor="email" className="block font-bold">
+                <label
+                  htmlFor="email"
+                  className="block font-bold text-primary-text"
+                >
                   Email
                 </label>
                 <input
@@ -145,7 +176,10 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="password" className="block font-bold">
+                <label
+                  htmlFor="password"
+                  className="block font-bold text-primary-text"
+                >
                   Password
                 </label>
                 <input
@@ -172,14 +206,14 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
             {!applicationId && (
               <div className="space-y-6">
                 <div className="neo-container">
-                  <h3 className="font-bold text-xl mb-2">
+                  <h3 className="font-bold text-xl mb-2 text-primary-heading">
                     Current Page{' '}
-                    <small className="text-gray-600 text-sm">
+                    <small className="text-secondary-label text-sm">
                       Page must be public for best results
                     </small>
                   </h3>
-                  <p className="text-gray-600">{document.title}</p>
-                  <p className="text-gray-600 truncate">
+                  <p className="text-secondary-text">{document.title}</p>
+                  <p className="text-secondary-text truncate">
                     {window.location.href}
                   </p>
                 </div>
@@ -203,7 +237,7 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
                         coverLetter: checked,
                       }))
                     }
-                    label="Cover Letter (0.5 credit)"
+                    label="Cover Letter (1 credit)"
                   />
                 </div>
 

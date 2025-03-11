@@ -1,3 +1,6 @@
+import { handleAPIResponse } from '../utils/errors';
+import { ApiResponse } from '../types/api';
+
 export interface AuthResponse {
     access_token: string;
     user: {
@@ -20,9 +23,6 @@ export const signIn = async (credentials: LoginCredentials): Promise<AuthRespons
         body: JSON.stringify(credentials),
     });
 
-    if (!response.ok) {
-        throw new Error('Authentication failed');
-    }
-
-    return response.json();
+    const apiResponse = await handleAPIResponse<AuthResponse>(response);
+    return apiResponse.data!;
 }; 

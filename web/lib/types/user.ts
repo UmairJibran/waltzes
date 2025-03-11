@@ -9,8 +9,10 @@ export interface User {
   linkedinUsername?: string;
   githubUsername?: string;
   additionalInstructions?: string;
+  avatar?: string;
+  isPro?: boolean;
 }
 
-export type UpdateUserData = Omit<User, 'id' | 'email' | 'role'> & {
+export type UpdateUserData = Omit<User, "id" | "email" | "role"> & {
   newPassword?: string;
 };

@@ -4,22 +4,54 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schemas/user.schema';
 import { User as UserEntity } from './entities/user.entity';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 import { SqsProducerService } from 'src/aws/sqs-producer/sqs-producer.service';
 import { createHash } from 'crypto';
+import { SubscriptionsService } from 'src/subscriptions/subscriptions.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User.name) private users: Model<User>,
     private readonly sqsProducerService: SqsProducerService,
+    private readonly subscriptionsService: SubscriptionsService,
   ) {}
+
+  async isUserPro({
+    id,
+    email,
+  }: {
+    id?: string;
+    email?: string;
+  }): Promise<boolean> {
+    let userEmail = email;
+    if (!userEmail) {
+      const user = await this.users.findById(id);
+      if (!user) {
+        throw new Error('User not found');
+      }
+      userEmail = user.email;
+    }
+
+    const subscription = await this.subscriptionsService.findByEmail(
+      userEmail,
+      {
+        active: true,
+      },
+    );
+
+    return subscription ? true : false;
+  }
 
   async findOne(id: string): Promise<Partial<UserEntity> | null> {
     const user = await this.users.findById(id);
 
     if (user) {
-      const response: Partial<UserEntity> = {
+      const isUserPro = await this.isUserPro({
+        id,
+        email: user.email,
+      });
+      const response: Partial<UserEntity & { isPro: boolean }> = {
         _id: String(user.id),
         firstName: user.firstName,
         lastName: user.lastName,
@@ -30,6 +62,7 @@ export class UsersService {
         githubUsername: user.githubUsername,
         additionalInstructions: user.additionalInstructions,
         role: user.role,
+        isPro: isUserPro ? true : false,
       };
 
       return response;
@@ -201,5 +234,19 @@ export class UsersService {
       }
     }
     return;
+  }
+
+  async recordMeteredUsage(
+    userId: ObjectId,
+    meterAmount: number = 1,
+  ): Promise<void> {
+    const user = await this.users.findById(userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+    await this.subscriptionsService.meteredUsageByUserEmail(
+      user.email,
+      meterAmount,
+    );
   }
 }

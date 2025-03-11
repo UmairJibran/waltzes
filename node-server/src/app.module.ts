@@ -14,6 +14,7 @@ import { SesModule } from './aws/ses/ses.module';
 import { S3Module } from './aws/s3/s3.module';
 import { InternalController } from './_internal/_internal.controller';
 import { JobsModule } from './jobs/jobs.module';
+import { SubscriptionsModule } from './subscriptions/subscriptions.module';
 import configuration from './config';
 
 @Module({
@@ -40,6 +41,7 @@ import configuration from './config';
     SesModule,
     S3Module,
     JobsModule,
+    SubscriptionsModule,
   ],
   controllers: [AppController, InternalController],
   providers: [AppService, SqsProducerService, SqsConsumerService],

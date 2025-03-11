@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { forwardRef, HttpException, Inject, Injectable } from '@nestjs/common';
 import { CreateApplicationDto } from './dto/create-application.dto';
 import { UpdateApplicationDto } from './dto/update-application.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -10,6 +10,7 @@ import { Job } from 'src/jobs/entities/job.entity';
 import { JobDocument } from 'src/jobs/schemas/job.schema';
 import { UserDocument } from 'src/users/schemas/user.schema';
 import { S3Service } from 'src/aws/s3/s3.service';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class ApplicationsService {
@@ -18,6 +19,7 @@ export class ApplicationsService {
     @Inject(forwardRef(() => JobsService))
     private readonly jobsService: JobsService,
     private readonly sqsProducerService: SqsProducerService,
+    private readonly usersService: UsersService,
     private readonly s3Service: S3Service,
   ) {}
 
@@ -26,6 +28,13 @@ export class ApplicationsService {
     user: string,
     baseUrl: string,
   ) {
+    const isUserPro = await this.usersService.isUserPro({ id: user });
+    if (!isUserPro) {
+      throw new HttpException(
+        'You need to have an active subscription to use this feature, head over to the web app to subscribe',
+        402,
+      );
+    }
     const existingJob = await this.jobsService.findByUrl(
       createApplicationDto.jobUrl,
     );
@@ -36,8 +45,6 @@ export class ApplicationsService {
         { baseUrl },
       );
       jobId = newJob._id.toString();
-    } else if (existingJob.status === 'done') {
-      // TODO: send messages to resume and/or cover letter queues with data
     } else if (existingJob?.status === 'error') {
       await this.jobsService.initJob(createApplicationDto.jobUrl, { baseUrl });
     }
@@ -47,6 +54,10 @@ export class ApplicationsService {
       user,
       job: jobId,
     });
+
+    if (existingJob && existingJob.status === 'done') {
+      await this.startProcessingByUrl(createApplicationDto.jobUrl, existingJob);
+    }
 
     return { applicationId: app._id };
   }
@@ -88,6 +99,8 @@ export class ApplicationsService {
 
     if (app.job?.status === 'done') {
       steps.scraping = 'done';
+    } else if (app.jobScrapingStarted) {
+      steps.scraping = 'processing';
     }
 
     if (!requiresResume) {
@@ -124,7 +137,9 @@ export class ApplicationsService {
       (step) => step === 'done' || step === 'skipped',
     )
       ? 'finished'
-      : 'processing';
+      : Object.values(steps).some((step) => step === 'processing')
+        ? 'processing'
+        : 'enqueue';
 
     if (downloadUrls.resume) {
       downloadUrls.resume = await this.s3Service.getPreSignedUrl(
@@ -140,7 +155,7 @@ export class ApplicationsService {
     }
 
     return {
-      status: steps.scraping == 'done' ? overallStatus : 'enqueue',
+      status: overallStatus,
       steps,
       downloadUrls,
     };
@@ -285,11 +300,6 @@ export class ApplicationsService {
         );
       }
     }
-
-    await this.applications.updateMany(
-      { jobUrl: url },
-      { resumeStarted: true, coverLetterStarted: true },
-    );
   }
 
   async storeDocumentLinks(
@@ -300,7 +310,7 @@ export class ApplicationsService {
     },
   ) {
     const { resumePdf, coverLetterPdf } = pdfFiles;
-    await this.applications.updateOne(
+    const application = await this.applications.findOneAndUpdate(
       { _id: applicationId },
       {
         appliedWith: {
@@ -309,6 +319,15 @@ export class ApplicationsService {
         },
       },
     );
+    if (!application) return;
+
+    const numberOfDocuments = Object.values(pdfFiles).filter(
+      (file) => file !== null,
+    ).length;
+
+    const userId = application.user;
+
+    await this.usersService.recordMeteredUsage(userId, numberOfDocuments);
   }
 
   async storeResumeSegments(applicationId: string, segments: object) {
@@ -369,6 +388,27 @@ export class ApplicationsService {
       'pdfProcessor',
       applicationId,
       applicationId,
+    );
+  }
+
+  async scrapingStarted(jobUrl: string) {
+    await this.applications.updateMany(
+      { jobUrl },
+      { $set: { jobScrapingStarted: true } },
+    );
+  }
+
+  async resumeProcessingStarted(applicationId: string) {
+    await this.applications.updateOne(
+      { _id: applicationId },
+      { $set: { resumeStarted: true } },
+    );
+  }
+
+  async coverLetterProcessingStarted(applicationId: string) {
+    await this.applications.updateOne(
+      { _id: applicationId },
+      { $set: { coverLetterStarted: true } },
     );
   }
 }

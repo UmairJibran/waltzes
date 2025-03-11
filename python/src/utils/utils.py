@@ -2,8 +2,9 @@
 
 import json
 import os
-from typing import List, Optional
 import uuid
+from typing import List, Optional
+from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
 
 import requests
 
@@ -69,3 +70,25 @@ def delete_file(file_path: str):
     except Exception as e:
         logger.error(f"Error deleting file: {e}")
         return None
+
+
+def add_query_param(url, param_name, param_value):
+    """Add a query parameter to a URL and send notification.
+
+    Args:
+        url (str): The URL to modify
+        param_name (str): The name of the parameter to add
+        param_value (str): The value of the parameter
+        data (dict, optional): Data to send in the notification. Defaults to empty dict.
+
+    Returns:
+        str: The modified URL
+    """
+    parsed_url = urlparse(url)
+    query_dict = dict(parse_qsl(parsed_url.query))
+    query_dict[param_name] = param_value
+    new_query = urlencode(query_dict)
+    parsed_url = parsed_url._replace(query=new_query)
+    modified_url = urlunparse(parsed_url)
+
+    return modified_url

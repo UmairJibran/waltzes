@@ -1,4 +1,5 @@
 import { useAuthStore } from '../store/auth';
+import { handleAPIResponse } from '../utils/errors';
 
 export interface GenerateApplicationRequest {
     jobUrl: string;
@@ -20,7 +21,11 @@ export interface JobStatus {
     };
 }
 
-export const generateApplication = async (data: GenerateApplicationRequest): Promise<{ applicationId: string }> => {
+interface GenerateApplicationResponse {
+    applicationId: string;
+}
+
+export const generateApplication = async (data: GenerateApplicationRequest): Promise<GenerateApplicationResponse> => {
     const { accessToken } = useAuthStore.getState();
 
     if (!accessToken) {
@@ -36,11 +41,8 @@ export const generateApplication = async (data: GenerateApplicationRequest): Pro
         body: JSON.stringify(data),
     });
 
-    if (!response.ok) {
-        throw new Error('Failed to generate application');
-    }
-
-    return response.json();
+    const apiResponse = await handleAPIResponse<GenerateApplicationResponse>(response);
+    return apiResponse.data!;
 };
 
 export const getApplicationStatus = async (applicationId: string): Promise<JobStatus> => {
@@ -57,9 +59,6 @@ export const getApplicationStatus = async (applicationId: string): Promise<JobSt
         },
     });
 
-    if (!response.ok) {
-        throw new Error('Failed to fetch application status');
-    }
-
-    return response.json();
+    const apiResponse = await handleAPIResponse<JobStatus>(response);
+    return apiResponse.data!;
 }; 

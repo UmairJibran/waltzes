@@ -6,13 +6,6 @@ import boto3
 
 from utils import logger
 
-# Initialize S3 client with both endpoint_url and region_name
-s3 = boto3.client(
-    "s3",
-    endpoint_url=os.environ.get("AWS_ENDPOINT"),
-    region_name=os.environ.get("AWS_DEFAULT_REGION", "us-east-1"),
-)
-
 
 def upload_item(path, bucket, key):
     """Upload an item to an S3 bucket.
@@ -25,6 +18,12 @@ def upload_item(path, bucket, key):
     Returns:
         bool: True if the upload was successful, False otherwise.
     """
+    s3 = boto3.client(
+        "s3",
+        endpoint_url=os.environ.get("AWS_ENDPOINT"),
+        region_name=os.environ.get("AWS_DEFAULT_REGION", "us-east-1"),
+    )
+
     try:
         s3.upload_file(path, bucket, key)
         return True

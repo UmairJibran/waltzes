@@ -1,10 +1,11 @@
 """A standalone function to process a Job Scraper Message."""
 
 import json
+import time
 
 from services.scrapers.job_scraper import fetch_job_details
 from utils import logger
-from utils.utils import send_data_to_callback_url
+from utils.utils import add_query_param, send_data_to_callback_url
 
 
 def process_job_queue_message(sqs_message: str):
@@ -17,5 +18,8 @@ def process_job_queue_message(sqs_message: str):
     logger.info(f"Message Body: {message_body}")
     job_url = message_body.get("jobUrl")
     callback_url = message_body.get("callbackUrl")
+    start_notification_url = add_query_param(callback_url, "just-started", "true")
+    time.sleep(2) # allow time for the resource to be created
+    send_data_to_callback_url({}, start_notification_url)
     job_details = fetch_job_details(job_url)
     send_data_to_callback_url(job_details, callback_url)

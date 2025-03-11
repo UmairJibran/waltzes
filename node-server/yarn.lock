@@ -3513,6 +3513,11 @@ chardet@^0.7.0:
   resolved "https://registry.npmjs.org/chardet/-/chardet-0.7.0.tgz"
   integrity sha512-mT8iDcrh03qDGRRmoA2hmBJnxpllMR+0/0qlzjqZES6NdiWDcZkCNAk4rPFZ9Q85r27unkiNNg8ZOiwZXBHwcA==
 
+chargebee@^3.5.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/chargebee/-/chargebee-3.5.0.tgz#41d26dff1de32581c5c85a4c0aab6e4eae24e40a"
+  integrity sha512-8w7EsnL0tkGx8tHN5rbfATuSxFkGvIEZVkNpK9F14NnAaKYMiO7tO7eH5Hy3j/ugJO1hIWGEpVOolFidjN16lg==
+
 chokidar@4.0.3:
   version "4.0.3"
   resolved "https://registry.npmjs.org/chokidar/-/chokidar-4.0.3.tgz"

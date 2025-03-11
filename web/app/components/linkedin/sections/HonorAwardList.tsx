@@ -1,16 +1,16 @@
-import { LinkedInDate, LinkedInHonorAward } from '@/lib/types/linkedin';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Plus, Trash2, PencilLine } from 'lucide-react';
-import { useState } from 'react';
+import { LinkedInHonorAward } from "@/lib/types/linkedin";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Plus, Trash2, PencilLine } from "lucide-react";
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
+} from "@/components/ui/dialog";
 
 interface HonorAwardListProps {
   items: LinkedInHonorAward[];
@@ -18,15 +18,17 @@ interface HonorAwardListProps {
 }
 
 const emptyHonorAward: LinkedInHonorAward = {
-  title: '',
-  issuer: '',
+  title: "",
+  issuer: "",
   issued_on: null,
   description: null,
 };
 
 export function HonorAwardList({ items, onChange }: HonorAwardListProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [editingItem, setEditingItem] = useState<LinkedInHonorAward | null>(null);
+  const [editingItem, setEditingItem] = useState<LinkedInHonorAward | null>(
+    null
+  );
   const [editingIndex, setEditingIndex] = useState<number>(-1);
 
   const handleSave = (honorAward: LinkedInHonorAward) => {
@@ -68,7 +70,7 @@ export function HonorAwardList({ items, onChange }: HonorAwardListProps) {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>
-                {editingIndex === -1 ? 'Add Honor/Award' : 'Edit Honor/Award'}
+                {editingIndex === -1 ? "Add Honor/Award" : "Edit Honor/Award"}
               </DialogTitle>
             </DialogHeader>
             <HonorAwardForm
@@ -178,7 +180,7 @@ function HonorAwardForm({
           <Input
             type="number"
             placeholder="Month"
-            value={data.issued_on?.month || ''}
+            value={data.issued_on?.month || ""}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setData({
                 ...data,
@@ -195,7 +197,7 @@ function HonorAwardForm({
           <Input
             type="number"
             placeholder="Year"
-            value={data.issued_on?.year || ''}
+            value={data.issued_on?.year || ""}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setData({
                 ...data,
@@ -215,7 +217,7 @@ function HonorAwardForm({
       <div className="space-y-2">
         <label className="text-sm font-medium">Description (Optional)</label>
         <Textarea
-          value={data.description || ''}
+          value={data.description || ""}
           onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
             setData({ ...data, description: e.target.value })
           }
@@ -231,4 +233,4 @@ function HonorAwardForm({
       </div>
     </form>
   );
-} 
+}
