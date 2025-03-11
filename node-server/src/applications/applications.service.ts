@@ -42,8 +42,6 @@ export class ApplicationsService {
         { baseUrl },
       );
       jobId = newJob._id.toString();
-    } else if (existingJob.status === 'done') {
-      // TODO: send messages to resume and/or cover letter queues with data
     } else if (existingJob?.status === 'error') {
       await this.jobsService.initJob(createApplicationDto.jobUrl, { baseUrl });
     }
@@ -53,6 +51,10 @@ export class ApplicationsService {
       user,
       job: jobId,
     });
+
+    if (existingJob && existingJob.status === 'done') {
+      await this.startProcessingByUrl(createApplicationDto.jobUrl, existingJob);
+    }
 
     return { applicationId: app._id };
   }
