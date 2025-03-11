@@ -146,6 +146,16 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
           <div className="space-y-6">
             <p className="text-secondary-text">
               Sign in to start generating your personalized job applications.
+              <br />
+              To create an account, visit{' '}
+              <a
+                href={process.env.WEB_APP_URL + '/register'}
+                target="_blank"
+                rel="noreferrer"
+                className="text-primary-text underline"
+              >
+                the web app
+              </a>
             </p>
             <form onSubmit={handleLogin} className="space-y-6">
               <div className="space-y-2">
@@ -227,7 +237,7 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
                         coverLetter: checked,
                       }))
                     }
-                    label="Cover Letter (0.5 credit)"
+                    label="Cover Letter (1 credit)"
                   />
                 </div>
 
