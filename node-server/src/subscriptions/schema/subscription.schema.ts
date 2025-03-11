@@ -74,11 +74,14 @@ export class Subscription {
   @Prop({
     type: [
       {
-        itemPriceId: String,
-        itemType: String,
-        meteredQuantity: String,
-        unitPrice: Number,
-        freeQuantity: Number,
+        type: {
+          itemPriceId: String,
+          itemType: String,
+          meteredQuantity: String,
+          unitPrice: Number,
+          freeQuantity: Number,
+          _id: false,
+        },
       },
     ],
   })
@@ -100,6 +103,7 @@ export class Subscription {
       state: String,
       country: String,
       zip: String,
+      _id: false,
     },
   })
   billingAddress: {

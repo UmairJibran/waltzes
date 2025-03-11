@@ -49,7 +49,16 @@ export class SubscriptionsService {
       status: creationEvent.content.subscription.status,
       billingAddress: creationEvent.content.customer.billing_address,
       paymentMethod: creationEvent.content.customer.payment_method,
-      subscriptionItems: creationEvent.content.subscription.subscription_items,
+      subscriptionItems:
+        creationEvent.content.subscription.subscription_items?.map((item) => {
+          return {
+            itemType: item.item_type,
+            itemPriceId: item.item_price_id,
+            meteredQuantity: item.metered_quantity,
+            unitPrice: item.unit_price,
+            freeQuantity: item.free_quantity,
+          };
+        }),
       updatedAt: creationEvent.content.subscription.updated_at,
     });
     return newSubscription.save();
