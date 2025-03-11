@@ -6,6 +6,7 @@ import { Application, ApplicationSchema } from './schemas/application.schema';
 import { SqsProducerModule } from 'src/aws/sqs-producer/sqs-producer.module';
 import { JobsModule } from 'src/jobs/jobs.module';
 import { S3Module } from 'src/aws/s3/s3.module';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { S3Module } from 'src/aws/s3/s3.module';
       { name: Application.name, schema: ApplicationSchema },
     ]),
     SqsProducerModule,
+    UsersModule,
     S3Module,
     forwardRef(() => JobsModule),
   ],

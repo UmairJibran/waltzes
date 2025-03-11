@@ -10,6 +10,7 @@ import { Job } from 'src/jobs/entities/job.entity';
 import { JobDocument } from 'src/jobs/schemas/job.schema';
 import { UserDocument } from 'src/users/schemas/user.schema';
 import { S3Service } from 'src/aws/s3/s3.service';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class ApplicationsService {
@@ -18,6 +19,7 @@ export class ApplicationsService {
     @Inject(forwardRef(() => JobsService))
     private readonly jobsService: JobsService,
     private readonly sqsProducerService: SqsProducerService,
+    private readonly usersService: UsersService,
     private readonly s3Service: S3Service,
   ) {}
 
@@ -26,6 +28,10 @@ export class ApplicationsService {
     user: string,
     baseUrl: string,
   ) {
+    const isUserPro = await this.usersService.isUserPro({ id: user });
+    if (!isUserPro) {
+      throw new Error('User is not a pro user');
+    }
     const existingJob = await this.jobsService.findByUrl(
       createApplicationDto.jobUrl,
     );

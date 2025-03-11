@@ -17,16 +17,40 @@ export class UsersService {
     private readonly subscriptionsService: SubscriptionsService,
   ) {}
 
+  async isUserPro({
+    id,
+    email,
+  }: {
+    id?: string;
+    email?: string;
+  }): Promise<boolean> {
+    let userEmail = email;
+    if (!userEmail) {
+      const user = await this.users.findById(id);
+      if (!user) {
+        throw new Error('User not found');
+      }
+      userEmail = user.email;
+    }
+
+    const subscription = await this.subscriptionsService.findByEmail(
+      userEmail,
+      {
+        active: true,
+      },
+    );
+
+    return subscription ? true : false;
+  }
+
   async findOne(id: string): Promise<Partial<UserEntity> | null> {
     const user = await this.users.findById(id);
 
     if (user) {
-      const isUserPro = await this.subscriptionsService.findByEmail(
-        user.email,
-        {
-          active: true,
-        },
-      );
+      const isUserPro = await this.isUserPro({
+        id,
+        email: user.email,
+      });
       const response: Partial<UserEntity & { isPro: boolean }> = {
         _id: String(user.id),
         firstName: user.firstName,
