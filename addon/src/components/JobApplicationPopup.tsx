@@ -137,9 +137,8 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-red-100 border-l-4 border-accent-error text-accent-error">
-            <p className="font-medium">Error</p>
-            <p>{error}</p>
+          <div className="mb-4 p-3 max-w-sm mx-auto bg-red-100 border-l-4 border-accent-error text-accent-error text-sm">
+            <p className="break-words">{error}</p>
           </div>
         )}
 
