@@ -1,11 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Subscription } from './schema/subscription.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreationEventDto } from './dto/create-subscription.dto';
+import Chargebee from 'chargebee';
 
 @Injectable()
 export class SubscriptionsService {
+  private readonly logger = new Logger(SubscriptionsService.name);
+  private readonly chargebee: Chargebee = new Chargebee({
+    site: 'umairjibran-test',
+    apiKey: 'test_2iSJcuPW3fYRhBq7fzGfgeYfBAcuYFRAZk',
+  });
+
   constructor(
     @InjectModel(Subscription.name) private subscriptions: Model<Subscription>,
   ) {}
@@ -57,5 +64,33 @@ export class SubscriptionsService {
       query['status'] = 'active';
     }
     return this.subscriptions.findOne(query);
+  }
+
+  async meteredUsageByUserEmail(
+    userEmail: string,
+    meterAmount: number = 1,
+  ): Promise<void> {
+    const subscription = await this.subscriptions.findOne({
+      email: userEmail,
+      status: 'active',
+    });
+    if (!subscription) {
+      this.logger.error(`Subscription not found for user ${userEmail}`);
+      return;
+    }
+
+    try {
+      const res = await this.chargebee.usage.create(
+        subscription.subscriptionId,
+        {
+          item_price_id: subscription.subscriptionItems[0].itemPriceId,
+          quantity: meterAmount.toString(),
+          usage_date: Math.floor(Date.now() / 1000),
+        },
+      );
+      console.log('🚀 ~ SubscriptionsService ~ res:', res);
+    } catch (e) {
+      console.error(e);
+    }
   }
 }

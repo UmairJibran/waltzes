@@ -4,7 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schemas/user.schema';
 import { User as UserEntity } from './entities/user.entity';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 import { SqsProducerService } from 'src/aws/sqs-producer/sqs-producer.service';
 import { createHash } from 'crypto';
 import { SubscriptionsService } from 'src/subscriptions/subscriptions.service';
@@ -234,5 +234,19 @@ export class UsersService {
       }
     }
     return;
+  }
+
+  async recordMeteredUsage(
+    userId: ObjectId,
+    meterAmount: number = 1,
+  ): Promise<void> {
+    const user = await this.users.findById(userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+    await this.subscriptionsService.meteredUsageByUserEmail(
+      user.email,
+      meterAmount,
+    );
   }
 }

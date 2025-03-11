@@ -71,15 +71,17 @@ export class Subscription {
   @Prop()
   activatedAt: Date;
 
-  @Prop([
-    {
-      itemPriceId: String,
-      itemType: String,
-      meteredQuantity: String,
-      unitPrice: Number,
-      freeQuantity: Number,
-    },
-  ])
+  @Prop({
+    type: [
+      {
+        itemPriceId: String,
+        itemType: String,
+        meteredQuantity: String,
+        unitPrice: Number,
+        freeQuantity: Number,
+      },
+    ],
+  })
   subscriptionItems: Array<{
     itemPriceId: string;
     itemType: string;
