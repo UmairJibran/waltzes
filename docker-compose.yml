@@ -19,3 +19,19 @@ services:
       - "27017:27017"
     volumes:
       - ./docker-volume/mongodb:/data/db
+  node_app:
+    container_name: '${COMPOSE_PROJECT_NAME}_node'
+    build:
+      context: ./node-server
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/app
+    environment:
+      - NODE_ENV=development
+    env_file:
+      - ./node-server/.env
+    depends_on:
+      - mongo
+      - localstack-init

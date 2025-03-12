@@ -12,7 +12,7 @@ RUN yarn remove bcrypt
 RUN yarn add bcrypt
 
 COPY tsconfig.* ./
-COPY ./src ./src
+COPY src ./src
 
 RUN yarn build
 
