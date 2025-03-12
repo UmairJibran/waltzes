@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # QUEUES
 queues=(linkedin-scraper stripe-meter email-sender job-scraper cover-letter-creator resume-creator pdf-processor)
 buckets=(waltzes-resources waltzes-logs)
