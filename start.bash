@@ -1,2 +1,2 @@
-docker compose up -d
+docker compose up --build -d
 sh localstack-resource-creator.bash
