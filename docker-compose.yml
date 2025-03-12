@@ -1,37 +1,68 @@
 name: waltzes_dev
 
+networks:
+  waltzes_network:
+    driver: bridge
+
 services:
   localstack:
-    container_name: "${COMPOSE_PROJECT_NAME}_localstack"
+    container_name: '${COMPOSE_PROJECT_NAME}_localstack'
+    networks:
+      - waltzes_network
     image: localstack/localstack
     ports:
-      - "127.0.0.1:4566:4566"
-      - "127.0.0.1:4510-4559:4510-4559"
+      - '127.0.0.1:4566:4566'
+      - '127.0.0.1:4510-4559:4510-4559'
     environment:
       - SERVICES=sqs,s3,ses
       - DEBUG=1
       - DATA_DIR=/tmp/localstack/data
       - PORT_WEB_UI=8080
+      - USE_SSL=0
+      - DISABLE_CUSTOM_CORS_S3=1 # Optional: Prevents some S3 CORS issues
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:4566/_localstack/health']
+      interval: 5s
+      timeout: 10s
+      retries: 10
+
   mongo:
-    container_name: "${COMPOSE_PROJECT_NAME}_mongodb"
+    container_name: '${COMPOSE_PROJECT_NAME}_mongodb'
+    networks:
+      - waltzes_network
     image: mongo:4.4
     ports:
-      - "27017:27017"
+      - '27017:27017'
     volumes:
       - ./docker-volume/mongodb:/data/db
-  node_app:
+
+  node-server:
     container_name: '${COMPOSE_PROJECT_NAME}_node'
+    networks:
+      - waltzes_network
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
     build:
       context: ./node-server
       dockerfile: Dockerfile
     ports:
-      - 3000:3000
-    volumes:
-      - .:/app
+      - '3000:3000'
     environment:
       - NODE_ENV=development
     env_file:
       - ./node-server/.env
     depends_on:
-      - mongo
-      - localstack-init
+      - localstack
+
+  web:
+    container_name: '${COMPOSE_PROJECT_NAME}_web'
+    networks:
+      - waltzes_network
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    depends_on:
+      node-server:
+        condition: service_healthy
+    ports:
+      - '3001:3000'
