@@ -12,6 +12,7 @@ import { SQSClient } from '@aws-sdk/client-sqs';
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
         const awsConfig: AwsConfig = await configService.getOrThrow('aws');
+        console.log('🚀 ~ useFactory: ~ awsConfig:', awsConfig);
         return {
           consumers: [],
           producers: [
@@ -22,6 +23,10 @@ import { SQSClient } from '@aws-sdk/client-sqs';
               sqs: new SQSClient({
                 region: awsConfig.awsRegion,
                 endpoint: awsConfig.endpoint,
+                credentials: {
+                  accessKeyId: awsConfig.accessKeyId,
+                  secretAccessKey: awsConfig.secretAccessKey,
+                },
               }),
             },
             {
@@ -31,6 +36,10 @@ import { SQSClient } from '@aws-sdk/client-sqs';
               sqs: new SQSClient({
                 region: awsConfig.awsRegion,
                 endpoint: awsConfig.endpoint,
+                credentials: {
+                  accessKeyId: awsConfig.accessKeyId,
+                  secretAccessKey: awsConfig.secretAccessKey,
+                },
               }),
             },
             {
@@ -40,6 +49,10 @@ import { SQSClient } from '@aws-sdk/client-sqs';
               sqs: new SQSClient({
                 region: awsConfig.awsRegion,
                 endpoint: awsConfig.endpoint,
+                credentials: {
+                  accessKeyId: awsConfig.accessKeyId,
+                  secretAccessKey: awsConfig.secretAccessKey,
+                },
               }),
             },
             {
@@ -49,6 +62,10 @@ import { SQSClient } from '@aws-sdk/client-sqs';
               sqs: new SQSClient({
                 region: awsConfig.awsRegion,
                 endpoint: awsConfig.endpoint,
+                credentials: {
+                  accessKeyId: awsConfig.accessKeyId,
+                  secretAccessKey: awsConfig.secretAccessKey,
+                },
               }),
             },
             {
@@ -58,6 +75,10 @@ import { SQSClient } from '@aws-sdk/client-sqs';
               sqs: new SQSClient({
                 region: awsConfig.awsRegion,
                 endpoint: awsConfig.endpoint,
+                credentials: {
+                  accessKeyId: awsConfig.accessKeyId,
+                  secretAccessKey: awsConfig.secretAccessKey,
+                },
               }),
             },
             {
@@ -67,15 +88,23 @@ import { SQSClient } from '@aws-sdk/client-sqs';
               sqs: new SQSClient({
                 region: awsConfig.awsRegion,
                 endpoint: awsConfig.endpoint,
+                credentials: {
+                  accessKeyId: awsConfig.accessKeyId,
+                  secretAccessKey: awsConfig.secretAccessKey,
+                },
               }),
             },
             {
-              name: availableQueues.stripeMetering,
-              queueUrl: awsConfig.stripeMeterQueueUrl,
+              name: availableQueues.metering,
+              queueUrl: awsConfig.meterQueueUrl,
               region: awsConfig.awsRegion,
               sqs: new SQSClient({
                 region: awsConfig.awsRegion,
                 endpoint: awsConfig.endpoint,
+                credentials: {
+                  accessKeyId: awsConfig.accessKeyId,
+                  secretAccessKey: awsConfig.secretAccessKey,
+                },
               }),
             },
           ],

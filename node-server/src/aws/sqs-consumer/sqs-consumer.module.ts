@@ -13,13 +13,7 @@ import { SesModule } from '../ses/ses.module';
     SqsModule.registerAsync({
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
-        const awsConfig: {
-          emailQueueUrl: string;
-          linkedinScraperQueueUrl: string;
-          stripeMeterQueueUrl: string;
-          region: string;
-          endpoint: string;
-        } = await configService.getOrThrow('aws');
+        const awsConfig: AwsConfig = await configService.getOrThrow('aws');
         return {
           producers: [],
           consumers: [
@@ -30,6 +24,10 @@ import { SesModule } from '../ses/ses.module';
               sqs: new SQSClient({
                 region: awsConfig.region,
                 endpoint: awsConfig.endpoint,
+                credentials: {
+                  accessKeyId: awsConfig.accessKeyId,
+                  secretAccessKey: awsConfig.secretAccessKey,
+                },
               }),
             },
           ],
