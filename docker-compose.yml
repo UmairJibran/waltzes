@@ -67,8 +67,8 @@ services:
     ports:
       - '3001:3000'
 
-  python-scripts:
-    container_name: '${COMPOSE_PROJECT_NAME}_python_scripts'
+  python-linkedin:
+    container_name: '${COMPOSE_PROJECT_NAME}_python_linkedin'
     networks:
       - waltzes_network
     build:
@@ -78,3 +78,53 @@ services:
       - localstack
     env_file:
       - ./python/.env
+    command: src/poll_linkedin_scraper_queue.py
+
+  python-cover-letter:
+    container_name: '${COMPOSE_PROJECT_NAME}_python_cover_letter'
+    networks:
+      - waltzes_network
+    build:
+      context: ./python
+      dockerfile: Dockerfile
+    depends_on:
+      - localstack
+    env_file:
+      - ./python/.env
+    command: src/poll_cover_letter_creator.py
+  python-resume:
+    container_name: '${COMPOSE_PROJECT_NAME}_python_resume'
+    networks:
+      - waltzes_network
+    build:
+      context: ./python
+      dockerfile: Dockerfile
+    depends_on:
+      - localstack
+    env_file:
+      - ./python/.env
+    command: src/poll_resume_creator.py
+  python-job-scrapper:
+    container_name: '${COMPOSE_PROJECT_NAME}_python_job_scrapper'
+    networks:
+      - waltzes_network
+    build:
+      context: ./python
+      dockerfile: Dockerfile
+    depends_on:
+      - localstack
+    env_file:
+      - ./python/.env
+    command: src/poll_job_scraper_queue.py
+  python-pdf-creator:
+    container_name: '${COMPOSE_PROJECT_NAME}_python_pdf_creator'
+    networks:
+      - waltzes_network
+    build:
+      context: ./python
+      dockerfile: Dockerfile
+    depends_on:
+      - localstack
+    env_file:
+      - ./python/.env
+    command: src/poll_pdf_creator.py
