@@ -21,7 +21,7 @@ services:
       - USE_SSL=0
       - DISABLE_CUSTOM_CORS_S3=1 # Optional: Prevents some S3 CORS issues
     healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:4566/_localstack/health']
+      test: [ 'CMD', 'curl', '-f', 'http://localhost:4566/_localstack/health' ]
       interval: 5s
       timeout: 10s
       retries: 10
@@ -66,3 +66,15 @@ services:
         condition: service_healthy
     ports:
       - '3001:3000'
+
+  python-scripts:
+    container_name: '${COMPOSE_PROJECT_NAME}_python_scripts'
+    networks:
+      - waltzes_network
+    build:
+      context: ./python
+      dockerfile: Dockerfile
+    depends_on:
+      - localstack
+    env_file:
+      - ./python/.env
