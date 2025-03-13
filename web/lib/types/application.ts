@@ -23,3 +23,29 @@ export interface Application {
     location: string;
   };
 }
+
+
+
+export interface GenerateApplicationRequest {
+  jobUrl: string;
+  generateResume: boolean;
+  generateCoverLetter: boolean;
+}
+
+export interface ApplyStatus {
+  status: 'enqueue' | 'processing' | 'finished';
+  steps: {
+    scraping: 'done' | 'processing' | 'pending';
+    resume?: 'done' | 'processing' | 'pending' | 'skipped';
+    coverLetter?: 'done' | 'processing' | 'pending' | 'skipped';
+    pdf: 'done' | 'processing' | 'pending';
+  };
+  downloadUrls?: {
+    resume?: string;
+    coverLetter?: string;
+  };
+}
+
+export interface GenerateApplicationResponse {
+  applicationId: string;
+}

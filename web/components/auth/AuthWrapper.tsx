@@ -8,11 +8,14 @@ const publicPaths = ['/login', '/register', '/forgot-password'];
 const protectedPaths = ['/applications', '/account', '/dashboard'];
 
 export function AuthWrapper({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isHydrated } = useAuth();
   const pathname = usePathname();
   const router = useRouter();
 
   useEffect(() => {
+    // Don't perform any redirects until the auth state is hydrated
+    if (!isHydrated) return;
+
     const isProtectedPath = protectedPaths.some(path =>
       pathname.startsWith(path)
     );
@@ -23,10 +26,10 @@ export function AuthWrapper({ children }: { children: React.ReactNode }) {
     } else if (isPublicPath && isAuthenticated) {
       router.push('/applications');
     }
-  }, [isAuthenticated, pathname, router]);
+  }, [isAuthenticated, isHydrated, pathname, router]);
 
-  // Don't render children while redirecting from root
-  if (pathname === '/') {
+  // Don't render children while redirecting from root or while hydrating
+  if (pathname === '/' || !isHydrated) {
     return null;
   }
 

@@ -100,7 +100,7 @@ const data = {
     },
     {
       name: "Try Web Version",
-      url: "#",
+      url: "/applications/new",
       icon: Globe,
     },
   ],

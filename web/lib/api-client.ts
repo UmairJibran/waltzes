@@ -1,7 +1,13 @@
-import { LoginInput, RegisterInput } from "./validations/auth";
-import { LinkedInData } from "./types/linkedin";
-import { UpdateUserData, User } from "./types/user";
-import { Application, ApplicationStatus } from "./types/application";
+import { LoginInput, RegisterInput } from './validations/auth';
+import { LinkedInData } from './types/linkedin';
+import { UpdateUserData, User } from './types/user';
+import {
+  Application,
+  ApplicationStatus,
+  GenerateApplicationRequest,
+  ApplyStatus,
+  GenerateApplicationResponse,
+} from './types/application';
 
 export interface ApiResponse<T> {
   success: boolean;
@@ -38,17 +44,51 @@ export interface ApiResponse<T> {
   >;
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api";
+export class APIError extends Error {
+  constructor(
+    message: string,
+    public statusCode?: number,
+    public code?: string,
+    public details?: Record<
+      string,
+      | string
+      | object
+      | string[]
+      | object[]
+      | null
+      | undefined
+      | number
+      | boolean
+      | number[]
+      | boolean[]
+    >
+  ) {
+    super(message);
+    this.name = 'APIError';
+  }
+}
+
+export const getErrorMessage = (error: unknown): string => {
+  if (error instanceof APIError) {
+    return error.message;
+  }
+  if (error instanceof Error) {
+    return error.message;
+  }
+  return 'An unexpected error occurred';
+};
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
 
 async function fetchWithAuth<T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<T> {
-  const authToken = JSON.parse(localStorage.getItem("auth-storage") || "{}")
+  const authToken = JSON.parse(localStorage.getItem('auth-storage') || '{}')
     ?.state?.accessToken;
 
   const headers = {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
     ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
     ...options.headers,
   };
@@ -61,11 +101,11 @@ async function fetchWithAuth<T>(
   const result: ApiResponse<T> = await response.json();
 
   if (!result.success) {
-    throw new Error(result.error?.message || "API request failed");
+    throw new Error(result.error?.message || 'API request failed');
   }
 
   if (result.data === undefined) {
-    throw new Error("API response missing data");
+    throw new Error('API response missing data');
   }
 
   return result.data;
@@ -73,15 +113,15 @@ async function fetchWithAuth<T>(
 
 export const authApi = {
   async login(data: LoginInput): Promise<{ access_token: string }> {
-    return fetchWithAuth<{ access_token: string }>("/auth/login", {
-      method: "POST",
+    return fetchWithAuth<{ access_token: string }>('/auth/login', {
+      method: 'POST',
       body: JSON.stringify(data),
     });
   },
 
   async register(data: RegisterInput): Promise<void> {
-    return fetchWithAuth<void>("/auth/register", {
-      method: "POST",
+    return fetchWithAuth<void>('/auth/register', {
+      method: 'POST',
       body: JSON.stringify(data),
     });
   },
@@ -89,12 +129,12 @@ export const authApi = {
 
 export const userApi = {
   async getMe(): Promise<User> {
-    return fetchWithAuth<User>("/users/me");
+    return fetchWithAuth<User>('/users/me');
   },
 
   async updateMe(data: UpdateUserData): Promise<User> {
-    return fetchWithAuth<User>("/users/me", {
-      method: "PATCH",
+    return fetchWithAuth<User>('/users/me', {
+      method: 'PATCH',
       body: JSON.stringify(data),
     });
   },
@@ -103,7 +143,7 @@ export const userApi = {
 export const linkedinApi = {
   async getData(): Promise<LinkedInData> {
     const response = await fetchWithAuth<{ linkedin_data_raw?: LinkedInData }>(
-      "/users/me/linkedin"
+      '/users/me/linkedin'
     );
     if (response.linkedin_data_raw) {
       return response.linkedin_data_raw;
@@ -113,9 +153,9 @@ export const linkedinApi = {
 
   async updateData(data: LinkedInData): Promise<LinkedInData> {
     const response = await fetchWithAuth<{ linkedin_data_raw?: LinkedInData }>(
-      "/users/me/linkedin",
+      '/users/me/linkedin',
       {
-        method: "PATCH",
+        method: 'PATCH',
         body: JSON.stringify({ linkedin_data_raw: data }),
       }
     );
@@ -136,11 +176,11 @@ export const applicationsApi = {
     pageSize = 50
   ): Promise<PaginatedResponse<Application>> => {
     return fetchWithAuth<PaginatedResponse<Application>>(
-      "/applications?" +
-        new URLSearchParams({
-          page: page.toString(),
-          pageSize: pageSize.toString(),
-        }).toString()
+      '/applications?' +
+      new URLSearchParams({
+        page: page.toString(),
+        pageSize: pageSize.toString(),
+      }).toString()
     );
   },
 
@@ -150,12 +190,12 @@ export const applicationsApi = {
     pageSize = 50
   ): Promise<PaginatedResponse<Application>> => {
     return fetchWithAuth<PaginatedResponse<Application>>(
-      "/applications?" +
-        new URLSearchParams({
-          status,
-          page: page.toString(),
-          pageSize: pageSize.toString(),
-        }).toString()
+      '/applications?' +
+      new URLSearchParams({
+        status,
+        page: page.toString(),
+        pageSize: pageSize.toString(),
+      }).toString()
     );
   },
 
@@ -164,8 +204,24 @@ export const applicationsApi = {
     status: ApplicationStatus
   ): Promise<Application> => {
     return fetchWithAuth<Application>(`/applications/${applicationId}`, {
-      method: "PATCH",
+      method: 'PATCH',
       body: JSON.stringify({ applicationStatus: status }),
+    });
+  },
+
+  generateApplication: async (
+    data: GenerateApplicationRequest
+  ): Promise<GenerateApplicationResponse> => {
+    return fetchWithAuth<GenerateApplicationResponse>('/applications', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+  getApplicationStatus: async (
+    applicationId: string
+  ): Promise<ApplyStatus> => {
+    return fetchWithAuth<ApplyStatus>(`/applications/${applicationId}`, {
+      method: 'GET',
     });
   },
 };
