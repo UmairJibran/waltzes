@@ -63,8 +63,7 @@ services:
       context: ./web
       dockerfile: Dockerfile
     depends_on:
-      node-server:
-        condition: service_healthy
+      - node-server
     ports:
       - '3001:3000'
 
