@@ -5,6 +5,7 @@ import { Job } from './schemas/job.schema';
 import { Model } from 'mongoose';
 import { SqsProducerService } from 'src/aws/sqs-producer/sqs-producer.service';
 import { ApplicationsService } from 'src/applications/applications.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class JobsService {
@@ -13,10 +14,14 @@ export class JobsService {
     @Inject(forwardRef(() => ApplicationsService))
     private readonly applicationsService: ApplicationsService,
     private readonly sqsProducerService: SqsProducerService,
+    private readonly configService: ConfigService,
   ) {}
 
-  async initJob(url: string, { baseUrl }: { baseUrl: string }) {
-    const callbackUrl = new URL(baseUrl + '/api/_internal/job-scraper');
+  async initJob(url: string) {
+    const baseUrl: string = await this.configService.getOrThrow('baseUrl');
+    const callbackUrl = new URL(
+      [baseUrl, '/api/_internal/job-scraper'].join(''),
+    );
     callbackUrl.searchParams.append('job-url', url);
     await this.sqsProducerService.sendMessage(
       {

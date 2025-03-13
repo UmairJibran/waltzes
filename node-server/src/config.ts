@@ -1,7 +1,9 @@
 export default () => ({
+  baseUrl: process.env.BASE_URL || 'http://localhost:3000',
   port: parseInt(process.env.PORT?.toString() || '', 10) || 3000,
   mongoUrl: process.env.MONGODB_URL,
   jwtSecret: process.env.JWT_SECRET,
+  jwtExpiresIn: parseInt(process.env.JWT_EXPIRES_IN || '0', 10),
   aws: {
     emailQueueUrl: process.env.EMAIL_QUEUE_URL || '',
     linkedinScraperQueueUrl: process.env.LINKEDIN_SCRAPER_QUEUE_URL || '',

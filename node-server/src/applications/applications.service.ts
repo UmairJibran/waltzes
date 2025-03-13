@@ -11,6 +11,7 @@ import { JobDocument } from 'src/jobs/schemas/job.schema';
 import { UserDocument } from 'src/users/schemas/user.schema';
 import { S3Service } from 'src/aws/s3/s3.service';
 import { UsersService } from 'src/users/users.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class ApplicationsService {
@@ -21,13 +22,10 @@ export class ApplicationsService {
     private readonly sqsProducerService: SqsProducerService,
     private readonly usersService: UsersService,
     private readonly s3Service: S3Service,
+    private readonly configService: ConfigService,
   ) {}
 
-  async create(
-    createApplicationDto: CreateApplicationDto,
-    user: string,
-    baseUrl: string,
-  ) {
+  async create(createApplicationDto: CreateApplicationDto, user: string) {
     const isUserPro = await this.usersService.isUserPro({ id: user });
     if (!isUserPro) {
       throw new HttpException(
@@ -42,11 +40,10 @@ export class ApplicationsService {
     if (!existingJob) {
       const newJob = await this.jobsService.initJob(
         createApplicationDto.jobUrl,
-        { baseUrl },
       );
       jobId = newJob._id.toString();
     } else if (existingJob?.status === 'error') {
-      await this.jobsService.initJob(createApplicationDto.jobUrl, { baseUrl });
+      await this.jobsService.initJob(createApplicationDto.jobUrl);
     }
 
     const app = await this.applications.create({
@@ -270,9 +267,12 @@ export class ApplicationsService {
 
     for (const message of messages) {
       if (message.resume) {
-        const callbackUrl =
-          'http://localhost:3000/api/_internal/resume-segments?application-id=' +
-          message.applicationId.toString();
+        const baseUrl: string = await this.configService.getOrThrow('baseUrl');
+        const callbackUrl = [
+          baseUrl,
+          '/api/_internal/resume-segments?application-id=',
+          message.applicationId.toString(),
+        ].join('');
         await this.sqsProducerService.sendMessage(
           {
             jobDetails: message.jobDetails,
@@ -285,9 +285,12 @@ export class ApplicationsService {
         );
       }
       if (message.coverLetter) {
-        const callbackUrl =
-          'http://localhost:3000/api/_internal/cover-letter-segments?application-id=' +
-          message.applicationId.toString();
+        const baseUrl: string = await this.configService.getOrThrow('baseUrl');
+        const callbackUrl = [
+          baseUrl,
+          '/api/_internal/cover-letter-segments?application-id=',
+          message.applicationId.toString(),
+        ].join('');
         await this.sqsProducerService.sendMessage(
           {
             jobDetails: message.jobDetails,
@@ -364,11 +367,14 @@ export class ApplicationsService {
     if (!app) return;
     if (app.generateResume && !app.resumeRaw) return;
     if (app.generateCoverLetter && !app.coverLetterRaw) return;
-
+    const baseUrl: string = await this.configService.getOrThrow('baseUrl');
+    const callbackUrl = [
+      baseUrl,
+      '/api/_internal/pdf-processed?application-id=',
+      applicationId.toString(),
+    ].join('');
     const messageBody = {
-      callbackUrl:
-        'http://localhost:3000/api/_internal/pdf-processed?application-id=' +
-        applicationId.toString(),
+      callbackUrl,
       jobDetails: {
         title: app.job.title,
         companyName: app.job.companyName,

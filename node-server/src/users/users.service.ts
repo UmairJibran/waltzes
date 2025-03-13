@@ -8,6 +8,7 @@ import { Model, ObjectId } from 'mongoose';
 import { SqsProducerService } from 'src/aws/sqs-producer/sqs-producer.service';
 import { createHash } from 'crypto';
 import { SubscriptionsService } from 'src/subscriptions/subscriptions.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class UsersService {
@@ -15,6 +16,7 @@ export class UsersService {
     @InjectModel(User.name) private users: Model<User>,
     private readonly sqsProducerService: SqsProducerService,
     private readonly subscriptionsService: SubscriptionsService,
+    private readonly configService: ConfigService,
   ) {}
 
   async isUserPro({
@@ -155,11 +157,7 @@ export class UsersService {
     return null;
   }
 
-  async update(
-    id: string,
-    updateUserDto: UpdateUserDto,
-    baseUrl: string,
-  ): Promise<UserEntity> {
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<UserEntity> {
     const user = await this.users.findById(id);
 
     if (!user) {
@@ -167,10 +165,9 @@ export class UsersService {
     }
 
     if (updateUserDto.linkedinUsername !== user.linkedinUsername) {
+      const baseUrl: string = await this.configService.getOrThrow('baseUrl');
       const callbackUrl = new URL(
-        baseUrl +
-          '/api/' +
-          ['_internal', 'users', user._id, 'linkedin'].join('/'),
+        [baseUrl, '/api/_internal/users/', user._id, 'linkedin'].join(''),
       );
 
       const checkValue: string = createHash('sha256')

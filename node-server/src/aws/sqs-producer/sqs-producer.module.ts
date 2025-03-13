@@ -12,7 +12,6 @@ import { SQSClient } from '@aws-sdk/client-sqs';
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
         const awsConfig: AwsConfig = await configService.getOrThrow('aws');
-        console.log('🚀 ~ useFactory: ~ awsConfig:', awsConfig);
         return {
           consumers: [],
           producers: [

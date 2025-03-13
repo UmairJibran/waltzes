@@ -7,10 +7,8 @@ import {
   Param,
   Delete,
   Query,
-  Request,
 } from '@nestjs/common';
 import { ApplicationsService } from './applications.service';
-import type { Request as ExpressRequest } from 'express';
 import { CreateApplicationDto } from './dto/create-application.dto';
 import { UpdateApplicationDto } from './dto/update-application.dto';
 import { User } from 'src/auth/constants';
@@ -23,14 +21,8 @@ export class ApplicationsController {
   create(
     @Body() createApplicationDto: CreateApplicationDto,
     @User() user: JwtPayload,
-    @Request() req: ExpressRequest,
   ) {
-    const baseUrl = req.protocol + '://' + req.get('host');
-    return this.applicationsService.create(
-      createApplicationDto,
-      user.sub,
-      baseUrl,
-    );
+    return this.applicationsService.create(createApplicationDto, user.sub);
   }
 
   @Get()
