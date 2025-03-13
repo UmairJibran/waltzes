@@ -1,9 +1,11 @@
 'use client';
 
-export default function Page() {
+import { NewApplication } from '@/app/components/applications/NewApplication';
+
+export default function NewApplicationPage() {
   return (
-    <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-      <h1 className="text-2xl font-semibold">New Application</h1>
+    <div className="bg-background min-h-[calc(100vh-100px)] flex flex-col items-center justify-center gap-6 p-6 md:p-10">
+      <NewApplication />
     </div>
   );
 }

@@ -1,6 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { applicationsApi } from '@/lib/api-client';
-import { ApplicationStatus } from '@/lib/types/application';
+import {
+  ApplicationStatus,
+  GenerateApplicationRequest,
+} from '@/lib/types/application';
 
 interface UpdateStatusInput {
   applicationId: string;
@@ -13,11 +16,17 @@ interface UseApplicationsOptions {
   pageSize?: number;
 }
 
-
-export function useApplications({ status, page = 1, pageSize = 50 }: UseApplicationsOptions = {}) {
+export function useApplications({
+  status,
+  page = 1,
+  pageSize = 50,
+}: UseApplicationsOptions = {}) {
   return useQuery({
     queryKey: ['applications', { status, page, pageSize }],
-    queryFn: () => (status ? applicationsApi.getByStatus(status, page, pageSize) : applicationsApi.getAll(page, pageSize)),
+    queryFn: () =>
+      status
+        ? applicationsApi.getByStatus(status, page, pageSize)
+        : applicationsApi.getAll(page, pageSize),
   });
 }
 
@@ -32,4 +41,26 @@ export function useUpdateApplicationStatus() {
       queryClient.invalidateQueries({ queryKey: ['applications'] });
     },
   });
-} 
+}
+
+export function useGenerateApplication() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data: GenerateApplicationRequest) => {
+      const response = await applicationsApi.generateApplication(data);
+      return response.applicationId;
+    },
+    onSuccess: (applicationId: string) => {
+      queryClient.invalidateQueries({ queryKey: ['applications'] });
+      return applicationId;
+    },
+  });
+}
+
+export function useGetApplicationStatus(applicationId: string) {
+  return useQuery({
+    queryKey: ['applicationStatus', { applicationId }],
+    queryFn: () => applicationsApi.getApplicationStatus(applicationId),
+  });
+}
