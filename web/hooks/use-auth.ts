@@ -11,6 +11,8 @@ import { LoginInput, RegisterInput } from '@/lib/validations/auth';
 interface AuthStore {
   accessToken: string | null;
   isAuthenticated: boolean;
+  isHydrated: boolean;
+  setHydrated: (hydrated: boolean) => void;
   setAccessToken: (token: string | null) => void;
   login: (data: LoginInput) => Promise<void>;
   logout: () => void;
@@ -21,6 +23,8 @@ export const useAuthStore = create<AuthStore>()(
     (set) => ({
       accessToken: null,
       isAuthenticated: false,
+      isHydrated: false,
+      setHydrated: (hydrated) => set({ isHydrated: hydrated }),
       setAccessToken: (token) => set({ accessToken: token, isAuthenticated: !!token }),
       login: async (data) => {
         const { access_token } = await authApi.login(data);
@@ -38,6 +42,9 @@ export const useAuthStore = create<AuthStore>()(
     }),
     {
       name: 'auth-storage',
+      onRehydrateStorage: () => (state) => {
+        state?.setHydrated(true);
+      },
     },
   ),
 );
@@ -69,11 +76,12 @@ export function useAuthProtection() {
 }
 
 export function useAuth() {
-  const { accessToken, isAuthenticated, setAccessToken, login, logout } = useAuthStore();
+  const { accessToken, isAuthenticated, isHydrated, setAccessToken, login, logout } = useAuthStore();
 
   return {
     accessToken,
     isAuthenticated,
+    isHydrated,
     setAccessToken,
     login,
     logout,
