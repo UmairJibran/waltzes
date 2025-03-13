@@ -6,5 +6,11 @@
 # Owner for the addon folder
 /addon/ @UmairJibran
 
+# Owner for the web project
+/web/ @Umairjibran
+
+# Owner for the node server project
+/node-server/ @Umairjibran
+
 # Future owner for documentation files (Markdown)
 /*.md @UmairJibran
