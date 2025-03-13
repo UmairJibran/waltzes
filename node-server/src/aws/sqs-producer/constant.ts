@@ -1,7 +1,7 @@
 export const availableQueues = {
   sendEmail: 'sendEmail',
   linkedinScraper: 'linkedinScraper',
-  stripeMetering: 'stripeMetering',
+  metering: 'metering',
   jobScraper: 'jobScraper',
   resumeCreator: 'resumeCreator',
   coverLetterCreator: 'coverLetterCreator',

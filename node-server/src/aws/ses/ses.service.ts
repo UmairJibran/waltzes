@@ -12,6 +12,10 @@ export class SesService {
     this.sesClient = new SESClient({
       region: awsConfig.awsRegion,
       endpoint: awsConfig.endpoint,
+      credentials: {
+        accessKeyId: awsConfig.accessKeyId,
+        secretAccessKey: awsConfig.secretAccessKey,
+      },
     });
   }
 

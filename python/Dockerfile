@@ -1,21 +1,15 @@
-FROM python:3.12.9-slim
+FROM python:3.12-slim
 
-# Set working directory
 WORKDIR /app
 
-# Copy only the requirements files first to leverage Docker cache
-COPY pyproject.toml ./
+RUN pip install --no-cache-dir poetry
 
-# Install build dependencies and project
-RUN pip install --no-cache-dir build pip setuptools wheel \
-    && pip install --no-cache-dir -e .[cli]
+COPY pyproject.toml poetry.lock* ./
 
-# Copy the source code
-COPY src/ ./src/
+RUN poetry config virtualenvs.create false && poetry install --no-interaction --no-ansi --no-root
 
-# Set environment variables
-ENV PYTHONPATH=/app:$PYTHONPATH \
-    PYTHONUNBUFFERED=1
+COPY src /app/src
 
-# Run the application
-CMD ["python", "src/poll_linkedin_scraper_queue.py"]
+RUN chmod +x src/*.py
+
+ENTRYPOINT ["python"]

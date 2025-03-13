@@ -20,6 +20,10 @@ export class S3Service {
       region: awsConfig.awsRegion,
       endpoint: awsConfig.endpoint,
       forcePathStyle: true,
+      credentials: {
+        accessKeyId: awsConfig.accessKeyId,
+        secretAccessKey: awsConfig.secretAccessKey,
+      },
     });
   }
 

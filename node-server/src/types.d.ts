@@ -21,8 +21,9 @@ interface AwsConfig {
   secretAccessKey: string;
   emailQueueUrl: string;
   linkedinScraperQueueUrl: string;
-  stripeMeterQueueUrl: string;
+  meterQueueUrl: string;
   awsRegion: string;
+  region: string;
   endpoint: string;
   sesSourceEmail: string;
   jobScraperQueueUrl: string;
