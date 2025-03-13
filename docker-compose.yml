@@ -77,6 +77,7 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - localstack
+      - node-server
     env_file:
       - ./python/.env
     command: src/poll_linkedin_scraper_queue.py
@@ -90,6 +91,7 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - localstack
+      - node-server
     env_file:
       - ./python/.env
     command: src/poll_cover_letter_creator.py
@@ -102,6 +104,7 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - localstack
+      - node-server
     env_file:
       - ./python/.env
     command: src/poll_resume_creator.py
@@ -114,6 +117,7 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - localstack
+      - node-server
     env_file:
       - ./python/.env
     command: src/poll_job_scraper_queue.py
@@ -126,6 +130,7 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - localstack
+      - node-server
     env_file:
       - ./python/.env
     command: src/poll_pdf_creator.py
