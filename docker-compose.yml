@@ -20,11 +20,6 @@ services:
       - PORT_WEB_UI=8080
       - USE_SSL=0
       - DISABLE_CUSTOM_CORS_S3=1 # Optional: Prevents some S3 CORS issues
-    healthcheck:
-      test: [ 'CMD', 'curl', '-f', 'http://localhost:4566/_localstack/health' ]
-      interval: 5s
-      timeout: 10s
-      retries: 10
 
   mongo:
     container_name: '${COMPOSE_PROJECT_NAME}_mongodb'
@@ -52,7 +47,13 @@ services:
     env_file:
       - ./node-server/.env
     depends_on:
-      - localstack
+      localstack:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "sh", "./localstack-health-check.sh" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   web:
     container_name: '${COMPOSE_PROJECT_NAME}_web'
