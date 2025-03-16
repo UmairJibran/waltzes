@@ -18,7 +18,7 @@ export class S3Service {
     this.resourceBucket = awsConfig.s3ResourceBucketName;
     this.s3Client = new S3Client({
       region: awsConfig.awsRegion,
-      endpoint: awsConfig.endpoint,
+      ...(awsConfig.endpoint && { endpoint: awsConfig.endpoint }),
       forcePathStyle: true,
       credentials: {
         accessKeyId: awsConfig.accessKeyId,

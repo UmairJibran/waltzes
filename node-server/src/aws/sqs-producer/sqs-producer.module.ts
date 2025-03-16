@@ -21,7 +21,7 @@ import { SQSClient } from '@aws-sdk/client-sqs';
               region: awsConfig.awsRegion,
               sqs: new SQSClient({
                 region: awsConfig.awsRegion,
-                endpoint: awsConfig.endpoint,
+                ...(awsConfig.endpoint && { endpoint: awsConfig.endpoint }),
                 credentials: {
                   accessKeyId: awsConfig.accessKeyId,
                   secretAccessKey: awsConfig.secretAccessKey,
@@ -34,7 +34,7 @@ import { SQSClient } from '@aws-sdk/client-sqs';
               region: awsConfig.awsRegion,
               sqs: new SQSClient({
                 region: awsConfig.awsRegion,
-                endpoint: awsConfig.endpoint,
+                ...(awsConfig.endpoint && { endpoint: awsConfig.endpoint }),
                 credentials: {
                   accessKeyId: awsConfig.accessKeyId,
                   secretAccessKey: awsConfig.secretAccessKey,
@@ -47,7 +47,7 @@ import { SQSClient } from '@aws-sdk/client-sqs';
               region: awsConfig.awsRegion,
               sqs: new SQSClient({
                 region: awsConfig.awsRegion,
-                endpoint: awsConfig.endpoint,
+                ...(awsConfig.endpoint && { endpoint: awsConfig.endpoint }),
                 credentials: {
                   accessKeyId: awsConfig.accessKeyId,
                   secretAccessKey: awsConfig.secretAccessKey,
@@ -60,7 +60,7 @@ import { SQSClient } from '@aws-sdk/client-sqs';
               region: awsConfig.awsRegion,
               sqs: new SQSClient({
                 region: awsConfig.awsRegion,
-                endpoint: awsConfig.endpoint,
+                ...(awsConfig.endpoint && { endpoint: awsConfig.endpoint }),
                 credentials: {
                   accessKeyId: awsConfig.accessKeyId,
                   secretAccessKey: awsConfig.secretAccessKey,
@@ -73,7 +73,7 @@ import { SQSClient } from '@aws-sdk/client-sqs';
               region: awsConfig.awsRegion,
               sqs: new SQSClient({
                 region: awsConfig.awsRegion,
-                endpoint: awsConfig.endpoint,
+                ...(awsConfig.endpoint && { endpoint: awsConfig.endpoint }),
                 credentials: {
                   accessKeyId: awsConfig.accessKeyId,
                   secretAccessKey: awsConfig.secretAccessKey,
@@ -86,7 +86,7 @@ import { SQSClient } from '@aws-sdk/client-sqs';
               region: awsConfig.awsRegion,
               sqs: new SQSClient({
                 region: awsConfig.awsRegion,
-                endpoint: awsConfig.endpoint,
+                ...(awsConfig.endpoint && { endpoint: awsConfig.endpoint }),
                 credentials: {
                   accessKeyId: awsConfig.accessKeyId,
                   secretAccessKey: awsConfig.secretAccessKey,
@@ -99,7 +99,7 @@ import { SQSClient } from '@aws-sdk/client-sqs';
               region: awsConfig.awsRegion,
               sqs: new SQSClient({
                 region: awsConfig.awsRegion,
-                endpoint: awsConfig.endpoint,
+                ...(awsConfig.endpoint && { endpoint: awsConfig.endpoint }),
                 credentials: {
                   accessKeyId: awsConfig.accessKeyId,
                   secretAccessKey: awsConfig.secretAccessKey,

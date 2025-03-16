@@ -11,7 +11,7 @@ export class SesService {
     const awsConfig: AwsConfig = this.configService.getOrThrow('aws');
     this.sesClient = new SESClient({
       region: awsConfig.awsRegion,
-      endpoint: awsConfig.endpoint,
+      ...(awsConfig.endpoint && { endpoint: awsConfig.endpoint }),
       credentials: {
         accessKeyId: awsConfig.accessKeyId,
         secretAccessKey: awsConfig.secretAccessKey,
