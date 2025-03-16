@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply antialiased;
+  }
+
+  input[type='checkbox'] {
+    @apply appearance-none bg-white border-4 border-black checked:bg-black relative cursor-pointer m-0;
+  }
+
+  input[type='checkbox']:checked::after {
+    content: '✓';
+    @apply text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-base;
+  }
+
+  #job-application-extension-root {
+    @apply fixed inset-0 z-[2147483647] font-sans antialiased;
+  }
+}
+
+@layer components {
+  .neo-button {
+    @apply bg-black text-white border-4 border-black py-3 px-6 font-bold text-lg shadow-neo transition-all hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-x-0 disabled:hover:translate-y-0 disabled:hover:shadow-neo;
+  }
+
+  .neo-container {
+    @apply bg-white border-4 border-black p-6 shadow-neo-lg transition-all hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-neo;
+  }
+
+  .neo-checkbox {
+    @apply appearance-none w-6 h-6 border-4 border-black bg-white relative cursor-pointer m-0 checked:bg-black transition-colors;
+  }
+
+  .neo-checkbox:checked::after {
+    content: '✓';
+    @apply text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-base;
+  }
+}

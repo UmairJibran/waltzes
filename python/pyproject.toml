@@ -1,0 +1,49 @@
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[project]
+authors = [{ name = "Umair Jibran", email = "me@umairjibran.com" }]
+
+name = "waltzes"
+version = "0.1.0"
+description = "Supporting python Scripts for waltzes"
+license = { text = "CC BY-NC 4.0" }
+
+dependencies = [
+    "requests==2.32.3",
+    "openai==1.58.1",
+    "python-dotenv==1.0.1",
+    "fpdf2==2.8.2 ",
+    "boto3==1.37.7",
+    "pydantic==2.10.6",
+]
+requires-python = ">=3.12"
+
+[project.urls]
+Homepage = "https://waltzes.umairjibran.com"
+Repository = "https://github.com/umairjibran/waltzes.git"
+"Bug Tracker" = "https://github.com/umairjibran/waltzes.git/issues"
+Changelog = "https://github.com/umairjibran/waltzes.git/blob/master/CHANGELOG.md"
+
+
+[tool.setuptools.package-data]
+"*" = ["py.typed"]
+
+[tool.ruff]
+lint.select = [
+    "E",    # pycodestyle
+    "F",    # pyflakes
+    "I",    # isort
+    "D",    # pydocstyle
+    "D401", # First line should be in imperative mood
+    "T201",
+    "UP",
+]
+lint.ignore = ["UP006", "UP007", "UP035", "D417", "E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["D", "UP"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
