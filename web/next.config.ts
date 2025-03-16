@@ -8,6 +8,11 @@ const nextConfig: NextConfig = {
         destination: '/scraped/linkedin',
         permanent: false,
       },
+      {
+        source: '/',
+        destination: '/applications',
+        permanent: false,
+      },
     ]
   },
 };
