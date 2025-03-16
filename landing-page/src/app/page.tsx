@@ -27,7 +27,7 @@ export default function Home() {
                   The professional<br />resume builder
                 </h1>
                 <p className="text-xl text-indigo-700 mb-8">
-                  Only 2% of resumes make it past the first round. Be in the top 2%.
+                  Create tailored resumes and cover letters for each job in minutes, not hours. Stand out in the top 2%.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                   <Button size="lg" className="bg-indigo-600 hover:bg-indigo-700 text-white px-8">
@@ -101,6 +101,64 @@ export default function Home() {
                 </div>
                 <h3 className="text-xl font-semibold mb-3 text-indigo-950">AI-powered content</h3>
                 <p className="text-indigo-700">Get smart suggestions to make your experience stand out to employers.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Time Savings Section */}
+        <section className="py-20 bg-gradient-to-b from-indigo-50 to-indigo-100">
+          <div className="container mx-auto px-4">
+            <div className="max-w-5xl mx-auto">
+              <div className="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                  <h2 className="text-3xl font-bold mb-6 text-indigo-950">From hours to minutes</h2>
+                  <div className="space-y-6">
+                    <div className="flex items-start gap-4">
+                      <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                        <svg className="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-lg text-indigo-950 mb-2">Traditional way: 2-3 hours</h3>
+                        <p className="text-indigo-700">Manually updating your resume for each job, reformatting content, and writing cover letters from scratch.</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-4">
+                      <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                        <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-lg text-indigo-950 mb-2">With Waltzes: 5 minutes</h3>
+                        <p className="text-indigo-700">AI instantly tailors your resume to each job description and generates matching cover letters.</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-8 p-4 bg-white rounded-lg border border-indigo-100">
+                    <div className="flex items-center gap-3 text-indigo-700">
+                      <svg className="w-5 h-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                      <span>Apply to 10 jobs in the time it takes to apply to one</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="relative">
+                  <div className="aspect-square bg-white rounded-2xl shadow-xl overflow-hidden p-8">
+                    <div className="w-full h-full bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-lg flex items-center justify-center">
+                      <div className="text-center">
+                        <div className="text-6xl font-bold text-indigo-600 mb-2">95%</div>
+                        <p className="text-lg text-indigo-700">Time saved per application</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="absolute -bottom-4 -right-4 bg-green-500 text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg">
+                    2.5 hours saved per job
+                  </div>
+                </div>
               </div>
             </div>
           </div>
