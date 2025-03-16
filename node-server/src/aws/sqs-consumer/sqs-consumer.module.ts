@@ -23,7 +23,7 @@ import { SesModule } from '../ses/ses.module';
               region: awsConfig.region,
               sqs: new SQSClient({
                 region: awsConfig.region,
-                endpoint: awsConfig.endpoint,
+                ...(awsConfig.endpoint && { endpoint: awsConfig.endpoint }),
                 credentials: {
                   accessKeyId: awsConfig.accessKeyId,
                   secretAccessKey: awsConfig.secretAccessKey,

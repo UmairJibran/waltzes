@@ -9,7 +9,7 @@ export default () => ({
     linkedinScraperQueueUrl: process.env.LINKEDIN_SCRAPER_QUEUE_URL || '',
     meterQueueUrl: process.env.METER_QUEUE_URL || '',
     awsRegion: process.env.AWS_REGION || 'us-east-1',
-    endpoint: process.env.AWS_ENDPOINT || 'http://localhost:9324',
+    endpoint: process.env.AWS_ENDPOINT || undefined,
     sesSourceEmail: process.env.SES_SOURCE_EMAIL,
     jobScraperQueueUrl: process.env.JOB_SCRAPER_QUEUE_URL || '',
     coverLetterCreatorQueueUrl:
