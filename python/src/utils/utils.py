@@ -55,9 +55,9 @@ def send_data_to_callback_url(data: dict, callback_url: str):
 
 def generate_file_path():
     """Generate a unique file path for the output file."""
-    output_file = os.path.join("lib", f"{str(uuid.uuid4())}.pdf")
-    if not os.path.exists("lib"):
-        os.makedirs("lib")
+    output_file = os.path.join("/tmp", f"{str(uuid.uuid4())}.pdf")
+    if not os.path.exists("/tmp"):
+        os.makedirs("/tmp")
     return output_file
 
 
@@ -92,3 +92,18 @@ def add_query_param(url, param_name, param_value):
     modified_url = urlunparse(parsed_url)
 
     return modified_url
+
+
+def clean_title(text: str) -> str:
+    """Clean the title for use in filenames."""
+    return (
+        text.replace(",", "")
+        .replace("&", "and")
+        .replace("(", "")
+        .replace(")", "")
+        .replace("-", " ")
+        .replace("  ", " ")
+        .replace("  ", " ")
+        .replace(" ", "_")
+        .lower()
+    )
