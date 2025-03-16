@@ -227,6 +227,62 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Pricing Section */}
+        <section className="py-20 bg-white">
+          <div className="container mx-auto px-4">
+            <div className="max-w-3xl mx-auto text-center">
+              <h2 className="text-3xl font-bold mb-4 text-indigo-950">Simple, transparent pricing</h2>
+              <p className="text-lg text-indigo-700 mb-12">No subscriptions. No hidden fees. Just pay for what you need.</p>
+              
+              <div className="bg-gradient-to-b from-indigo-50 to-indigo-100 rounded-2xl p-8 shadow-lg">
+                <div className="flex items-center justify-center gap-3 mb-6">
+                  <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+                  <span className="text-indigo-600 font-medium">First 5 documents are FREE</span>
+                </div>
+                
+                <div className="mb-8">
+                  <div className="flex items-center justify-center gap-1">
+                    <span className="text-3xl font-medium text-indigo-950">$</span>
+                    <span className="text-6xl font-bold text-indigo-950">0.25</span>
+                  </div>
+                  <p className="text-indigo-600 mt-2">per document after free tier</p>
+                </div>
+
+                <ul className="space-y-4 mb-8 max-w-sm mx-auto text-left">
+                  <li className="flex items-center gap-3 text-indigo-700">
+                    <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Each resume is one document</span>
+                  </li>
+                  <li className="flex items-center gap-3 text-indigo-700">
+                    <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Each cover letter is one document</span>
+                  </li>
+                  <li className="flex items-center gap-3 text-indigo-700">
+                    <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Pay only when you generate a PDF</span>
+                  </li>
+                  <li className="flex items-center gap-3 text-indigo-700">
+                    <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Unlimited edits before generating</span>
+                  </li>
+                </ul>
+
+                <Button size="lg" className="bg-indigo-600 hover:bg-indigo-700 text-white px-8">
+                  Start with 5 free documents
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* CTA Section */}
         <section className="py-20 bg-indigo-600 text-white">
           <div className="container mx-auto px-4 text-center">
