@@ -18,11 +18,17 @@ def upload_item(path, bucket, key):
     Returns:
         bool: True if the upload was successful, False otherwise.
     """
-    s3 = boto3.client(
-        "s3",
-        endpoint_url=os.environ.get("AWS_ENDPOINT"),
-        region_name=os.environ.get("AWS_DEFAULT_REGION", "us-east-1"),
-    )
+    if os.environ.get("AWS_ENDPOINT"):
+        s3 = boto3.client(
+            "s3",
+            endpoint_url=os.environ.get("AWS_ENDPOINT"),
+            region_name=os.environ.get("AWS_REGION", "us-east-1"),
+        )
+    else:
+        s3 = boto3.client(
+            "s3",
+            region_name=os.environ.get("AWS_REGION", "us-east-1"),
+        )
 
     try:
         s3.upload_file(path, bucket, key)

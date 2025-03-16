@@ -1,0 +1,168 @@
+org: umairjibran
+app: waltzes
+service: python-processes
+
+provider:
+  name: aws
+  runtime: python3.12
+  region: us-east-1
+  memorySize: 256
+  timeout: 30
+  architecture: arm64 # defaults to x86_64
+  environment:
+    AWS_RES_BUCKET: ${param:AWS_RES_BUCKET}
+    EXTERNAL_API_TIMEOUT: ${param:EXTERNAL_API_TIMEOUT}
+    OPENAI_API_KEY: ${param:OPENAI_API_KEY}
+    INSTANT_API_KEY: ${param:INSTANT_API_KEY}
+    PROXY_CURL_API_KEY: ${param:PROXY_CURL_API_KEY}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - sqs:ReceiveMessage
+            - sqs:DeleteMessage
+            - sqs:GetQueueAttributes
+          Resource:
+            - Fn::GetAtt: [PDFProcessorQueue, Arn]
+            - Fn::GetAtt: [JobScraperQueue, Arn]
+            - Fn::GetAtt: [LinkedInScraperQueue, Arn]
+            - Fn::GetAtt: [ResumeCreatorQueue, Arn]
+            - Fn::GetAtt: [CoverLetterCreatorQueue, Arn]
+        - Effect: Allow
+          Action:
+            - s3:PutObject
+            - s3:GetObject
+          Resource:
+            - arn:aws:s3:::${param:AWS_RES_BUCKET}/*
+
+resources:
+  Resources:
+    PDFProcessorQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: pdf-processor-queue.fifo
+        FifoQueue: true
+        ContentBasedDeduplication: true
+
+    JobScraperQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: job-scraper-queue.fifo
+        FifoQueue: true
+        ContentBasedDeduplication: true
+
+    LinkedInScraperQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: linkedin-scraper-queue.fifo
+        FifoQueue: true
+        ContentBasedDeduplication: true
+
+    ResumeCreatorQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: resume-creator-queue.fifo
+        FifoQueue: true
+        ContentBasedDeduplication: true
+
+    CoverLetterCreatorQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: cover-letter-creator-queue.fifo
+        FifoQueue: true
+        ContentBasedDeduplication: true
+
+functions:
+  process_pdf_creator:
+    handler: src/handlers/process_pdf_creator.handler
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt: [PDFProcessorQueue, Arn]
+          batchSize: 1
+          functionResponseType: ReportBatchItemFailures
+    environment:
+      PYTHONPATH: ./src
+      QUEUE_URL:
+        Ref: PDFProcessorQueue
+
+  process_job_scraper:
+    handler: src/handlers/process_job_scraper.handler
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt: [JobScraperQueue, Arn]
+          batchSize: 1
+          functionResponseType: ReportBatchItemFailures
+    environment:
+      PYTHONPATH: ./src
+      QUEUE_URL:
+        Ref: JobScraperQueue
+
+  process_linkedin_scraper:
+    handler: src/handlers/process_linkedin_scraper.handler
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt: [LinkedInScraperQueue, Arn]
+          batchSize: 1
+          functionResponseType: ReportBatchItemFailures
+    environment:
+      PYTHONPATH: ./src
+      QUEUE_URL:
+        Ref: LinkedInScraperQueue
+
+  process_resume_creator:
+    handler: src/handlers/process_resume_creator.handler
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt: [ResumeCreatorQueue, Arn]
+          batchSize: 1
+          functionResponseType: ReportBatchItemFailures
+    environment:
+      PYTHONPATH: ./src
+      QUEUE_URL:
+        Ref: ResumeCreatorQueue
+
+  process_cover_letter_creator:
+    handler: src/handlers/process_cover_letter_creator.handler
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt: [CoverLetterCreatorQueue, Arn]
+          batchSize: 1
+          functionResponseType: ReportBatchItemFailures
+    environment:
+      PYTHONPATH: ./src
+      QUEUE_URL:
+        Ref: CoverLetterCreatorQueue
+
+package:
+  patterns:
+    - '!node_modules/**'
+    - '!.serverless/**'
+    - '!.git/**'
+    - '!.env*'
+    - '!tests/**'
+    - '!**/__pycache__/**'
+    - 'src/**'
+    - 'lib/**'
+    - 'requirements.txt'
+
+plugins:
+  - serverless-python-requirements
+  - serverless-offline
+
+custom:
+  pythonRequirements:
+    dockerizePip: non-linux
+    slim: false
+    useStaticCache: false
+    useDownloadCache: false
+    pipCmdExtraArgs: ['--platform', 'manylinux2014_aarch64', '--only-binary=:all:']
+    fileName: requirements.txt
+  serverless-offline:
+    httpPort: 4000
+    lambdaPort: 4002

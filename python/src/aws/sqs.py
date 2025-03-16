@@ -14,11 +14,17 @@ def fetch_messages(queue_url):
     Returns:
         obj: Messages fetched from the SQS queue.
     """
-    sqs = boto3.client(
-        "sqs",
-        endpoint_url=os.environ.get("AWS_ENDPOINT"),
-        region_name=os.environ.get("AWS_DEFAULT_REGION", "us-east-1"),
-    )
+    if os.environ.get("AWS_ENDPOINT"):
+        sqs = boto3.client(
+            "sqs",
+            endpoint_url=os.environ.get("AWS_ENDPOINT"),
+            region_name=os.environ.get("AWS_REGION", "us-east-1"),
+        )
+    else:
+        sqs = boto3.client(
+            "sqs",
+            region_name=os.environ.get("AWS_REGION", "us-east-1"),
+        )
 
     response = sqs.receive_message(
         QueueUrl=queue_url,
@@ -30,7 +36,7 @@ def fetch_messages(queue_url):
     )
     messages = response.get("Messages", [])
     if len(messages) > 0:
-        return messages[0]
+        return messages
     return None
 
 
@@ -44,7 +50,7 @@ def delete_message(queue_url, receipt_handle):
     sqs = boto3.client(
         "sqs",
         endpoint_url=os.environ.get("AWS_ENDPOINT"),
-        region_name=os.environ.get("AWS_DEFAULT_REGION", "us-east-1"),
+        region_name=os.environ.get("AWS_REGION", "us-east-1"),
     )
 
     sqs.delete_message(QueueUrl=queue_url, ReceiptHandle=receipt_handle)
