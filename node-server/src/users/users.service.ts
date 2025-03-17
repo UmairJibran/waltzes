@@ -167,7 +167,7 @@ export class UsersService {
     if (updateUserDto.linkedinUsername !== user.linkedinUsername) {
       const baseUrl: string = await this.configService.getOrThrow('baseUrl');
       const callbackUrl = new URL(
-        [baseUrl, '/api/_internal/users/', user._id, 'linkedin'].join(''),
+        [baseUrl, '/api/_internal/users/', user._id, '/linkedin'].join(''),
       );
 
       const checkValue: string = createHash('sha256')
