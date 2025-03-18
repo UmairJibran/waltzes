@@ -15,6 +15,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <title>Waltzes</title>
+      </head>
       <body className={inter.className}>
         <Providers>
           <ThemeProvider
