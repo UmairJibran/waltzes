@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { registerSchema, type RegisterInput } from '@/lib/validations/auth';
-import { useRegister } from '@/hooks/use-auth';
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { registerSchema, type RegisterInput } from "@/lib/validations/auth";
+import { useRegister } from "@/hooks/use-auth";
 
 export function RegisterForm({
   className,
   ...props
-}: React.ComponentProps<'div'>) {
+}: React.ComponentProps<"div">) {
   const {
     register,
     handleSubmit,
@@ -28,7 +28,7 @@ export function RegisterForm({
   };
 
   return (
-    <div className={cn('flex flex-col gap-6', className)} {...props}>
+    <div className={cn("flex flex-col gap-6", className)} {...props}>
       <form className="p-6 md:p-8" onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-6">
           <div className="flex flex-col items-center text-center">
@@ -44,7 +44,7 @@ export function RegisterForm({
                 id="firstName"
                 type="text"
                 placeholder="John"
-                {...register('firstName')}
+                {...register("firstName")}
                 aria-invalid={!!errors.firstName}
               />
               {errors.firstName && (
@@ -59,7 +59,7 @@ export function RegisterForm({
                 id="lastName"
                 type="text"
                 placeholder="Wick"
-                {...register('lastName')}
+                {...register("lastName")}
                 aria-invalid={!!errors.lastName}
               />
               {errors.lastName && (
@@ -76,7 +76,7 @@ export function RegisterForm({
                 id="linkedinUsername"
                 type="text"
                 placeholder="rbranson"
-                {...register('linkedinUsername')}
+                {...register("linkedinUsername")}
                 aria-invalid={!!errors.linkedinUsername}
               />
               {errors.linkedinUsername && (
@@ -91,7 +91,7 @@ export function RegisterForm({
                 id="githubUsername"
                 type="text"
                 placeholder="torvalds"
-                {...register('githubUsername')}
+                {...register("githubUsername")}
                 aria-invalid={!!errors.githubUsername}
               />
               {errors.githubUsername && (
@@ -107,7 +107,7 @@ export function RegisterForm({
               id="email"
               type="email"
               placeholder="m@example.com"
-              {...register('email')}
+              {...register("email")}
               aria-invalid={!!errors.email}
             />
             {errors.email && (
@@ -121,7 +121,7 @@ export function RegisterForm({
                 id="password"
                 type="password"
                 placeholder="********"
-                {...register('password')}
+                {...register("password")}
                 aria-invalid={!!errors.password}
               />
               {errors.password && (
@@ -136,7 +136,7 @@ export function RegisterForm({
                 id="confirmPassword"
                 type="password"
                 placeholder="********"
-                {...register('confirmPassword')}
+                {...register("confirmPassword")}
                 aria-invalid={!!errors.confirmPassword}
               />
               {errors.confirmPassword && (
@@ -147,7 +147,7 @@ export function RegisterForm({
             </div>
           </div>
           <Button type="submit" className="w-full" disabled={isPending}>
-            {isPending ? 'Creating Account...' : 'Create Account'}
+            {isPending ? "Creating Account..." : "Create Account"}
           </Button>
           <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
             <span className="bg-background text-muted-foreground relative z-10 px-2">
@@ -184,7 +184,7 @@ export function RegisterForm({
             </Button>
           </div>
           <div className="text-center text-sm">
-            Already have an account?{' '}
+            Already have an account?{" "}
             <a href="/login" className="underline underline-offset-4">
               Login Here
             </a>
@@ -192,8 +192,9 @@ export function RegisterForm({
         </div>
       </form>
       <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
-        By Registering, you agree to our <a href="#">Terms of Service</a> and{' '}
-        <a href="#">Privacy Policy</a>.
+        By Registering, you agree to our{" "}
+        <a href="https://waltzyourway.com/terms">Terms of Service</a> and{" "}
+        <a href="https://waltzyourway.com/privacy">Privacy Policy</a>.
       </div>
     </div>
   );
