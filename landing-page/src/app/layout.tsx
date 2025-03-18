@@ -43,6 +43,7 @@ export default function RootLayout({
         <link rel="apple-touch-icon" sizes="180x180" href="/favicon.ico" />
       </head>
       <Script
+        id="umami-analytics"
         defer
         src="https://cloud.umami.is/script.js"
         data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID}
