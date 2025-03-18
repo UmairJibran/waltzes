@@ -1,24 +1,34 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import './globals.css';
+import Script from 'next/script';
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: "Waltzes - Create Professional Resumes with AI",
-  description: "Build ATS-friendly resumes that stand out. Powered by AI, designed for success. Create your professional resume with Waltzes today.",
-  keywords: ["resume builder", "AI resume", "professional resume", "ATS-friendly resume", "CV maker"],
+  title: 'Waltzes - Create Professional Resumes with AI',
+  description:
+    'Build ATS-friendly resumes that stand out. Powered by AI, designed for success. Create your professional resume with Waltzes today.',
+  keywords: [
+    'resume builder',
+    'AI resume',
+    'professional resume',
+    'ATS-friendly resume',
+    'CV maker',
+  ],
   openGraph: {
-    title: "Waltzes - Create Professional Resumes with AI",
-    description: "Build ATS-friendly resumes that stand out. Powered by AI, designed for success.",
-    url: "https://app.waltzyourway.com",
-    siteName: "Waltzes",
-    type: "website",
+    title: 'Waltzes - Create Professional Resumes with AI',
+    description:
+      'Build ATS-friendly resumes that stand out. Powered by AI, designed for success.',
+    url: 'https://app.waltzyourway.com',
+    siteName: 'Waltzes',
+    type: 'website',
   },
   twitter: {
-    card: "summary_large_image",
-    title: "Waltzes - Create Professional Resumes with AI",
-    description: "Build ATS-friendly resumes that stand out. Powered by AI, designed for success.",
+    card: 'summary_large_image',
+    title: 'Waltzes - Create Professional Resumes with AI',
+    description:
+      'Build ATS-friendly resumes that stand out. Powered by AI, designed for success.',
   },
 };
 
@@ -29,6 +39,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="scroll-smooth">
+      <head>
+        <link rel="apple-touch-icon" sizes="180x180" href="/favicon.ico" />
+      </head>
+      <Script
+        defer
+        src="https://cloud.umami.is/script.js"
+        data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID}
+      />
       <body className={inter.className}>{children}</body>
     </html>
   );
