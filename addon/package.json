@@ -1,6 +1,6 @@
 {
   "name": "waltzes",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Get you a personalized cover letter for this job application",
   "scripts": {
     "build": "node utils/build.js",
