@@ -31,21 +31,21 @@ services:
     volumes:
       - ./docker-volume/mongodb:/data/db
 
-  node-server:
+  web-server:
     container_name: '${COMPOSE_PROJECT_NAME}_node'
     networks:
       - waltzes_network
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     build:
-      context: ./node-server
+      context: ./waltzes-web-server
       dockerfile: Dockerfile
     ports:
       - '3000:3000'
     environment:
       - NODE_ENV=development
     env_file:
-      - ./node-server/.env
+      - ./waltzes-web-server/.env
     depends_on:
       localstack:
         condition: service_healthy
@@ -63,7 +63,7 @@ services:
       context: ./web
       dockerfile: Dockerfile
     depends_on:
-      - node-server
+      - web-server
     ports:
       - '3001:3000'
 
@@ -72,13 +72,13 @@ services:
     networks:
       - waltzes_network
     build:
-      context: ./python
+      context: ./waltzes-python
       dockerfile: Dockerfile
     depends_on:
       - localstack
-      - node-server
+      - web-server
     env_file:
-      - ./python/.env
+      - ./waltzes-python/.env
     command: src/poll_linkedin_scraper_queue.py
 
   python-cover-letter:
@@ -86,50 +86,50 @@ services:
     networks:
       - waltzes_network
     build:
-      context: ./python
+      context: ./waltzes-python
       dockerfile: Dockerfile
     depends_on:
       - localstack
-      - node-server
+      - web-server
     env_file:
-      - ./python/.env
+      - ./waltzes-python/.env
     command: src/poll_cover_letter_creator.py
   python-resume:
     container_name: '${COMPOSE_PROJECT_NAME}_python_resume'
     networks:
       - waltzes_network
     build:
-      context: ./python
+      context: ./waltzes-python
       dockerfile: Dockerfile
     depends_on:
       - localstack
-      - node-server
+      - web-server
     env_file:
-      - ./python/.env
+      - ./waltzes-python/.env
     command: src/poll_resume_creator.py
   python-job-scrapper:
     container_name: '${COMPOSE_PROJECT_NAME}_python_job_scrapper'
     networks:
       - waltzes_network
     build:
-      context: ./python
+      context: ./waltzes-python
       dockerfile: Dockerfile
     depends_on:
       - localstack
-      - node-server
+      - web-server
     env_file:
-      - ./python/.env
+      - ./waltzes-python/.env
     command: src/poll_job_scraper_queue.py
   python-pdf-creator:
     container_name: '${COMPOSE_PROJECT_NAME}_python_pdf_creator'
     networks:
       - waltzes_network
     build:
-      context: ./python
+      context: ./waltzes-python
       dockerfile: Dockerfile
     depends_on:
       - localstack
-      - node-server
+      - web-server
     env_file:
-      - ./python/.env
+      - ./waltzes-python/.env
     command: src/poll_pdf_creator.py
