@@ -1,0 +1,3 @@
+[submodule "waltzes-python"]
+	path = waltzes-python
+	url = git@github.com:umairjibran/waltzes-python
