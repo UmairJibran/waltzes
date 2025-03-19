@@ -4,3 +4,6 @@
 [submodule "waltzes-web-server"]
 	path = waltzes-web-server
 	url = git@github.com:umairjibran/waltzes-web-server
+[submodule "waltzes-web-extension"]
+	path = waltzes-web-extension
+	url = git@github.com:umairjibran/waltzes-web-extension
