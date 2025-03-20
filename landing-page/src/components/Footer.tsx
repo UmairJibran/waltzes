@@ -23,8 +23,12 @@ export function Footer() {
           <div>
             <h4 className="font-semibold text-white mb-4">Company</h4>
             <ul className="space-y-2 text-sm">
-              <li>About</li>
-              <li>Contact</li>
+              <li>
+                <a href="mailto:waltzes@umairjibran.com" target="_blank" rel="noopener noreferrer">Contact</a>
+              </li>
+              <li>
+                <a href="https://discord.gg/thXRRXSD4b" target="_blank" rel="noopener noreferrer">Feedback</a>
+              </li>
               <li>
                 <a href="/privacy">Privacy Policy</a>
               </li>

@@ -83,12 +83,12 @@ const data = {
   navSecondary: [
     {
       title: "Support",
-      url: "#",
+      url: "mailto:waltzes@umairjibran.com",
       icon: LifeBuoy,
     },
     {
       title: "Feedback",
-      url: "#",
+      url: "https://discord.gg/thXRRXSD4b",
       icon: Send,
     },
   ],
