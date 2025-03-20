@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import * as React from "react";
+import * as React from 'react';
 import {
   Bot,
   GalleryVerticalEnd,
@@ -9,12 +9,12 @@ import {
   SquareTerminal,
   PuzzleIcon,
   Globe,
-} from "lucide-react";
+} from 'lucide-react';
 
-import { NavMain } from "@/components/nav-main";
-import { NavCTA } from "@/components/nav-cta";
-import { NavSecondary } from "@/components/nav-secondary";
-import { NavUser } from "@/components/nav-user";
+import { NavMain } from '@/components/nav-main';
+import { NavCTA } from '@/components/nav-cta';
+import { NavSecondary } from '@/components/nav-secondary';
+import { NavUser } from '@/components/nav-user';
 import {
   Sidebar,
   SidebarContent,
@@ -23,58 +23,58 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar";
-import { useUser } from "@/hooks/use-user";
+} from '@/components/ui/sidebar';
+import { useUser } from '@/hooks/use-user';
 
 const data = {
   navMain: [
     {
-      title: "Applications",
-      url: "/applications",
+      title: 'Applications',
+      url: '/applications',
       icon: SquareTerminal,
       isActive: true,
       items: [
         {
-          title: "Applied",
-          url: "/applications/applied",
+          title: 'Applied',
+          url: '/applications/applied',
           enabled: true,
         },
         {
-          title: "Interviewing",
-          url: "/applications/interviewing",
+          title: 'Interviewing',
+          url: '/applications/interviewing',
           enabled: true,
         },
         {
-          title: "Accepted",
-          url: "/applications/accepted",
+          title: 'Accepted',
+          url: '/applications/accepted',
           enabled: true,
         },
         {
-          title: "Rejected",
-          url: "/applications/rejected",
+          title: 'Rejected',
+          url: '/applications/rejected',
           enabled: true,
         },
       ],
     },
     {
-      title: "Scraped",
-      url: "/scraped",
+      title: 'Scraped',
+      url: '/scraped',
       icon: Bot,
       isActive: true,
       items: [
         {
-          title: "LinkedIn Profile",
-          url: "/scraped/linkedin",
+          title: 'LinkedIn Profile',
+          url: '/scraped/linkedin',
           enabled: true,
         },
         {
-          title: "GitHub Profile",
-          url: "#",
+          title: 'GitHub Profile',
+          url: '#',
           enabled: false,
         },
         {
-          title: "Others",
-          url: "#",
+          title: 'Others',
+          url: '#',
           enabled: false,
         },
       ],
@@ -82,25 +82,37 @@ const data = {
   ],
   navSecondary: [
     {
-      title: "Support",
-      url: "mailto:waltzes@umairjibran.com",
+      title: 'Support',
+      url: 'mailto:waltzes@umairjibran.com',
       icon: LifeBuoy,
     },
     {
-      title: "Feedback",
-      url: "https://discord.gg/thXRRXSD4b",
+      title: 'Feedback',
+      url: 'https://discord.gg/thXRRXSD4b',
       icon: Send,
     },
   ],
   cta: [
     {
-      name: "Get Browser Plugin",
-      url: "#",
+      name: 'Get Browser Plugin',
       icon: PuzzleIcon,
+      subItems: [
+        {
+          name: 'Chrome',
+          url: 'https://chromewebstore.google.com/detail/waltzes/imimjfooeejcdfblehajmoiapdilnieb',
+        },
+        {
+          name: 'Edge',
+          url: 'https://microsoftedge.microsoft.com/addons/detail/waltzes/jfgaangnolmmecbgjbldpakihjdipakn',
+        },
+        {
+          name: 'Firefox (Coming Soon)',
+        },
+      ],
     },
     {
-      name: "Try Web Version",
-      url: "/applications/new",
+      name: 'Try Web Version',
+      url: '/applications/new',
       icon: Globe,
     },
   ],
@@ -122,7 +134,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">Waltzes</span>
                   <span className="truncate text-xs">
-                    {user?.isPro ? "Pro Tier" : "Free Tier"}
+                    {user?.isPro ? 'Pro Tier' : 'Free Tier'}
                   </span>
                 </div>
               </a>
