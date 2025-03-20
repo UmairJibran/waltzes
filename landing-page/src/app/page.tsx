@@ -195,8 +195,75 @@ export default function Home() {
           </div>
         </section>
 
+        <section className="py-20 bg-gradient-to-b from-white to-indigo-100">
+          <div className="container mx-auto px-4">
+            <div className="max-w-3xl mx-auto text-center mb-16">
+              <h2 className="text-3xl font-bold mb-4 text-indigo-950">
+                Available on Your Favorite Browser
+              </h2>
+              <p className="text-lg text-indigo-700">
+                Install Waltzes extension to streamline your resume creation
+                process directly from your browser.
+              </p>
+            </div>
+            <div className="grid md:grid-cols-3 gap-8 max-w-3xl mx-auto">
+              <a
+                href="https://chromewebstore.google.com/detail/waltzes/imimjfooeejcdfblehajmoiapdilnieb"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex flex-col items-center p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow"
+              >
+                <Image
+                  src="/chrome.svg"
+                  alt="Chrome"
+                  width={64}
+                  height={64}
+                  className="mb-4"
+                />
+                <h3 className="text-xl font-semibold mb-2 text-indigo-950">
+                  Chrome
+                </h3>
+                <p className="text-indigo-600">Available Now</p>
+              </a>
+
+              <a
+                href="https://microsoftedge.microsoft.com/addons/detail/waltzes/jfgaangnolmmecbgjbldpakihjdipakn"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex flex-col items-center p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow"
+              >
+                <Image
+                  src="/edge.svg"
+                  alt="Microsoft Edge"
+                  width={64}
+                  height={64}
+                  className="mb-4"
+                />
+                <h3 className="text-xl font-semibold mb-2 text-indigo-950">
+                  Microsoft Edge
+                </h3>
+                <p className="text-indigo-600">Available Now</p>
+              </a>
+
+              <div className="flex flex-col items-center p-6 bg-white rounded-xl shadow-lg">
+                <Image
+                  src="/firefox.svg"
+                  alt="Firefox"
+                  width={64}
+                  height={64}
+                  className="mb-4"
+                />
+                <h3 className="text-xl font-semibold mb-2 text-indigo-950">
+                  Firefox
+                </h3>
+                <p className="text-indigo-600">Coming Soon</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Time Savings Section */}
-        <section className="py-20 bg-gradient-to-b from-indigo-50 to-indigo-100">
+        <section className="py-20 bg-gradient-to-b from-indigo-100 to-indigo-200">
           <div className="container mx-auto px-4">
             <div className="max-w-5xl mx-auto">
               <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -303,13 +370,13 @@ export default function Home() {
         </section>
 
         {/* Templates Section */}
-        <section className="py-20 bg-indigo-950 text-white">
+        <section className="py-20 bg-gradient-to-b from-indigo-200 to-indigo-300">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center mb-16">
               <h2 className="text-3xl font-bold mb-4">
                 Battle-tested resume template
               </h2>
-              <p className="text-lg text-indigo-200">
+              <p className="text-lg text-indigo-700">
                 Our template has been refined through thousands of successful
                 job applications at top companies like Google, Apple, and
                 Amazon. We focus on one perfect format instead of overwhelming
@@ -335,21 +402,21 @@ export default function Home() {
         </section>
 
         {/* Social Proof */}
-        <section className="py-20 bg-white" hidden>
+        <section className="py-20 bg-white bg-gradient-to-b from-indigo-300 to-indigo-100" hidden>
           <div className="container mx-auto px-4">
             <div className="max-w-5xl mx-auto">
               <div className="text-center mb-12">
                 <h2 className="text-3xl font-bold mb-4 text-indigo-950">
-                  Reviewed by the community
+                  Trusted by the community
                 </h2>
-                <div className="flex items-center justify-center gap-2 text-indigo-400 mb-4">
+                <div className="flex items-center justify-center gap-2 text-indigo-400 mb-4" hidden>
                   {'★★★★★'.split('').map((star, i) => (
                     <span key={i} className="text-2xl">
                       {star}
                     </span>
                   ))}
                 </div>
-                <p className="text-lg text-indigo-700">
+                <p className="text-lg text-indigo-700" hidden>
                   4.8 out of 5 based on 123,456 reviews
                 </p>
               </div>
@@ -416,7 +483,7 @@ export default function Home() {
                   </Card>
                 </div>
               </div>
-              <div className="flex justify-center mt-8 gap-2">
+              <div className="flex justify-center mt-8 gap-2" hidden>
                 <Button
                   variant="outline"
                   size="icon"
@@ -438,7 +505,7 @@ export default function Home() {
         </section>
 
         {/* FAQ Section */}
-        <section className="py-20 bg-indigo-50">
+        <section className="py-20 bg-gradient-to-b from-indigo-300 to-white">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto">
               <h2 className="text-3xl font-bold text-center mb-12 text-indigo-950">
@@ -651,7 +718,7 @@ export default function Home() {
               Ready to land your dream job?
             </h2>
             <p className="text-xl mb-8 text-indigo-100">
-              Join over 1 million professionals who&apos;ve advanced their
+              Join thousands of professionals who&apos;ve advanced their
               careers with Waltzes
             </p>
             <Button
