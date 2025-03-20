@@ -137,6 +137,10 @@ export function BillingDetails({ user }: IBillingDetailsProps) {
                 <p className="text-sm text-muted-foreground">Estimated Bill</p>
                 <p className="text-2xl font-bold">
                   ${estimatedBill.toFixed(2)}
+                  <br />
+                  <small className="text-xs font-light text-muted-foreground">
+                    Discounts/Couponse not applied
+                  </small>
                 </p>
               </div>
             </div>
@@ -147,7 +151,7 @@ export function BillingDetails({ user }: IBillingDetailsProps) {
         <Card hidden={!user.isPro}>
           <CardHeader>
             <CardTitle>Daily Usage</CardTitle>
-            <CardDescription>Last 30 days</CardDescription>
+            <CardDescription>Current Month</CardDescription>
           </CardHeader>
           <CardContent>
             <ChartContainer config={chartConfig}>
@@ -212,7 +216,7 @@ export function BillingDetails({ user }: IBillingDetailsProps) {
               <TrendingUp className="h-4 w-4" />
             </div>
             <div className="leading-none text-muted-foreground">
-              Showing daily document generation for the last 30 days
+              Showing daily document generation for the ongoing month
             </div>
           </CardFooter>
         </Card>
