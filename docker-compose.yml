@@ -32,7 +32,7 @@ services:
       - ./docker-volume/mongodb:/data/db
 
   web-server:
-    container_name: '${COMPOSE_PROJECT_NAME}_node'
+    container_name: '${COMPOSE_PROJECT_NAME}_web-server'
     networks:
       - waltzes_network
     extra_hosts:
