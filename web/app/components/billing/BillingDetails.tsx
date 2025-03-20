@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { TrendingUp } from "lucide-react";
-import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 
 import {
   Card,
@@ -24,13 +24,6 @@ import {
 interface IBillingDetailsProps {
   user: User;
 }
-
-// Dummy data for demonstration
-const dummyUsage = {
-  documentsGenerated: 3,
-  documentsToBeBilled: 0,
-  estimatedBill: 0,
-};
 
 // Generate dummy data for the last 30 days
 const generateDailyData = () => {
@@ -152,25 +145,53 @@ export function BillingDetails({ user }: IBillingDetailsProps) {
                 accessibilityLayer
                 data={chartData}
                 margin={{
-                  left: 12,
-                  right: 12,
-                  top: 12,
-                  bottom: 12,
+                  left: 24,
+                  right: 24,
+                  top: 24,
+                  bottom: 24,
                 }}
+                height={400}
               >
-                <CartesianGrid vertical={false} />
+                <CartesianGrid 
+                  horizontal={true}
+                  vertical={false} 
+                  stroke="hsl(var(--border))"
+                  strokeDasharray="8"
+                />
                 <XAxis
                   dataKey="date"
                   tickLine={false}
                   axisLine={false}
-                  tickMargin={8}
+                  tickMargin={12}
+                  stroke="hsl(var(--muted-foreground))"
+                  fontSize={12}
                 />
-                <ChartTooltip cursor={true} content={<ChartTooltipContent />} />
+                <YAxis 
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={12}
+                  stroke="hsl(var(--muted-foreground))"
+                  fontSize={12}
+                />
+                <ChartTooltip 
+                  cursor={{ stroke: "hsl(var(--muted))" }} 
+                  content={<ChartTooltipContent />} 
+                />
                 <Line
                   dataKey="documents"
-                  type="natural"
+                  type="monotone"
                   strokeWidth={2}
-                  dot={true}
+                  stroke="#2563eb"
+                  dot={{ 
+                    r: 4,
+                    fill: "#2563eb",
+                    strokeWidth: 0
+                  }}
+                  activeDot={{
+                    r: 6,
+                    fill: "#2563eb",
+                    strokeWidth: 0
+                  }}
                 />
               </LineChart>
             </ChartContainer>
