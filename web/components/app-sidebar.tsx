@@ -83,20 +83,32 @@ const data = {
   navSecondary: [
     {
       title: "Support",
-      url: "#",
+      url: "https://discord.gg/thXRRXSD4b",
       icon: LifeBuoy,
     },
     {
       title: "Feedback",
-      url: "#",
+      url: 'mailto:waltzes@umairjibran.com',
       icon: Send,
     },
   ],
   cta: [
     {
       name: "Get Browser Plugin",
-      url: "#",
       icon: PuzzleIcon,
+      subItems: [
+        {
+          name: "Chrome",
+          url: "https://chromewebstore.google.com/detail/waltzes/imimjfooeejcdfblehajmoiapdilnieb",
+        },
+        {
+          name: "Edge",
+          url: "https://microsoftedge.microsoft.com/addons/detail/waltzes/jfgaangnolmmecbgjbldpakihjdipakn",
+        },
+        {
+          name: "Firefox (Coming Soon)",
+        },
+      ],
     },
     {
       name: "Try Web Version",
