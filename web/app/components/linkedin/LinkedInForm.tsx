@@ -43,7 +43,7 @@ export function LinkedInForm({
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold">Basic Information</h2>
-          <Button onClick={requestLatestData} disabled={isSaving}>
+          <Button onClick={requestLatestData} disabled={isSaving} type="button">
             Fetch Latest from LinkedIn
           </Button>
         </div>

@@ -12,13 +12,32 @@ import {
 } from "@/components/ui/dialog";
 import { Loader } from "lucide-react";
 import { useState } from "react";
+import { getErrorMessage } from "@/lib/api-client";
+import { toast } from "@/components/ui/use-toast";
 
 export default function Page() {
   const [showLinkedInWarning, setShowLinkedInWarning] = useState(false);
-  const { data, isLoading, isUpdating, updateData } = useLinkedIn();
+  const {
+    data,
+    isLoading,
+    isUpdating,
+    updateData,
+    isRequesting,
+    refetchLatestFromLinkedIn,
+    requestLatestFromLinkedinError,
+    requestLatestFromLinkedinHasError,
+  } = useLinkedIn();
 
-  if (isLoading) {
-    return <Loader />;
+  if (isLoading || isRequesting || isUpdating) {
+    return <Loader className="m-auto animate-spin" />;
+  }
+
+  if (requestLatestFromLinkedinHasError) {
+    toast({
+      title: "Error",
+      description: getErrorMessage(requestLatestFromLinkedinError),
+      variant: "destructive",
+    });
   }
 
   if (!data) {
@@ -53,7 +72,12 @@ export default function Page() {
             >
               Cancel
             </Button>
-            <Button onClick={() => setShowLinkedInWarning(false)}>
+            <Button
+              onClick={() => {
+                setShowLinkedInWarning(false);
+                refetchLatestFromLinkedIn();
+              }}
+            >
               Continue
             </Button>
           </div>
