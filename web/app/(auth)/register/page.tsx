@@ -23,9 +23,9 @@ export default function RegisterPage() {
       </div>
       <div className="relative hidden bg-muted lg:block">
         <Image
-          width={100}
-          height={100}
-          src="/placeholder.svg"
+          width={1000}
+          height={1000}
+          src="/oil-painting.jpg"
           alt="Image"
           className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
         />
