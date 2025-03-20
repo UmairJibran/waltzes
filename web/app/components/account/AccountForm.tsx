@@ -4,13 +4,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { User, UpdateUserData } from "@/lib/types/user";
 
@@ -32,20 +25,9 @@ export function AccountForm({ data, onSave }: AccountFormProps) {
     _id: data._id || "",
   });
   const [newPassword, setNewPassword] = useState("");
-  const [showLinkedInWarning, setShowLinkedInWarning] = useState(false);
-  const [linkedinWarningDismissed, setLinkedinWarningDismissed] =
-    useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   const handleChange = (field: keyof UpdateUserData, value: string) => {
-    if (
-      field === "linkedinUsername" &&
-      value !== data.linkedinUsername &&
-      !linkedinWarningDismissed
-    ) {
-      setShowLinkedInWarning(true);
-      setLinkedinWarningDismissed(true);
-    }
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -285,35 +267,6 @@ export function AccountForm({ data, onSave }: AccountFormProps) {
           </div>
         </div>
       </div>
-
-      <Dialog open={showLinkedInWarning} onOpenChange={setShowLinkedInWarning}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Warning</DialogTitle>
-            <DialogDescription>
-              Changing your LinkedIn username will result in the loss of your
-              existing LinkedIn data. Are you sure you want to continue?
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex justify-end space-x-2">
-            <Button
-              variant="outline"
-              onClick={() => {
-                setFormData((prev) => ({
-                  ...prev,
-                  linkedinUsername: data.linkedinUsername,
-                }));
-                setShowLinkedInWarning(false);
-              }}
-            >
-              Cancel
-            </Button>
-            <Button onClick={() => setShowLinkedInWarning(false)}>
-              Continue
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
