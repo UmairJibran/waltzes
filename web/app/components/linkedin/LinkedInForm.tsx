@@ -1,26 +1,28 @@
-import { LinkedInData } from '@/lib/types/linkedin';
-import { ExperienceList } from './sections/ExperienceList';
-import { EducationList } from './sections/EducationList';
-import { LanguageList } from './sections/LanguageList';
-import { HonorAwardList } from './sections/HonorAwardList';
-import { ProjectList } from './sections/ProjectList';
-import { VolunteerWorkList } from './sections/VolunteerWorkList';
-import { CertificationList } from './sections/CertificationList';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { useState } from 'react';
+import { LinkedInData } from "@/lib/types/linkedin";
+import { ExperienceList } from "./sections/ExperienceList";
+import { EducationList } from "./sections/EducationList";
+import { LanguageList } from "./sections/LanguageList";
+import { HonorAwardList } from "./sections/HonorAwardList";
+import { ProjectList } from "./sections/ProjectList";
+import { VolunteerWorkList } from "./sections/VolunteerWorkList";
+import { CertificationList } from "./sections/CertificationList";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { useState } from "react";
 
 interface LinkedInFormProps {
   data: LinkedInData;
   onSave: (data: LinkedInData) => void;
   isSaving?: boolean;
+  requestLatestData: () => void;
 }
 
 export function LinkedInForm({
   data: initialData,
   onSave,
   isSaving,
+  requestLatestData,
 }: LinkedInFormProps) {
   const [data, setData] = useState(initialData);
 
@@ -28,7 +30,7 @@ export function LinkedInForm({
     field: K,
     value: LinkedInData[K]
   ) => {
-    setData(prev => ({ ...prev, [field]: value }));
+    setData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -39,14 +41,19 @@ export function LinkedInForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       <div className="space-y-4">
-        <h2 className="text-lg font-semibold">Basic Information</h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold">Basic Information</h2>
+          <Button onClick={requestLatestData} disabled={isSaving}>
+            Fetch Latest from LinkedIn
+          </Button>
+        </div>
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <label className="text-sm font-medium">First Name</label>
             <Input
               value={data.first_name}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                updateField('first_name', e.target.value)
+                updateField("first_name", e.target.value)
               }
             />
           </div>
@@ -55,7 +62,7 @@ export function LinkedInForm({
             <Input
               value={data.last_name}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                updateField('last_name', e.target.value)
+                updateField("last_name", e.target.value)
               }
             />
           </div>
@@ -66,7 +73,7 @@ export function LinkedInForm({
           <Input
             value={data.occupation}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              updateField('occupation', e.target.value)
+              updateField("occupation", e.target.value)
             }
           />
         </div>
@@ -76,7 +83,7 @@ export function LinkedInForm({
           <Input
             value={data.headline}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              updateField('headline', e.target.value)
+              updateField("headline", e.target.value)
             }
           />
         </div>
@@ -86,7 +93,7 @@ export function LinkedInForm({
           <Textarea
             value={data.about}
             onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-              updateField('about', e.target.value)
+              updateField("about", e.target.value)
             }
             className="min-h-[150px]"
           />
@@ -98,7 +105,7 @@ export function LinkedInForm({
             <Input
               value={data.location}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                updateField('location', e.target.value)
+                updateField("location", e.target.value)
               }
             />
           </div>
@@ -107,7 +114,7 @@ export function LinkedInForm({
             <Input
               value={data.city}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                updateField('city', e.target.value)
+                updateField("city", e.target.value)
               }
             />
           </div>
@@ -116,7 +123,7 @@ export function LinkedInForm({
             <Input
               value={data.state}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                updateField('state', e.target.value)
+                updateField("state", e.target.value)
               }
             />
           </div>
@@ -125,7 +132,7 @@ export function LinkedInForm({
             <Input
               value={data.country}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                updateField('country', e.target.value)
+                updateField("country", e.target.value)
               }
             />
           </div>
@@ -133,45 +140,49 @@ export function LinkedInForm({
       </div>
       <ExperienceList
         items={data.experience}
-        onChange={experience => updateField('experience', experience)}
+        onChange={(experience) => updateField("experience", experience)}
       />
 
       <EducationList
         items={data.education}
-        onChange={education => updateField('education', education)}
+        onChange={(education) => updateField("education", education)}
       />
 
       <LanguageList
         items={data.languages_and_proficiencies}
-        onChange={languages =>
-          updateField('languages_and_proficiencies', languages)
+        onChange={(languages) =>
+          updateField("languages_and_proficiencies", languages)
         }
       />
 
       <HonorAwardList
         items={data.accomplishment_honors_awards}
-        onChange={awards => updateField('accomplishment_honors_awards', awards)}
+        onChange={(awards) =>
+          updateField("accomplishment_honors_awards", awards)
+        }
       />
 
       <ProjectList
         items={data.accomplishment_projects}
-        onChange={projects => updateField('accomplishment_projects', projects)}
+        onChange={(projects) =>
+          updateField("accomplishment_projects", projects)
+        }
       />
 
       <VolunteerWorkList
         items={data.volunteer_work}
-        onChange={volunteer => updateField('volunteer_work', volunteer)}
+        onChange={(volunteer) => updateField("volunteer_work", volunteer)}
       />
 
       <CertificationList
         items={data.certifications}
-        onChange={certifications =>
-          updateField('certifications', certifications)
+        onChange={(certifications) =>
+          updateField("certifications", certifications)
         }
       />
       <div className="flex justify-end">
         <Button type="submit" disabled={isSaving}>
-          {isSaving ? 'Saving...' : 'Save All Changes'}
+          {isSaving ? "Saving..." : "Save All Changes"}
         </Button>
       </div>
     </form>
