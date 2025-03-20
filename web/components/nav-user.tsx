@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { BadgeCheck, ChevronsUpDown, LogOut, Sparkles } from 'lucide-react';
+import { BadgeCheck, ChevronsUpDown, LogOut, CreditCard } from "lucide-react";
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,17 +11,17 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from "@/components/ui/dropdown-menu";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from '@/components/ui/sidebar';
-import Link from 'next/link';
-import { useAuth } from '@/hooks/use-auth';
-import { useRouter } from 'next/navigation';
-import { User } from '@/lib/types/user';
+} from "@/components/ui/sidebar";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useAuth } from "@/hooks/use-auth";
+import { User } from "@/lib/types/user";
 
 export function NavUser({ user }: { user: Partial<User> }) {
   const { isMobile } = useSidebar();
@@ -45,8 +45,8 @@ export function NavUser({ user }: { user: Partial<User> }) {
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={user.avatar} alt={user.firstName} />
                 <AvatarFallback className="rounded-lg">
-                  {user.firstName?.split(' ').map(part => part[0])}
-                  {user.lastName?.split(' ').map(part => part[0])}
+                  {user.firstName?.split(" ").map((part) => part[0])}
+                  {user.lastName?.split(" ").map((part) => part[0])}
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
@@ -60,7 +60,7 @@ export function NavUser({ user }: { user: Partial<User> }) {
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-            side={isMobile ? 'bottom' : 'right'}
+            side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}
           >
@@ -69,16 +69,16 @@ export function NavUser({ user }: { user: Partial<User> }) {
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage
                     src={user.avatar}
-                    alt={user.firstName + ' ' + user.lastName}
+                    alt={user.firstName + " " + user.lastName}
                   />
                   <AvatarFallback className="rounded-lg">
-                    {user.firstName?.split(' ').map(part => part[0])}
-                    {user.lastName?.split(' ').map(part => part[0])}
+                    {user.firstName?.split(" ").map((part) => part[0])}
+                    {user.lastName?.split(" ").map((part) => part[0])}
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">
-                    {user.firstName + ' ' + user.lastName}
+                    {user.firstName + " " + user.lastName}
                   </span>
                   <span className="truncate text-xs">{user.email}</span>
                 </div>
@@ -86,18 +86,9 @@ export function NavUser({ user }: { user: Partial<User> }) {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem
-                onClick={() =>
-                  navigate(
-                    process.env.NEXT_PUBLIC_CHARGEBEE_LINK?.concat(
-                      `&customer[first_name]=${user.firstName}&customer[last_name]=${user.lastName}&customer[email]=${user.email}`
-                    )
-                  )
-                }
-                hidden={user.isPro}
-              >
-                <Sparkles />
-                Upgrade to Pro
+              <DropdownMenuItem onClick={() => navigate("/billing")}>
+                <CreditCard />
+                Billing
               </DropdownMenuItem>
               <Link href="/account">
                 <DropdownMenuItem>
