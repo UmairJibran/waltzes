@@ -20,6 +20,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { useRouter } from "next/navigation";
 
 interface IBillingDetailsProps {
   user: User;
@@ -46,9 +47,18 @@ const generateDailyData = () => {
 export function BillingDetails({ user }: IBillingDetailsProps) {
   const [couponCode, setCouponCode] = useState("");
 
-  const handleSubscribe = () => {
-    // Handle subscription logic here
-    console.log("Subscribing with coupon:", couponCode);
+  const router = useRouter();
+  const subscribe = () => {
+    const path = process.env.NEXT_PUBLIC_CHARGEBEE_LINK;
+    if (!path) return;
+    const url = new URL(path);
+    url.searchParams.append("customer[first_name]", user.firstName);
+    url.searchParams.append("customer[last_name]", user.lastName);
+    url.searchParams.append("customer[email]", user.email);
+    if (couponCode) {
+      url.searchParams.append("coupon_ids[0]", couponCode);
+    }
+    router.push(url.toString());
   };
 
   const chartData = generateDailyData();
@@ -73,7 +83,7 @@ export function BillingDetails({ user }: IBillingDetailsProps) {
 
       <div className="space-y-6">
         {/* Subscription Card */}
-        <Card>
+        <Card hidden={user.isPro}>
           <CardHeader>
             <CardTitle>Pro Plan</CardTitle>
             <CardDescription>Pay-as-you-go document generation</CardDescription>
@@ -97,14 +107,14 @@ export function BillingDetails({ user }: IBillingDetailsProps) {
                   value={couponCode}
                   onChange={(e) => setCouponCode(e.target.value)}
                 />
-                <Button onClick={handleSubscribe}>Subscribe</Button>
+                <Button onClick={subscribe}>Subscribe</Button>
               </div>
             </div>
           </CardContent>
         </Card>
 
         {/* Usage Card */}
-        <Card>
+        <Card hidden={!user.isPro}>
           <CardHeader>
             <CardTitle>Monthly Usage</CardTitle>
             <CardDescription>Track your document generation</CardDescription>
@@ -134,7 +144,7 @@ export function BillingDetails({ user }: IBillingDetailsProps) {
         </Card>
 
         {/* Usage Chart */}
-        <Card>
+        <Card hidden={!user.isPro}>
           <CardHeader>
             <CardTitle>Daily Usage</CardTitle>
             <CardDescription>Last 30 days</CardDescription>
@@ -152,9 +162,9 @@ export function BillingDetails({ user }: IBillingDetailsProps) {
                 }}
                 height={400}
               >
-                <CartesianGrid 
+                <CartesianGrid
                   horizontal={true}
-                  vertical={false} 
+                  vertical={false}
                   stroke="hsl(var(--border))"
                   strokeDasharray="8"
                 />
@@ -166,31 +176,31 @@ export function BillingDetails({ user }: IBillingDetailsProps) {
                   stroke="hsl(var(--muted-foreground))"
                   fontSize={12}
                 />
-                <YAxis 
+                <YAxis
                   tickLine={false}
                   axisLine={false}
                   tickMargin={12}
                   stroke="hsl(var(--muted-foreground))"
                   fontSize={12}
                 />
-                <ChartTooltip 
-                  cursor={{ stroke: "hsl(var(--muted))" }} 
-                  content={<ChartTooltipContent />} 
+                <ChartTooltip
+                  cursor={{ stroke: "hsl(var(--muted))" }}
+                  content={<ChartTooltipContent />}
                 />
                 <Line
                   dataKey="documents"
                   type="monotone"
                   strokeWidth={2}
                   stroke="#2563eb"
-                  dot={{ 
+                  dot={{
                     r: 4,
                     fill: "#2563eb",
-                    strokeWidth: 0
+                    strokeWidth: 0,
                   }}
                   activeDot={{
                     r: 6,
                     fill: "#2563eb",
-                    strokeWidth: 0
+                    strokeWidth: 0,
                   }}
                 />
               </LineChart>
