@@ -12,6 +12,7 @@ import { loginSchema, type LoginInput } from "@/lib/validations/auth";
 import { useLogin } from "@/hooks/use-auth";
 import { SocialBar } from "./social-bar";
 import { toast } from "./ui/use-toast";
+import { useEffect } from "react";
 
 export function LoginForm({
   className,
@@ -31,13 +32,15 @@ export function LoginForm({
     login(data);
   };
 
-  if (isError) {
-    toast({
-      title: "Error",
-      description: error?.message,
-      variant: "destructive",
-    });
-  }
+  useEffect(() => {
+    if (isError) {
+      toast({
+        title: "Error",
+        description: error?.message,
+        variant: "destructive",
+      });
+    }
+  }, [isError, error]);
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
