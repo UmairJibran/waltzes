@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
-import { TrendingUp } from "lucide-react";
+import { Loader2, TrendingUp } from "lucide-react";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 
 import {
@@ -21,28 +21,11 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { useRouter } from "next/navigation";
+import { useMeterUsage } from "@/hooks/use-meter-usage";
 
 interface IBillingDetailsProps {
   user: User;
 }
-
-// Generate dummy data for the last 30 days
-const generateDailyData = () => {
-  const data = [];
-  const today = new Date();
-  for (let i = 29; i >= 0; i--) {
-    const date = new Date(today);
-    date.setDate(date.getDate() - i);
-    data.push({
-      date: date.toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-      }),
-      documents: Math.floor(Math.random() * 5), // Random number of documents per day
-    });
-  }
-  return data;
-};
 
 export function BillingDetails({ user }: IBillingDetailsProps) {
   const [couponCode, setCouponCode] = useState("");
@@ -61,16 +44,21 @@ export function BillingDetails({ user }: IBillingDetailsProps) {
     router.push(url.toString());
   };
 
-  const chartData = generateDailyData();
-  const totalDocuments = chartData.reduce((sum, day) => sum + day.documents, 0);
-  const estimatedBill = totalDocuments * 0.25;
-
+  const { isFetching, data: chartData } = useMeterUsage();
+  const totalDocuments =
+    chartData?.reduce((sum, day) => sum + day.documents, 0) || 0;
+  const documentsToBeBilled = totalDocuments > 5 ? totalDocuments - 5 : 0;
+  const estimatedBill = documentsToBeBilled * 0.25;
   const chartConfig = {
     documents: {
       label: "Documents Generated",
       color: "hsl(var(--chart-1))",
     },
   } satisfies ChartConfig;
+
+  if (isFetching) {
+    return <Loader2 className="w-8 h-8 animate-spin" />;
+  }
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
@@ -131,7 +119,7 @@ export function BillingDetails({ user }: IBillingDetailsProps) {
                 <p className="text-sm text-muted-foreground">
                   Documents to be Billed
                 </p>
-                <p className="text-2xl font-bold">{totalDocuments}</p>
+                <p className="text-2xl font-bold">{documentsToBeBilled}</p>
               </div>
               <div className="space-y-1">
                 <p className="text-sm text-muted-foreground">Estimated Bill</p>
@@ -179,6 +167,7 @@ export function BillingDetails({ user }: IBillingDetailsProps) {
                   tickMargin={12}
                   stroke="hsl(var(--muted-foreground))"
                   fontSize={12}
+                  allowDecimals={false}
                 />
                 <YAxis
                   tickLine={false}
@@ -186,6 +175,7 @@ export function BillingDetails({ user }: IBillingDetailsProps) {
                   tickMargin={12}
                   stroke="hsl(var(--muted-foreground))"
                   fontSize={12}
+                  allowDecimals={false}
                 />
                 <ChartTooltip
                   cursor={{ stroke: "hsl(var(--muted))" }}
