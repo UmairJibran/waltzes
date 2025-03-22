@@ -133,3 +133,15 @@ services:
     env_file:
       - ./waltzes-python/.env
     command: src/poll_pdf_creator.py
+
+  dozzle:
+    container_name: '${COMPOSE_PROJECT_NAME}_dozzle_log'
+    image: amir20/dozzle:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 8080:8080
+    networks:
+      - waltzes_network
+    deploy:
+      mode: global
