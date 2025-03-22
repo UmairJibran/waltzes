@@ -102,7 +102,7 @@ export function BillingDetails({ user }: IBillingDetailsProps) {
         </Card>
 
         {/* Usage Card */}
-        <Card hidden={!user.isPro}>
+        <Card>
           <CardHeader>
             <CardTitle>Monthly Usage</CardTitle>
             <CardDescription>Track your document generation</CardDescription>
@@ -136,7 +136,7 @@ export function BillingDetails({ user }: IBillingDetailsProps) {
         </Card>
 
         {/* Usage Chart */}
-        <Card hidden={!user.isPro}>
+        <Card>
           <CardHeader>
             <CardTitle>Daily Usage</CardTitle>
             <CardDescription>Current Month</CardDescription>
