@@ -169,6 +169,16 @@ export const linkedinApi = {
   },
 };
 
+export const meterUsageApi = {
+  async getData(): Promise<IUsageMeter[] | undefined> {
+    const response = await fetchWithAuth<{ linkedin_data_raw?: LinkedInData }>(
+      "/usage-meter"
+    );
+
+    return response as unknown as IUsageMeter[];
+  },
+};
+
 interface PaginatedResponse<T> {
   data: T[];
   total: number;
