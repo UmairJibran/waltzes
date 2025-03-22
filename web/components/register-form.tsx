@@ -9,6 +9,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema, type RegisterInput } from "@/lib/validations/auth";
 import { useRegister } from "@/hooks/use-auth";
 import { SocialBar } from "./social-bar";
+import { toast } from "./ui/use-toast";
+import { useEffect } from "react";
 
 export function RegisterForm({
   className,
@@ -22,11 +24,21 @@ export function RegisterForm({
     resolver: zodResolver(registerSchema),
   });
 
-  const { mutate: registerUser, isPending } = useRegister();
+  const { mutate: registerUser, isPending, error, isError } = useRegister();
 
   const onSubmit = (data: RegisterInput) => {
     registerUser(data);
   };
+
+  useEffect(() => {
+    if (isError) {
+      toast({
+        title: "Error",
+        description: error?.message,
+        variant: "destructive",
+      });
+    }
+  }, [isError, error]);
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
