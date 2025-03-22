@@ -11,6 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, type LoginInput } from "@/lib/validations/auth";
 import { useLogin } from "@/hooks/use-auth";
 import { SocialBar } from "./social-bar";
+import { toast } from "./ui/use-toast";
 
 export function LoginForm({
   className,
@@ -24,11 +25,19 @@ export function LoginForm({
     resolver: zodResolver(loginSchema),
   });
 
-  const { mutate: login, isPending } = useLogin();
+  const { mutate: login, isPending, error, isError } = useLogin();
 
   const onSubmit = (data: LoginInput) => {
     login(data);
   };
+
+  if (isError) {
+    toast({
+      title: "Error",
+      description: error?.message,
+      variant: "destructive",
+    });
+  }
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
