@@ -6,7 +6,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { format } from "date-fns";
-import { Link2, Loader2 } from "lucide-react";
+import { Link2, Loader2, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -129,7 +129,17 @@ export function ApplicationDialog({
               <div className="grid grid-cols-2 gap-4 h-full">
                 {application.appliedWith.resume && (
                   <div className="flex flex-col h-full">
-                    <p className="text-sm font-medium mb-2">Resume</p>
+                    <p className="text-sm font-medium mb-2 flex items-center gap-1">
+                      Resume:
+                      <a
+                        href={application.appliedWith.resume}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-500 flex items-center gap-1"
+                      >
+                        View in new tab <ExternalLink size={12} />
+                      </a>
+                    </p>
                     <div className="flex-1 overflow-hidden rounded-md border">
                       <PDFViewer url={application.appliedWith.resume} />
                     </div>
@@ -137,7 +147,17 @@ export function ApplicationDialog({
                 )}
                 {application.appliedWith.coverLetter && (
                   <div className="flex flex-col h-full">
-                    <p className="text-sm font-medium mb-2">Cover Letter</p>
+                    <p className="text-sm font-medium mb-2 flex items-center gap-1">
+                      Cover Letter
+                      <a
+                        href={application.appliedWith.coverLetter}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-500 flex items-center gap-1"
+                      >
+                        View in new tab <ExternalLink size={12} />
+                      </a>
+                    </p>
                     <div className="flex-1 overflow-hidden rounded-md border">
                       <PDFViewer url={application.appliedWith.coverLetter} />
                     </div>
