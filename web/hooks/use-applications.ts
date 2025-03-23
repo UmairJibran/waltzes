@@ -1,9 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { applicationsApi } from '@/lib/api-client';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { applicationsApi } from "@/lib/api-client";
 import {
   ApplicationStatus,
   GenerateApplicationRequest,
-} from '@/lib/types/application';
+} from "@/lib/types/application";
 
 interface UpdateStatusInput {
   applicationId: string;
@@ -22,7 +22,7 @@ export function useApplications({
   pageSize = 50,
 }: UseApplicationsOptions = {}) {
   return useQuery({
-    queryKey: ['applications', { status, page, pageSize }],
+    queryKey: ["applications", { status, page, pageSize }],
     queryFn: () =>
       status
         ? applicationsApi.getByStatus(status, page, pageSize)
@@ -38,7 +38,7 @@ export function useUpdateApplicationStatus() {
       applicationsApi.updateStatus(applicationId, status),
     onSuccess: () => {
       // Invalidate all application queries to refetch the latest data
-      queryClient.invalidateQueries({ queryKey: ['applications'] });
+      queryClient.invalidateQueries({ queryKey: ["applications"] });
     },
   });
 }
@@ -52,7 +52,7 @@ export function useGenerateApplication() {
       return response.applicationId;
     },
     onSuccess: (applicationId: string) => {
-      queryClient.invalidateQueries({ queryKey: ['applications'] });
+      queryClient.invalidateQueries({ queryKey: ["applications"] });
       return applicationId;
     },
   });
@@ -60,7 +60,8 @@ export function useGenerateApplication() {
 
 export function useGetApplicationStatus(applicationId: string) {
   return useQuery({
-    queryKey: ['applicationStatus', { applicationId }],
+    queryKey: ["applicationStatus", { applicationId }],
     queryFn: () => applicationsApi.getApplicationStatus(applicationId),
+    refetchInterval: 2000,
   });
 }
