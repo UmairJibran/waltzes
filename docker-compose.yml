@@ -40,6 +40,7 @@ services:
     build:
       context: ./waltzes-web-server
       dockerfile: Dockerfile
+    restart: unless-stopped
     ports:
       - '3000:3000'
     environment:
@@ -62,6 +63,7 @@ services:
     build:
       context: ./web
       dockerfile: Dockerfile
+    restart: unless-stopped
     depends_on:
       - web-server
     ports:
@@ -74,6 +76,7 @@ services:
     build:
       context: ./waltzes-python
       dockerfile: Dockerfile
+    restart: unless-stopped
     depends_on:
       - localstack
       - web-server
@@ -88,6 +91,7 @@ services:
     build:
       context: ./waltzes-python
       dockerfile: Dockerfile
+    restart: unless-stopped
     depends_on:
       - localstack
       - web-server
@@ -101,6 +105,7 @@ services:
     build:
       context: ./waltzes-python
       dockerfile: Dockerfile
+    restart: unless-stopped
     depends_on:
       - localstack
       - web-server
@@ -114,6 +119,7 @@ services:
     build:
       context: ./waltzes-python
       dockerfile: Dockerfile
+    restart: unless-stopped
     depends_on:
       - localstack
       - web-server
@@ -124,6 +130,7 @@ services:
     container_name: '${COMPOSE_PROJECT_NAME}_python_pdf_creator'
     networks:
       - waltzes_network
+    restart: unless-stopped
     build:
       context: ./waltzes-python
       dockerfile: Dockerfile
