@@ -1,15 +1,17 @@
+"use client";
+
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Loader2, LoaderCircle, CheckCircle, Circle } from 'lucide-react';
-import { useGetApplicationStatus } from '@/hooks/use-applications';
-import { DialogDescription } from '@radix-ui/react-dialog';
-import { Button } from '@/components/ui/button';
+} from "@/components/ui/dialog";
+import { Loader2, LoaderCircle, CheckCircle, Circle } from "lucide-react";
+import { useGetApplicationStatus } from "@/hooks/use-applications";
+import { DialogDescription } from "@radix-ui/react-dialog";
+import { Button } from "@/components/ui/button";
 
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 
 interface ApplicationProcessingDialogProps {
   applicationId: string;
@@ -29,33 +31,33 @@ export function ApplicationProcessingDialog({
 
   const getStatusDescription = () => {
     switch (application?.status) {
-      case 'enqueue':
-        return 'Your application has been queued for processing.';
-      case 'processing':
-        return 'Your application is currently being processed.';
-      case 'finished':
-        return 'Your application has been processed successfully.';
+      case "enqueue":
+        return "Your application has been queued for processing.";
+      case "processing":
+        return "Your application is currently being processed.";
+      case "finished":
+        return "Your application has been processed successfully.";
     }
   };
 
   const getIconByStatus = () => {
     switch (application?.status) {
-      case 'enqueue':
+      case "enqueue":
         return <LoaderCircle className="w-4 h-4 animate-spin" />;
-      case 'processing':
+      case "processing":
         return <Loader2 className="w-4 h-4 animate-spin" />;
-      case 'finished':
+      case "finished":
         return <CheckCircle className="w-4 h-4" />;
     }
   };
 
   const getIconByStepStatus = (stepStatus: string | undefined) => {
     switch (stepStatus) {
-      case 'processing':
+      case "processing":
         return <Loader2 className="w-4 h-4 animate-spin" />;
-      case 'done':
+      case "done":
         return <CheckCircle className="w-4 h-4" />;
-      case 'pending':
+      case "pending":
       default:
         return <Circle className="w-4 h-4" />;
     }
@@ -76,13 +78,13 @@ export function ApplicationProcessingDialog({
               <div>{getIconByStepStatus(application?.steps.scraping)}</div>
               <div>Job Details</div>
             </div>
-            {application?.steps.resume !== 'skipped' && (
+            {application?.steps.resume !== "skipped" && (
               <div className="flex items-center gap-2">
                 <div>{getIconByStepStatus(application?.steps.resume)}</div>
                 <div>Resume</div>
               </div>
             )}
-            {application?.steps.coverLetter !== 'skipped' && (
+            {application?.steps.coverLetter !== "skipped" && (
               <div className="flex items-center gap-2">
                 <div>{getIconByStepStatus(application?.steps.coverLetter)}</div>
                 <div>Cover Letter</div>
@@ -94,9 +96,9 @@ export function ApplicationProcessingDialog({
             </div>
           </div>
 
-          {getStatusTitle() === 'FINISHED' && (
+          {getStatusTitle() === "FINISHED" && (
             <div className="flex gap-2 justify-around">
-              {application?.steps.resume !== 'skipped' && (
+              {application?.steps.resume !== "skipped" && (
                 <Button
                   variant="outline"
                   onClick={() => {
@@ -109,7 +111,7 @@ export function ApplicationProcessingDialog({
                   Download Resume
                 </Button>
               )}
-              {application?.steps.coverLetter !== 'skipped' && (
+              {application?.steps.coverLetter !== "skipped" && (
                 <Button
                   variant="outline"
                   onClick={() => {
