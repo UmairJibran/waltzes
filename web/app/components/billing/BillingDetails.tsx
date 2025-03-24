@@ -1,10 +1,10 @@
-import { User } from "@/lib/types/user";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useState } from "react";
-import { Loader2, TrendingUp } from "lucide-react";
-import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
+import { User } from '@/lib/types/user';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useState } from 'react';
+import { Loader2, TrendingUp } from 'lucide-react';
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts';
 
 import {
   Card,
@@ -13,33 +13,33 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart";
-import { useRouter } from "next/navigation";
-import { useMeterUsage } from "@/hooks/use-meter-usage";
+} from '@/components/ui/chart';
+import { useRouter } from 'next/navigation';
+import { useMeterUsage } from '@/hooks/use-meter-usage';
 
 interface IBillingDetailsProps {
   user: User;
 }
 
 export function BillingDetails({ user }: IBillingDetailsProps) {
-  const [couponCode, setCouponCode] = useState("");
+  const [couponCode, setCouponCode] = useState('');
 
   const router = useRouter();
   const subscribe = () => {
     const path = process.env.NEXT_PUBLIC_CHARGEBEE_LINK;
     if (!path) return;
     const url = new URL(path);
-    url.searchParams.append("customer[first_name]", user.firstName);
-    url.searchParams.append("customer[last_name]", user.lastName);
-    url.searchParams.append("customer[email]", user.email);
+    url.searchParams.append('customer[first_name]', user.firstName);
+    url.searchParams.append('customer[last_name]', user.lastName);
+    url.searchParams.append('customer[email]', user.email);
     if (couponCode) {
-      url.searchParams.append("coupon_ids[0]", couponCode);
+      url.searchParams.append('coupon_ids[0]', couponCode);
     }
     router.push(url.toString());
   };
@@ -48,11 +48,11 @@ export function BillingDetails({ user }: IBillingDetailsProps) {
   const totalDocuments =
     chartData?.reduce((sum, day) => sum + day.documents, 0) || 0;
   const documentsToBeBilled = totalDocuments > 5 ? totalDocuments - 5 : 0;
-  const estimatedBill = documentsToBeBilled * 0.25;
+  const estimatedBill = documentsToBeBilled * 1;
   const chartConfig = {
     documents: {
-      label: "Documents Generated",
-      color: "hsl(var(--chart-1))",
+      label: 'Documents Generated',
+      color: 'hsl(var(--chart-1))',
     },
   } satisfies ChartConfig;
 
@@ -79,7 +79,7 @@ export function BillingDetails({ user }: IBillingDetailsProps) {
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <div className="flex items-baseline gap-2">
-                <span className="text-3xl font-bold">$0.25</span>
+                <span className="text-3xl font-bold">$1</span>
                 <span className="text-muted-foreground">/document</span>
               </div>
               <p className="text-sm text-muted-foreground">
@@ -93,7 +93,7 @@ export function BillingDetails({ user }: IBillingDetailsProps) {
                   id="coupon"
                   placeholder="Enter code"
                   value={couponCode}
-                  onChange={(e) => setCouponCode(e.target.value)}
+                  onChange={e => setCouponCode(e.target.value)}
                 />
                 <Button onClick={subscribe}>Subscribe</Button>
               </div>
@@ -127,7 +127,8 @@ export function BillingDetails({ user }: IBillingDetailsProps) {
                   ${estimatedBill.toFixed(2)}
                   <br />
                   <small className="text-xs font-light text-muted-foreground">
-                    Discounts/Couponse not applied
+                    Estimated charges shown. Your final bill may differ due to
+                    applicable discounts and promotions.
                   </small>
                 </p>
               </div>
@@ -178,7 +179,7 @@ export function BillingDetails({ user }: IBillingDetailsProps) {
                   allowDecimals={false}
                 />
                 <ChartTooltip
-                  cursor={{ stroke: "hsl(var(--muted))" }}
+                  cursor={{ stroke: 'hsl(var(--muted))' }}
                   content={<ChartTooltipContent />}
                 />
                 <Line
@@ -188,12 +189,12 @@ export function BillingDetails({ user }: IBillingDetailsProps) {
                   stroke="#2563eb"
                   dot={{
                     r: 4,
-                    fill: "#2563eb",
+                    fill: '#2563eb',
                     strokeWidth: 0,
                   }}
                   activeDot={{
                     r: 6,
-                    fill: "#2563eb",
+                    fill: '#2563eb',
                     strokeWidth: 0,
                   }}
                 />
@@ -202,7 +203,7 @@ export function BillingDetails({ user }: IBillingDetailsProps) {
           </CardContent>
           <CardFooter className="flex-col items-start gap-2 text-sm">
             <div className="flex gap-2 font-medium leading-none">
-              {totalDocuments} documents generated this month{" "}
+              {totalDocuments} documents generated this month{' '}
               <TrendingUp className="h-4 w-4" />
             </div>
             <div className="leading-none text-muted-foreground">

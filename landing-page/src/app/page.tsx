@@ -402,14 +402,20 @@ export default function Home() {
         </section>
 
         {/* Social Proof */}
-        <section className="py-20 bg-white bg-gradient-to-b from-indigo-300 to-indigo-100" hidden>
+        <section
+          className="py-20 bg-white bg-gradient-to-b from-indigo-300 to-indigo-100"
+          hidden
+        >
           <div className="container mx-auto px-4">
             <div className="max-w-5xl mx-auto">
               <div className="text-center mb-12">
                 <h2 className="text-3xl font-bold mb-4 text-indigo-950">
                   Trusted by the community
                 </h2>
-                <div className="flex items-center justify-center gap-2 text-indigo-400 mb-4" hidden>
+                <div
+                  className="flex items-center justify-center gap-2 text-indigo-400 mb-4"
+                  hidden
+                >
                   {'★★★★★'.split('').map((star, i) => (
                     <span key={i} className="text-2xl">
                       {star}
@@ -617,7 +623,7 @@ export default function Home() {
                       $
                     </span>
                     <span className="text-6xl font-bold text-indigo-950">
-                      0.25
+                      1
                     </span>
                   </div>
                   <p className="text-indigo-600 mt-2">
@@ -718,8 +724,8 @@ export default function Home() {
               Ready to land your dream job?
             </h2>
             <p className="text-xl mb-8 text-indigo-100">
-              Join thousands of professionals who&apos;ve advanced their
-              careers with Waltzes
+              Join thousands of professionals who&apos;ve advanced their careers
+              with Waltzes
             </p>
             <Button
               size="lg"
