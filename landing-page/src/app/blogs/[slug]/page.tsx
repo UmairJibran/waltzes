@@ -6,13 +6,11 @@ import { notFound } from 'next/navigation';
 import styles from '@/styles/markdown-styles.module.css';
 import { IAuthor } from '@/types/global';
 import { cn } from '@/lib/utils';
+import { PageProps } from '../../../../.next/types/app/layout';
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string };
-}) {
-  const blog = getBlogBySlug(params.slug);
+export async function generateMetadata(pageProps: PageProps) {
+  const { slug } = await pageProps.params;
+  const blog = getBlogBySlug(slug);
 
   if (!blog) {
     return {
@@ -31,12 +29,9 @@ export async function generateMetadata({
   };
 }
 
-export default async function BlogPost({
-  params,
-}: {
-  params: { slug: string };
-}) {
-  const blog = getBlogBySlug(params.slug);
+export default async function BlogPost(pageProps: PageProps) {
+  const { slug } = await pageProps.params;
+  const blog = getBlogBySlug(slug);
 
   if (!blog) {
     notFound();
