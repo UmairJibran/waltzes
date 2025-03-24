@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 export function Navbar() {
   return (
-    <nav className="bg-white border-b border-indigo-100 fixed w-full z-50">
+    <nav className="bg-white border-b border-indigo-100 w-full z-50">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
