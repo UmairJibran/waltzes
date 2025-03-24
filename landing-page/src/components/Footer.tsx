@@ -1,4 +1,5 @@
 import { Separator } from '@radix-ui/react-separator';
+import Link from 'next/link';
 
 export function Footer() {
   return (
@@ -9,6 +10,11 @@ export function Footer() {
             <h3 className="font-bold text-white mb-4">Waltzes</h3>
             <p className="text-sm">
               Building better careers through intelligent resume crafting
+            </p>
+            <p className="text-sm">
+              <Link href="/blogs" className="underline">
+                Read our blog
+              </Link>
             </p>
           </div>
           <div>
@@ -24,10 +30,22 @@ export function Footer() {
             <h4 className="font-semibold text-white mb-4">Company</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="mailto:waltzes@umairjibran.com" target="_blank" rel="noopener noreferrer">Contact</a>
+                <a
+                  href="mailto:waltzes@umairjibran.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Contact
+                </a>
               </li>
               <li>
-                <a href="https://discord.gg/thXRRXSD4b" target="_blank" rel="noopener noreferrer">Feedback</a>
+                <a
+                  href="https://discord.gg/thXRRXSD4b"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Feedback
+                </a>
               </li>
               <li>
                 <a href="/privacy">Privacy Policy</a>
