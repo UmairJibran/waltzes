@@ -186,7 +186,7 @@ export function LinkedInForm({
         }
       />
       <div className="flex justify-end">
-        <Button onClick={handleSubmit}>
+        <Button onClick={handleSubmit} disabled={isSaving}>
           {isSaving ? "Saving..." : "Save All Changes"}
         </Button>
       </div>
