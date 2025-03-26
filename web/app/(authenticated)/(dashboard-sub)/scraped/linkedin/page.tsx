@@ -61,8 +61,9 @@ export default function Page() {
           <DialogHeader>
             <DialogTitle>Warning</DialogTitle>
             <DialogDescription>
-              Fetching the latest data from LinkedIn will overwrite any unsaved
-              changes. Are you sure you want to continue?
+              Fetching the latest data from LinkedIn will overwrite any saved or
+              unsaved changes even if they were made by you. Are you sure you
+              want to continue?
             </DialogDescription>
           </DialogHeader>
           <div className="flex justify-end space-x-2">
@@ -76,6 +77,12 @@ export default function Page() {
               onClick={() => {
                 setShowLinkedInWarning(false);
                 refetchLatestFromLinkedIn();
+                toast({
+                  title: "Fetching latest data",
+                  description:
+                    "This may take a few seconds, please check back later.",
+                  variant: "default",
+                });
               }}
             >
               Continue
