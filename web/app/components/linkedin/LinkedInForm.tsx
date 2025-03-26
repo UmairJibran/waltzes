@@ -1,4 +1,5 @@
 import { LinkedInData } from "@/lib/types/linkedin";
+import { SkillsList } from "./sections/SkillsList";
 import { ExperienceList } from "./sections/ExperienceList";
 import { EducationList } from "./sections/EducationList";
 import { LanguageList } from "./sections/LanguageList";
@@ -138,6 +139,11 @@ export function LinkedInForm({
           </div>
         </div>
       </div>
+      <SkillsList
+        items={data.skills}
+        onChange={(skills) => updateField("skills", skills)}
+      />
+
       <ExperienceList
         items={data.experience}
         onChange={(experience) => updateField("experience", experience)}

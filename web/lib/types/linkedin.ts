@@ -84,6 +84,7 @@ export interface LinkedInData {
   country_full_name: string;
   city: string;
   state: string;
+  skills: string[];
   experience: LinkedInExperience[];
   education: LinkedInEducation[];
   languages_and_proficiencies: LinkedInLanguage[];
