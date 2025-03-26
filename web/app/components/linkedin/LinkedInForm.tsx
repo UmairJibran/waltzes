@@ -34,20 +34,19 @@ export function LinkedInForm({
     setData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     onSave(data);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Basic Information</h2>
-          <Button onClick={requestLatestData} disabled={isSaving} type="button">
-            Fetch Latest from LinkedIn
-          </Button>
-        </div>
+    <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-semibold">Basic Information</h2>
+        <Button onClick={requestLatestData} disabled={isSaving} type="button">
+          Fetch Latest from LinkedIn
+        </Button>
+      </div>
+      <form>
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <label className="text-sm font-medium">First Name</label>
@@ -138,7 +137,7 @@ export function LinkedInForm({
             />
           </div>
         </div>
-      </div>
+      </form>
       <SkillsList
         items={data.skills}
         onChange={(skills) => updateField("skills", skills)}
@@ -187,10 +186,10 @@ export function LinkedInForm({
         }
       />
       <div className="flex justify-end">
-        <Button type="submit" disabled={isSaving}>
+        <Button onClick={handleSubmit}>
           {isSaving ? "Saving..." : "Save All Changes"}
         </Button>
       </div>
-    </form>
+    </div>
   );
 }
