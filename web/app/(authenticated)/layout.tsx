@@ -16,10 +16,11 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useUser } from "@/hooks/use-user";
 import { useAuth } from "@/hooks/use-auth";
 import { LoadingScreen } from "@/components/loading-screen";
+import { Button } from "@/components/ui/button";
 
 export default function AuthenticatedLayout({
   children,
@@ -27,10 +28,19 @@ export default function AuthenticatedLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
   const pages = pathname.split("/").filter(Boolean);
   const currentPage = pages.pop();
   const { isAuthenticated } = useAuth();
   const { isLoading, user } = useUser();
+
+  const navigateToAccount = () => {
+    router.push("/account");
+  };
+
+  const navigateToLinkedin = () => {
+    router.push("/scraped/linkedin");
+  };
 
   // Only show loading screen if we're authenticated but still loading user data
   if (isAuthenticated && (isLoading || !user)) {
@@ -46,7 +56,7 @@ export default function AuthenticatedLayout({
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2">
+        <header className="flex h-16 shrink-0 items-center justify-between gap-2">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
             <Separator
@@ -80,6 +90,30 @@ export default function AuthenticatedLayout({
                 )}
               </BreadcrumbList>
             </Breadcrumb>
+          </div>
+          <div className="mx-4">
+            <div className="flex flex-col items-end gap-1">
+              <span className="text-sm text-gray-500">Welcome back</span>
+              <span>
+                Hey {user?.firstName}, complete your account and your linkedin
+              </span>
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  variant="prominent"
+                  onClick={navigateToAccount}
+                >
+                  Account
+                </Button>
+                <Button
+                  size="sm"
+                  variant="prominent"
+                  onClick={navigateToLinkedin}
+                >
+                  Linkedin
+                </Button>
+              </div>
+            </div>
           </div>
         </header>
         {children}
