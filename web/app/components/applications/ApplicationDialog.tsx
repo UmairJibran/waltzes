@@ -5,8 +5,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  TooltipProvider,
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 import { format } from "date-fns";
-import { Link2, Loader2, ExternalLink } from "lucide-react";
+import { Link2, Loader2, ExternalLink, RefreshCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -16,9 +22,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useState } from "react";
-import { useUpdateApplicationStatus } from "@/hooks/use-applications";
+import {
+  useReGenerateApplication,
+  useUpdateApplicationStatus,
+} from "@/hooks/use-applications";
 import { PDFViewer } from "./PDFViewer";
 import { DialogDescription } from "@radix-ui/react-dialog";
+import { toast } from "@/components/ui/use-toast";
 
 interface ApplicationDialogProps {
   application: Application | null;
@@ -31,6 +41,58 @@ const STATUS_OPTIONS: ApplicationStatus[] = [
   "accepted",
   "rejected",
 ];
+
+export function RecreateButton({
+  exists,
+  label,
+  type,
+  applicationId,
+}: {
+  exists: boolean;
+  label: string;
+  type: "resume" | "coverLetter";
+  applicationId: string;
+}) {
+  const { mutate: reGenerateApplication, isSuccess } =
+    useReGenerateApplication();
+
+  if (isSuccess) {
+    toast({
+      title: "Recreated successfully",
+      description: `Your ${label} has been requested for recreation, plese check back in a few minutes.`,
+      variant: "default",
+    });
+  }
+
+  return (
+    <>
+      <div className="m-0 flex">
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                onClick={() => {
+                  reGenerateApplication({
+                    applicationId,
+                    documentType: type,
+                  });
+                }}
+                variant="link"
+                className="text-blue-500 flex items-start gap-1 text-md"
+              >
+                {exists ? "Recreate" : "Create"} <RefreshCcw size={12} />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">
+              Recreation will overwrite the existing {label}. And will incur a
+              charge of 1 credit.
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </div>
+    </>
+  );
+}
 
 export function ApplicationDialog({
   application,
@@ -127,10 +189,18 @@ export function ApplicationDialog({
             {application?.appliedWith?.resume ||
             application?.appliedWith?.coverLetter ? (
               <div className="grid grid-cols-2 gap-4 h-full">
-                {application.appliedWith.resume && (
-                  <div className="flex flex-col h-full">
-                    <p className="text-sm font-medium mb-2 flex items-center gap-1">
-                      Resume:
+                <div className="flex flex-col h-full">
+                  <p className="text-sm font-medium mb-2 flex items-center gap-1">
+                    Resume
+                  </p>
+                  <RecreateButton
+                    exists={!!application.appliedWith.resume}
+                    label="Resume"
+                    type="resume"
+                    applicationId={application._id}
+                  />
+                  {application.appliedWith.resume && (
+                    <>
                       <a
                         href={application.appliedWith.resume}
                         target="_blank"
@@ -139,16 +209,24 @@ export function ApplicationDialog({
                       >
                         View in new tab <ExternalLink size={12} />
                       </a>
-                    </p>
-                    <div className="flex-1 overflow-hidden rounded-md border">
-                      <PDFViewer url={application.appliedWith.resume} />
-                    </div>
-                  </div>
-                )}
-                {application.appliedWith.coverLetter && (
-                  <div className="flex flex-col h-full">
-                    <p className="text-sm font-medium mb-2 flex items-center gap-1">
-                      Cover Letter
+                      <div className="flex-1 overflow-hidden rounded-md border">
+                        <PDFViewer url={application.appliedWith.resume} />
+                      </div>
+                    </>
+                  )}
+                </div>
+                <div className="flex flex-col h-full">
+                  <p className="text-sm font-medium mb-2 flex items-center gap-1">
+                    Cover Letter
+                  </p>
+                  <RecreateButton
+                    exists={!!application.appliedWith.coverLetter}
+                    label="Cover Letter"
+                    applicationId={application._id}
+                    type="coverLetter"
+                  />
+                  {application.appliedWith.coverLetter && (
+                    <>
                       <a
                         href={application.appliedWith.coverLetter}
                         target="_blank"
@@ -157,12 +235,12 @@ export function ApplicationDialog({
                       >
                         View in new tab <ExternalLink size={12} />
                       </a>
-                    </p>
-                    <div className="flex-1 overflow-hidden rounded-md border">
-                      <PDFViewer url={application.appliedWith.coverLetter} />
-                    </div>
-                  </div>
-                )}
+                      <div className="flex-1 overflow-hidden rounded-md border">
+                        <PDFViewer url={application.appliedWith.coverLetter} />
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
             ) : (
               <div className="flex items-center justify-center h-full">
