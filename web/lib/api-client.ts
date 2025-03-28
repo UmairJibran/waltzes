@@ -7,6 +7,7 @@ import {
   GenerateApplicationRequest,
   ApplyStatus,
   GenerateApplicationResponse,
+  ReGenerateApplicationDocumentRequest,
 } from "./types/application";
 
 export interface ApiResponse<T> {
@@ -232,6 +233,17 @@ export const applicationsApi = {
       method: "POST",
       body: JSON.stringify(data),
     });
+  },
+  reGenerateApplication: async (
+    data: ReGenerateApplicationDocumentRequest
+  ): Promise<ReGenerateApplicationDocumentRequest> => {
+    return fetchWithAuth<ReGenerateApplicationDocumentRequest>(
+      "/applications/recreate",
+      {
+        method: "POST",
+        body: JSON.stringify(data),
+      }
+    );
   },
   getApplicationStatus: async (applicationId: string): Promise<ApplyStatus> => {
     return fetchWithAuth<ApplyStatus>(`/applications/${applicationId}`, {
