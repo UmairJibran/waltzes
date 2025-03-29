@@ -3,6 +3,7 @@ import { applicationsApi } from "@/lib/api-client";
 import {
   ApplicationStatus,
   GenerateApplicationRequest,
+  ReGenerateApplicationDocumentRequest,
 } from "@/lib/types/application";
 
 interface UpdateStatusInput {
@@ -49,6 +50,20 @@ export function useGenerateApplication() {
   return useMutation({
     mutationFn: async (data: GenerateApplicationRequest) => {
       const response = await applicationsApi.generateApplication(data);
+      return response.applicationId;
+    },
+    onSuccess: (applicationId: string) => {
+      queryClient.invalidateQueries({ queryKey: ["applications"] });
+      return applicationId;
+    },
+  });
+}
+
+export function useReGenerateApplication() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: ReGenerateApplicationDocumentRequest) => {
+      const response = await applicationsApi.reGenerateApplication(data);
       return response.applicationId;
     },
     onSuccess: (applicationId: string) => {

@@ -7,6 +7,7 @@ import {
   GenerateApplicationRequest,
   ApplyStatus,
   GenerateApplicationResponse,
+  ReGenerateApplicationDocumentRequest,
 } from "./types/application";
 
 export interface ApiResponse<T> {
@@ -105,7 +106,7 @@ async function fetchWithAuth<T>(
   }
 
   if (result.data === undefined) {
-    throw new Error("API response missing data");
+    return {} as T;
   }
 
   return result.data;
@@ -232,6 +233,17 @@ export const applicationsApi = {
       method: "POST",
       body: JSON.stringify(data),
     });
+  },
+  reGenerateApplication: async (
+    data: ReGenerateApplicationDocumentRequest
+  ): Promise<GenerateApplicationResponse> => {
+    return fetchWithAuth<ReGenerateApplicationDocumentRequest>(
+      "/applications/recreate",
+      {
+        method: "POST",
+        body: JSON.stringify(data),
+      }
+    );
   },
   getApplicationStatus: async (applicationId: string): Promise<ApplyStatus> => {
     return fetchWithAuth<ApplyStatus>(`/applications/${applicationId}`, {

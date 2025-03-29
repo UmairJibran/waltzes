@@ -4,9 +4,10 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { format } from "date-fns";
-import { Link2, Loader2, ExternalLink } from "lucide-react";
+import { Link2, Loader2, ExternalLink, RefreshCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -16,9 +17,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useState } from "react";
-import { useUpdateApplicationStatus } from "@/hooks/use-applications";
+import {
+  useReGenerateApplication,
+  useUpdateApplicationStatus,
+} from "@/hooks/use-applications";
 import { PDFViewer } from "./PDFViewer";
-import { DialogDescription } from "@radix-ui/react-dialog";
+import { toast } from "@/components/ui/use-toast";
 
 interface ApplicationDialogProps {
   application: Application | null;
@@ -31,6 +35,97 @@ const STATUS_OPTIONS: ApplicationStatus[] = [
   "accepted",
   "rejected",
 ];
+
+export function RecreateButton({
+  exists,
+  label,
+  type,
+  applicationId,
+}: {
+  exists: boolean;
+  label: string;
+  type: "resume" | "coverLetter";
+  applicationId: string;
+}) {
+  const { mutateAsync: reGenerateApplication } = useReGenerateApplication();
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleRegenerate = async () => {
+    setShowConfirmation(false);
+    setIsLoading(true);
+
+    try {
+      await reGenerateApplication({
+        applicationId,
+        documentType: type,
+      });
+
+      toast({
+        title: "Recreated successfully",
+        description: `Your ${label} has been requested for recreation, please check back in a few minutes.`,
+        variant: "default",
+      });
+    } catch (error) {
+      console.error("Error recreating application:", error);
+      toast({
+        title: "Error",
+        description: `Failed to ${
+          exists ? "recreate" : "create"
+        } ${label}. Please try again.`,
+        variant: "destructive",
+      });
+    } finally {
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
+    }
+  };
+
+  return (
+    <>
+      <div className="m-0 flex">
+        <Button
+          onClick={() => setShowConfirmation(true)}
+          variant="link"
+          className="text-blue-500 flex items-start gap-1 text-md"
+          disabled={isLoading}
+        >
+          {exists ? "Recreate" : "Create"}
+          <RefreshCcw
+            className={`ml-1 mt-1 h-4 w-4 ${isLoading && "animate-spin"}`}
+            size={12}
+          />
+        </Button>
+      </div>
+
+      <Dialog open={showConfirmation} onOpenChange={setShowConfirmation}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              Confirm {exists ? "Recreation" : "Creation"}
+            </DialogTitle>
+            <DialogDescription>
+              {exists
+                ? `Recreation will overwrite the existing ${label} and incur a charge of 1 credit.`
+                : `Creating a new ${label} will incur a charge of 1 credit.`}{" "}
+              Are you sure you want to continue?
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end space-x-2 mt-4">
+            <Button
+              variant="outline"
+              onClick={() => setShowConfirmation(false)}
+            >
+              Cancel
+            </Button>
+            <Button onClick={handleRegenerate}>Continue</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}
 
 export function ApplicationDialog({
   application,
@@ -127,10 +222,18 @@ export function ApplicationDialog({
             {application?.appliedWith?.resume ||
             application?.appliedWith?.coverLetter ? (
               <div className="grid grid-cols-2 gap-4 h-full">
-                {application.appliedWith.resume && (
-                  <div className="flex flex-col h-full">
-                    <p className="text-sm font-medium mb-2 flex items-center gap-1">
-                      Resume:
+                <div className="flex flex-col h-full">
+                  <p className="text-sm font-medium mb-2 flex items-center gap-1">
+                    Resume
+                  </p>
+                  <RecreateButton
+                    exists={!!application.appliedWith.resume}
+                    label="Resume"
+                    type="resume"
+                    applicationId={application._id}
+                  />
+                  {application.appliedWith.resume && (
+                    <>
                       <a
                         href={application.appliedWith.resume}
                         target="_blank"
@@ -139,16 +242,24 @@ export function ApplicationDialog({
                       >
                         View in new tab <ExternalLink size={12} />
                       </a>
-                    </p>
-                    <div className="flex-1 overflow-hidden rounded-md border">
-                      <PDFViewer url={application.appliedWith.resume} />
-                    </div>
-                  </div>
-                )}
-                {application.appliedWith.coverLetter && (
-                  <div className="flex flex-col h-full">
-                    <p className="text-sm font-medium mb-2 flex items-center gap-1">
-                      Cover Letter
+                      <div className="flex-1 overflow-hidden rounded-md border">
+                        <PDFViewer url={application.appliedWith.resume} />
+                      </div>
+                    </>
+                  )}
+                </div>
+                <div className="flex flex-col h-full">
+                  <p className="text-sm font-medium mb-2 flex items-center gap-1">
+                    Cover Letter
+                  </p>
+                  <RecreateButton
+                    exists={!!application.appliedWith.coverLetter}
+                    label="Cover Letter"
+                    applicationId={application._id}
+                    type="coverLetter"
+                  />
+                  {application.appliedWith.coverLetter && (
+                    <>
                       <a
                         href={application.appliedWith.coverLetter}
                         target="_blank"
@@ -157,12 +268,12 @@ export function ApplicationDialog({
                       >
                         View in new tab <ExternalLink size={12} />
                       </a>
-                    </p>
-                    <div className="flex-1 overflow-hidden rounded-md border">
-                      <PDFViewer url={application.appliedWith.coverLetter} />
-                    </div>
-                  </div>
-                )}
+                      <div className="flex-1 overflow-hidden rounded-md border">
+                        <PDFViewer url={application.appliedWith.coverLetter} />
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
             ) : (
               <div className="flex items-center justify-center h-full">

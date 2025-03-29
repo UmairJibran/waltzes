@@ -24,7 +24,10 @@ export interface Application {
   };
 }
 
-
+export interface ReGenerateApplicationDocumentRequest {
+  applicationId: string;
+  documentType: "resume" | "coverLetter";
+}
 
 export interface GenerateApplicationRequest {
   jobUrl: string;
