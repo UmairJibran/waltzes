@@ -236,7 +236,7 @@ export const applicationsApi = {
   },
   reGenerateApplication: async (
     data: ReGenerateApplicationDocumentRequest
-  ): Promise<ReGenerateApplicationDocumentRequest> => {
+  ): Promise<GenerateApplicationResponse> => {
     return fetchWithAuth<ReGenerateApplicationDocumentRequest>(
       "/applications/recreate",
       {
