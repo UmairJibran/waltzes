@@ -4,13 +4,8 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
-import {
-  TooltipProvider,
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-} from "@/components/ui/tooltip";
 import { format } from "date-fns";
 import { Link2, Loader2, ExternalLink, RefreshCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -27,7 +22,6 @@ import {
   useUpdateApplicationStatus,
 } from "@/hooks/use-applications";
 import { PDFViewer } from "./PDFViewer";
-import { DialogDescription } from "@radix-ui/react-dialog";
 import { toast } from "@/components/ui/use-toast";
 
 interface ApplicationDialogProps {
@@ -53,10 +47,11 @@ export function RecreateButton({
   type: "resume" | "coverLetter";
   applicationId: string;
 }) {
-  const { mutate: reGenerateApplication, isSuccess } =
+  const { mutateAsync: reGenerateApplication, data } =
     useReGenerateApplication();
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
-  if (isSuccess) {
+  if (data) {
     toast({
       title: "Recreated successfully",
       description: `Your ${label} has been requested for recreation, please check back in a few minutes.`,
@@ -64,32 +59,54 @@ export function RecreateButton({
     });
   }
 
+  const handleRegenerate = async () => {
+    setShowConfirmation(false);
+    reGenerateApplication({
+      applicationId,
+      documentType: type,
+    });
+  };
+
   return (
     <>
       <div className="m-0 flex">
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                onClick={() => {
-                  reGenerateApplication({
-                    applicationId,
-                    documentType: type,
-                  });
-                }}
-                variant="link"
-                className="text-blue-500 flex items-start gap-1 text-md"
-              >
-                {exists ? "Recreate" : "Create"} <RefreshCcw size={12} />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="bottom">
-              Recreation will overwrite the existing {label}. And will incur a
-              charge of 1 credit.
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <Button
+          onClick={() => setShowConfirmation(true)}
+          variant="link"
+          className="text-blue-500 flex items-start gap-1 text-md"
+        >
+          {exists ? "Recreate" : "Create"}
+          <RefreshCcw
+            className={`ml-1 mt-1 h-4 w-4 ${data && "animate-spin"}`}
+            size={12}
+          />
+        </Button>
       </div>
+
+      <Dialog open={showConfirmation} onOpenChange={setShowConfirmation}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              Confirm {exists ? "Recreation" : "Creation"}
+            </DialogTitle>
+            <DialogDescription>
+              {exists
+                ? `Recreation will overwrite the existing ${label} and incur a charge of 1 credit.`
+                : `Creating a new ${label} will incur a charge of 1 credit.`}{" "}
+              Are you sure you want to continue?
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end space-x-2 mt-4">
+            <Button
+              variant="outline"
+              onClick={() => setShowConfirmation(false)}
+            >
+              Cancel
+            </Button>
+            <Button onClick={handleRegenerate}>Continue</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
