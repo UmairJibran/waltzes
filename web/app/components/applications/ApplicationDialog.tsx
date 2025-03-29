@@ -47,24 +47,39 @@ export function RecreateButton({
   type: "resume" | "coverLetter";
   applicationId: string;
 }) {
-  const { mutateAsync: reGenerateApplication, data } =
-    useReGenerateApplication();
+  const { mutateAsync: reGenerateApplication } = useReGenerateApplication();
   const [showConfirmation, setShowConfirmation] = useState(false);
-
-  if (data) {
-    toast({
-      title: "Recreated successfully",
-      description: `Your ${label} has been requested for recreation, please check back in a few minutes.`,
-      variant: "default",
-    });
-  }
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleRegenerate = async () => {
     setShowConfirmation(false);
-    reGenerateApplication({
-      applicationId,
-      documentType: type,
-    });
+    setIsLoading(true);
+
+    try {
+      await reGenerateApplication({
+        applicationId,
+        documentType: type,
+      });
+
+      toast({
+        title: "Recreated successfully",
+        description: `Your ${label} has been requested for recreation, please check back in a few minutes.`,
+        variant: "default",
+      });
+    } catch (error) {
+      console.error("Error recreating application:", error);
+      toast({
+        title: "Error",
+        description: `Failed to ${
+          exists ? "recreate" : "create"
+        } ${label}. Please try again.`,
+        variant: "destructive",
+      });
+    } finally {
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
+    }
   };
 
   return (
@@ -74,10 +89,11 @@ export function RecreateButton({
           onClick={() => setShowConfirmation(true)}
           variant="link"
           className="text-blue-500 flex items-start gap-1 text-md"
+          disabled={isLoading}
         >
           {exists ? "Recreate" : "Create"}
           <RefreshCcw
-            className={`ml-1 mt-1 h-4 w-4 ${data && "animate-spin"}`}
+            className={`ml-1 mt-1 h-4 w-4 ${isLoading && "animate-spin"}`}
             size={12}
           />
         </Button>

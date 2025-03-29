@@ -106,7 +106,7 @@ async function fetchWithAuth<T>(
   }
 
   if (result.data === undefined) {
-    throw new Error("API response missing data");
+    return {} as T;
   }
 
   return result.data;
