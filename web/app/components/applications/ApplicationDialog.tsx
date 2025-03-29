@@ -59,7 +59,7 @@ export function RecreateButton({
   if (isSuccess) {
     toast({
       title: "Recreated successfully",
-      description: `Your ${label} has been requested for recreation, plese check back in a few minutes.`,
+      description: `Your ${label} has been requested for recreation, please check back in a few minutes.`,
       variant: "default",
     });
   }
