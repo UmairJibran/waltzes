@@ -55,6 +55,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
+    volumes:
+      - ./waltzes-web-server/logs:/usr/src/app/logs # Mount the logs directory
 
   web:
     container_name: '${COMPOSE_PROJECT_NAME}_web'
