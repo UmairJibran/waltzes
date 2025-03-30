@@ -5,10 +5,12 @@ import {
   Bot,
   GalleryVerticalEnd,
   LifeBuoy,
-  Send,
+  Boxes,
   SquareTerminal,
   PuzzleIcon,
   Globe,
+  FileVideo2,
+  CreditCard,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -79,17 +81,29 @@ const data = {
         },
       ],
     },
+    {
+      title: "Usage & Billing",
+      url: "/billing",
+      icon: CreditCard,
+      isActive: true,
+    },
   ],
   navSecondary: [
     {
       title: "Support",
-      url: "https://discord.gg/thXRRXSD4b",
+      url: "mailto:waltzes@umairjibran.com",
       icon: LifeBuoy,
     },
     {
-      title: "Feedback",
-      url: 'mailto:waltzes@umairjibran.com',
-      icon: Send,
+      title: "Community",
+      url: "https://discord.gg/thXRRXSD4b",
+      icon: Boxes,
+    },
+    {
+      title: "Watch Demo",
+      url: "https://www.loom.com/share/247a6971737f456f8acb0f83a37ad821?sid=c5040200-f509-4cf1-b73a-940a05dbd0c9",
+      icon: FileVideo2,
+      highlight: true,
     },
   ],
   cta: [
@@ -134,7 +148,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">Waltzes</span>
                   <span className="truncate text-xs">
-                    {user?.isPro ? "Pro Tier" : "Free Tier"}
+                    <a href="/billing">
+                      {user?.isPro ? "Pro Tier" : "Free Tier"}
+                    </a>
                   </span>
                 </div>
               </a>

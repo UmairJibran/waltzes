@@ -1,16 +1,15 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ui/accordion';
-import { Video } from '@/components/ui/video';
-import Image from 'next/image';
+} from "@/components/ui/accordion";
+import Image from "next/image";
 
 export default function Home() {
   return (
@@ -41,7 +40,7 @@ export default function Home() {
                     className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 cursor-pointer"
                     onClick={() => {
                       window.location.href =
-                        'https://app.waltzyourway.com/register';
+                        "https://app.waltzyourway.com/register";
                     }}
                   >
                     Create my resume
@@ -81,16 +80,14 @@ export default function Home() {
               <div className="flex-1 relative">
                 <div className="relative w-full aspect-[4/3] bg-white rounded-lg shadow-2xl overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 to-indigo-100">
-                    <Video
-                      path="/demo.mp4"
-                      captions="/captions.vtt"
-                      width={1000}
-                      height={1000}
-                      controls={true}
-                      loop={true}
-                      muted={true}
-                      autoPlay={true}
-                    />
+                    <div className="relative w-full h-full">
+                      <iframe
+                        src="https://www.loom.com/embed/247a6971737f456f8acb0f83a37ad821?sid=628f2e87-6fc6-402c-bc52-e5098b5cb447"
+                        frameBorder="0"
+                        allowFullScreen
+                        className="absolute inset-0 w-full h-full"
+                      ></iframe>
+                    </div>
                   </div>
                 </div>
                 <div className="absolute -bottom-6 -left-6 bg-white rounded-lg shadow-lg p-4">
@@ -416,7 +413,7 @@ export default function Home() {
                   className="flex items-center justify-center gap-2 text-indigo-400 mb-4"
                   hidden
                 >
-                  {'★★★★★'.split('').map((star, i) => (
+                  {"★★★★★".split("").map((star, i) => (
                     <span key={i} className="text-2xl">
                       {star}
                     </span>
@@ -707,7 +704,7 @@ export default function Home() {
                   className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 cursor-pointer"
                   onClick={() => {
                     window.location.href =
-                      'https://app.waltzyourway.com/register';
+                      "https://app.waltzyourway.com/register";
                   }}
                 >
                   Start with 5 free documents
@@ -732,7 +729,7 @@ export default function Home() {
               variant="outline"
               className="bg-white text-indigo-600 hover:bg-indigo-50 border-2 border-white cursor-pointer"
               onClick={() => {
-                window.location.href = 'https://app.waltzyourway.com/register';
+                window.location.href = "https://app.waltzyourway.com/register";
               }}
             >
               Create your resume now
