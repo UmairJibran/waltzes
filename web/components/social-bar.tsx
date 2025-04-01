@@ -8,6 +8,13 @@ import { Button } from "./ui/button";
 
 export function SocialBar() {
   return (
+    <div className="flex items-center justify-center gap-4">
+      <p className="text-sm font-medium text-muted-foreground">
+        Social login is not available yet
+      </p>
+    </div>
+  );
+  return (
     <>
       <TooltipProvider>
         <Tooltip>
