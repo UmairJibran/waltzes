@@ -6,7 +6,12 @@ import { notFound } from "next/navigation";
 import styles from "@/styles/markdown-styles.module.css";
 import { IAuthor } from "@/types/global";
 import { cn } from "@/lib/utils";
-import { PageProps } from "../../../../.next/types/app/layout";
+
+interface PageProps {
+  params: Promise<{
+    slug: string;
+  }>;
+}
 
 export async function generateMetadata(pageProps: PageProps) {
   const { slug } = await pageProps.params;
