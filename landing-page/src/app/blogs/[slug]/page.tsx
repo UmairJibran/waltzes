@@ -1,12 +1,12 @@
-import { getBlogBySlug } from '@/lib/api';
-import markdownToHtml from '@/lib/markdownToHtml';
-import Image from 'next/image';
-import Link from 'next/link';
-import { notFound } from 'next/navigation';
-import styles from '@/styles/markdown-styles.module.css';
-import { IAuthor } from '@/types/global';
-import { cn } from '@/lib/utils';
-import { PageProps } from '../../../../.next/types/app/layout';
+import { getBlogBySlug } from "@/lib/api";
+import markdownToHtml from "@/lib/markdownToHtml";
+import Image from "next/image";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import styles from "@/styles/markdown-styles.module.css";
+import { IAuthor } from "@/types/global";
+import { cn } from "@/lib/utils";
+import { PageProps } from "../../../../.next/types/app/layout";
 
 export async function generateMetadata(pageProps: PageProps) {
   const { slug } = await pageProps.params;
@@ -14,7 +14,7 @@ export async function generateMetadata(pageProps: PageProps) {
 
   if (!blog) {
     return {
-      title: 'Blog Not Found',
+      title: "Blog Not Found",
     };
   }
 
@@ -45,10 +45,10 @@ export default async function BlogPost(pageProps: PageProps) {
   const readingTime = Math.max(1, Math.ceil(wordCount / 200));
 
   // Format date
-  const formattedDate = new Date(blog.date).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
+  const formattedDate = new Date(blog.date).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
   });
 
   const author = blog.author as IAuthor;
@@ -100,7 +100,7 @@ export default async function BlogPost(pageProps: PageProps) {
       </div>
 
       {/* Article Content */}
-      <div className={cn(styles.markdown, 'max-w-2xl mx-auto')}>
+      <div className={cn(styles.markdown, "max-w-2xl mx-auto")}>
         <div dangerouslySetInnerHTML={{ __html: content }} />
       </div>
 
@@ -110,7 +110,7 @@ export default async function BlogPost(pageProps: PageProps) {
           href="/blogs"
           className="inline-block px-6 py-3 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
         >
-          View all Posts
+          Read all Blogs
         </Link>
       </div>
 
