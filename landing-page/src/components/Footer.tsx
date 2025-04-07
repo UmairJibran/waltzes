@@ -12,7 +12,12 @@ export function Footer() {
               Building better careers through intelligent resume crafting
             </p>
             <p className="text-sm">
-              <Link href="/blogs" className="underline">
+              <Link
+                href="/blogs"
+                className="underline"
+                data-umami-event="footer-link"
+                data-umami-event-link="blogs"
+              >
                 Read our blog
               </Link>
             </p>
@@ -34,6 +39,8 @@ export function Footer() {
                   href="mailto:waltzes@umairjibran.com"
                   target="_blank"
                   rel="noopener noreferrer"
+                  data-umami-event="footer-link"
+                  data-umami-event-link="contact"
                 >
                   Contact
                 </a>
@@ -43,15 +50,29 @@ export function Footer() {
                   href="https://discord.gg/thXRRXSD4b"
                   target="_blank"
                   rel="noopener noreferrer"
+                  data-umami-event="footer-link"
+                  data-umami-event-link="feedback"
                 >
                   Feedback
                 </a>
               </li>
               <li>
-                <a href="/privacy">Privacy Policy</a>
+                <a
+                  href="/privacy"
+                  data-umami-event="footer-link"
+                  data-umami-event-link="privacy-policy"
+                >
+                  Privacy Policy
+                </a>
               </li>
               <li>
-                <a href="/terms">Terms of Service</a>
+                <a
+                  href="/terms"
+                  data-umami-event="footer-link"
+                  data-umami-event-link="terms-of-service"
+                >
+                  Terms of Service
+                </a>
               </li>
             </ul>
           </div>
@@ -59,6 +80,17 @@ export function Footer() {
         <Separator className="my-8 bg-indigo-900" />
         <div className="text-center text-sm">
           © {new Date().getFullYear()} Waltzes. All rights reserved.
+        </div>
+        <div className="text-center mt-8">
+          <button
+            className="border-indigo-600 text-indigo-600 hover:bg-indigo-50 cursor-pointer"
+            onClick={() => {
+              window.location.href = 'https://app.waltzyourway.com/register';
+            }}
+            data-umami-event="footer-get-started"
+          >
+            Get Started
+          </button>
         </div>
       </div>
     </footer>

@@ -22,7 +22,7 @@ export default function BlogsPage() {
     <main className="container mx-auto px-5 py-8 max-w-6xl">
       {/* Featured Post */}
       <div className="mb-16 bg-white rounded-lg shadow-sm shadow-gray-100 p-2 hover:shadow-md hover:shadow-gray-200 transition-shadow duration-300">
-        <Link href={`/blogs/${latestBlog.slug}`}>
+        <Link href={`/blogs/${latestBlog.slug}`} data-umami-event="featured-blog-click">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="m-auto">
               <Image
@@ -75,7 +75,7 @@ export default function BlogsPage() {
               key={blog.slug}
               className="bg-white mb-8 rounded-lg shadow-sm shadow-gray-100 p-2 hover:shadow-md hover:shadow-gray-200 transition-shadow duration-300"
             >
-              <Link href={`/blogs/${blog.slug}`}>
+              <Link href={`/blogs/${blog.slug}`} data-umami-event="blog-post-click" data-umami-event-blog-title={blog.title}>
                 <div className="flex flex-col md:flex-row gap-4">
                   <div className="m-auto size-48">
                     <Image

@@ -114,6 +114,7 @@ export default async function BlogPost(pageProps: PageProps) {
         <Link
           href="/blogs"
           className="inline-block px-6 py-3 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+          data-umami-event="blog-read-all"
         >
           Read all Blogs
         </Link>

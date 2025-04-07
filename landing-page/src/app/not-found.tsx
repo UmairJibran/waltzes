@@ -29,6 +29,7 @@ export default function Custom404() {
           <Link
             href="/"
             className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 transition-colors"
+            data-umami-event="404-home-button"
           >
             Back to Home
           </Link>
@@ -36,6 +37,7 @@ export default function Custom404() {
           <Link
             href="https://app.waltzyourway.com"
             className="inline-flex items-center justify-center px-6 py-3 border border-indigo-200 text-base font-medium rounded-md text-indigo-600 bg-white hover:bg-indigo-50 transition-colors"
+            data-umami-event="404-create-resume"
           >
             Create Your Resume
           </Link>
