@@ -59,7 +59,7 @@ const data = {
       ],
     },
     {
-      title: "Scraped",
+      title: "Profiles",
       url: "/scraped",
       icon: Bot,
       isActive: true,
