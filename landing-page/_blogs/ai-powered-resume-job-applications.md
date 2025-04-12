@@ -74,8 +74,8 @@ Waltzes simplifies ATS optimization by automatically adjusting formatting and su
 
 Creating an AI-powered resume with Waltzes is straightforward:
 
-1. **Have your LinkedIn profile scraped** (or start from scratch).
-2. **Use our browser exteions** (or use the job url right from the app) to personalize resume/cover letter instantly.
+1. **Import your LinkedIn profile data** (or start from scratch).
+2. **Use our browser extensions** (or use the job url right from the app) to personalize resume/cover letter instantly.
 3. **Adjust Formatting & Style** with AI recommendations.
 4. **Download and Apply** with confidence.
 

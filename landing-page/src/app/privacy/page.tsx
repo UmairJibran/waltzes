@@ -69,8 +69,8 @@ export default function Privacy() {
             <li>Chargebee (Payment Processing via Stripe)</li>
             <li>PostHog (Analytics)</li>
             <li>OpenAI (Content Generation)</li>
-            <li>ProxyCurl (LinkedIn profile scraping)</li>
-            <li>InstantAPI (Job Post Scraping)</li>
+            <li>ProxyCurl (LinkedIn profile analysis)</li>
+            <li>InstantAPI (Job Post Data Collection)</li>
             <li>AWS (Hosting)</li>
             <li>Vercel (Hosting)</li>
           </ul>

@@ -62,7 +62,7 @@ While this approach works, it requires time and effort to refine each letter for
 
 With [Waltzes](https://waltzyourway.com), the process is seamless:
 
-1. **Have your LinkedIn profile scraped** (or start from scratch) - So our AI scans and understands your professional background..
+1. **Import your LinkedIn profile** (or start from scratch) - So our AI can understand your professional background.
 2. **Use our browser exteions** (or use the job url right from the app) so Waltzes extracts key elements to ensure alignment.
 3. **Generate a Tailored Cover Letter** – AI crafts a compelling, personalized letter in seconds.
 4. **Apply with Confidence** – Submit a high-quality, job-specific cover letter effortlessly.

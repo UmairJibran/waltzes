@@ -1,7 +1,13 @@
-import Link from "next/link";
-import Image from "next/image";
+'use client';
+
+import Image from 'next/image';
+import { Button } from '@/components/ui/button';
+
+import { useRouter } from 'next/navigation';
 
 export default function Custom404() {
+  const router = useRouter();
+
   return (
     <div className="min-h-[calc(100vh-8rem)] flex flex-col items-center justify-center px-4 py-16 md:py-24">
       <div className="text-center">
@@ -26,21 +32,21 @@ export default function Custom404() {
         </p>
 
         <div className="space-y-4 md:space-y-0 md:space-x-4 flex flex-col md:flex-row justify-center">
-          <Link
-            href="/"
-            className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 transition-colors"
+          <Button
+            className="cursor-pointer w-48 inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 transition-colors p-8"
+            onClick={() => router.push('/')}
             data-umami-event="404-home-button"
           >
             Back to Home
-          </Link>
+          </Button>
 
-          <Link
-            href="https://app.waltzyourway.com"
-            className="inline-flex items-center justify-center px-6 py-3 border border-indigo-200 text-base font-medium rounded-md text-indigo-600 bg-white hover:bg-indigo-50 transition-colors"
+          <Button
+            onClick={() => router.push('https://app.waltzyourway.com')}
+            className="cursor-pointer inline-flex items-center justify-center px-6 py-3 border border-indigo-200 text-base font-medium rounded-md text-indigo-600 bg-white hover:bg-indigo-50 transition-colors p-8"
             data-umami-event="404-create-resume"
           >
             Create Your Resume
-          </Link>
+          </Button>
         </div>
       </div>
 
