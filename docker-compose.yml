@@ -128,6 +128,20 @@ services:
     env_file:
       - ./waltzes-python/.env
     command: src/poll_job_scraper_queue.py
+  python-job-structuror:
+    container_name: '${COMPOSE_PROJECT_NAME}_python_job_structuror'
+    networks:
+      - waltzes_network
+    build:
+      context: ./waltzes-python
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - localstack
+      - web-server
+    env_file:
+      - ./waltzes-python/.env
+    command: src/poll_job_structuror_queue.py
   python-pdf-creator:
     container_name: '${COMPOSE_PROJECT_NAME}_python_pdf_creator'
     networks:
