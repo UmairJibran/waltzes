@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { ChevronRight, type LucideIcon } from 'lucide-react';
+import { ChevronRight, type LucideIcon } from "lucide-react";
 
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@/components/ui/collapsible';
+} from "@/components/ui/collapsible";
 import {
   SidebarGroup,
   SidebarMenu,
@@ -16,8 +16,8 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from '@/components/ui/sidebar';
-import Link from 'next/link';
+} from "@/components/ui/sidebar";
+import Link from "next/link";
 
 export function NavMain({
   items,
@@ -27,23 +27,35 @@ export function NavMain({
     url: string;
     icon: LucideIcon;
     isActive?: boolean;
+    highlight?: boolean;
     items?: {
       title: string;
       url: string;
       enabled: boolean;
+      highlight?: boolean;
     }[];
   }[];
 }) {
   return (
     <SidebarGroup>
       <SidebarMenu>
-        {items.map(item => (
+        {items.map((item) => (
           <Collapsible key={item.title} asChild defaultOpen={item.isActive}>
             <SidebarMenuItem>
               <SidebarMenuButton asChild tooltip={item.title}>
                 <Link href={item.url}>
-                  <item.icon />
-                  <span>{item.title}</span>
+                  <item.icon size={20} />
+                  <span className="flex items-center text-sm font-medium text-foreground">
+                    <>
+                      {item.highlight && (
+                        <span className="relative flex h-2 w-2 items-center justify-center mr-2">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                        </span>
+                      )}
+                      {item.title}
+                    </>
+                  </span>
                 </Link>
               </SidebarMenuButton>
               {item.items?.length ? (
@@ -56,16 +68,16 @@ export function NavMain({
                   </CollapsibleTrigger>
                   <CollapsibleContent>
                     <SidebarMenuSub>
-                      {item.items?.map(subItem => (
+                      {item.items?.map((subItem) => (
                         <SidebarMenuSubItem key={subItem.title}>
                           <SidebarMenuSubButton asChild>
-                            <Link href={subItem.enabled ? subItem.url : '#'}>
+                            <Link href={subItem.enabled ? subItem.url : "#"}>
                               <span
                                 className={`${
-                                  !subItem.enabled && 'text-gray-300'
+                                  !subItem.enabled && "text-gray-300"
                                 }`}
                               >
-                                {' '}
+                                {" "}
                                 {subItem.title}
                               </span>
                             </Link>
