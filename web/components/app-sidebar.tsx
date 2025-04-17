@@ -150,7 +150,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <span className="truncate font-medium">Waltzes</span>
                   <span className="truncate text-xs">
                     <a href="/billing">
-                      {user?.isPro ? "Pro Tier" : "Needs subscription"}
+                      {user?.isPro ? "Pro Tier" : "Subscribe Now"}
                     </a>
                   </span>
                 </div>
