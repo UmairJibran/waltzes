@@ -98,6 +98,14 @@ async function fetchWithAuth<T>(
     ...options,
     headers,
   });
+  if (response.status === 401) {
+    if (typeof window !== "undefined") {
+      localStorage.clear();
+      sessionStorage.clear();
+      window.location.href = "/login";
+    }
+    throw new APIError("Authentication required", 401);
+  }
 
   const result: ApiResponse<T> = await response.json();
 
