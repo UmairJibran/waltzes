@@ -105,7 +105,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       },
       {
         title: "Watch Demo",
-        url: "https://www.loom.com/share/247a6971737f456f8acb0f83a37ad821?sid=c5040200-f509-4cf1-b73a-940a05dbd0c9",
+        url: "https://youtu.be/S-W0JPc94Dw",
         icon: FileVideo2,
         highlight: true,
       },

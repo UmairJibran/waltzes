@@ -83,15 +83,17 @@ export default function Home() {
                   <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 to-indigo-100">
                     <div className="relative w-full h-full">
                       <iframe
-                        src="https://www.loom.com/embed/247a6971737f456f8acb0f83a37ad821?sid=628f2e87-6fc6-402c-bc52-e5098b5cb447"
+                        className="w-full h-full"
+                        src="https://www.youtube.com/embed/S-W0JPc94Dw?autoplay=1&loop=1&mute=1&playlist=S-W0JPc94Dw"
+                        title="Product Demo"
                         frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
-                        className="absolute inset-0 w-full h-full"
                       ></iframe>
                     </div>
                   </div>
                 </div>
-                <div className="absolute -bottom-6 -left-6 bg-white rounded-lg shadow-lg p-4">
+                <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-white rounded-lg shadow-lg p-4">
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 bg-green-400 rounded-full"></div>
                     <span className="text-sm text-indigo-600">
