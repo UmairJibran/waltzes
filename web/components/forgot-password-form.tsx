@@ -8,13 +8,15 @@ import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema, type LoginInput } from "@/lib/validations/auth";
-import { useLogin } from "@/hooks/use-auth";
-import { SocialBar } from "./social-bar";
+import {
+  forgotPasswordSchema,
+  type ForgotPasswordInput,
+} from "@/lib/validations/auth";
+import { useForgotPassword } from "@/hooks/use-auth";
 import { toast } from "./ui/use-toast";
 import { useEffect } from "react";
 
-export function LoginForm({
+export function ForgotPasswordForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
@@ -22,25 +24,40 @@ export function LoginForm({
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginInput>({
-    resolver: zodResolver(loginSchema),
+  } = useForm<ForgotPasswordInput>({
+    resolver: zodResolver(forgotPasswordSchema),
   });
 
-  const { mutate: login, isPending, error, isError } = useLogin();
+  const {
+    mutate: forgotPassword,
+    isPending,
+    error,
+    isError,
+    isSuccess,
+  } = useForgotPassword();
 
-  const onSubmit = (data: LoginInput) => {
-    login(data);
+  const onSubmit = (data: ForgotPasswordInput) => {
+    forgotPassword(data);
   };
 
   useEffect(() => {
     if (isError) {
       toast({
         title: "Error",
-        description: error?.message,
+        description: error?.message || "Failed to process your request",
         variant: "destructive",
       });
     }
-  }, [isError, error]);
+
+    if (isSuccess) {
+      toast({
+        title: "Success",
+        description:
+          "If your email is registered with us, you'll receive password reset instructions shortly.",
+        variant: "default",
+      });
+    }
+  }, [isError, isSuccess, error]);
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -49,9 +66,10 @@ export function LoginForm({
           <form className="p-6 md:p-8" onSubmit={handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
-                <h1 className="text-2xl font-bold">Welcome back</h1>
+                <h1 className="text-2xl font-bold">Forgot Your Password?</h1>
                 <p className="text-muted-foreground text-balance">
-                  Login to your Waltzes account
+                  Enter your email and we&apos;ll send you instructions to reset
+                  your password
                 </p>
               </div>
               <div className="grid gap-3">
@@ -67,41 +85,13 @@ export function LoginForm({
                   <p className="text-sm text-red-500">{errors.email.message}</p>
                 )}
               </div>
-              <div className="grid gap-3">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                  <a
-                    href="/forgot-password"
-                    className="ml-auto text-sm underline-offset-2 hover:underline"
-                  >
-                    Forgot your password?
-                  </a>
-                </div>
-                <Input
-                  id="password"
-                  type="password"
-                  {...register("password")}
-                  aria-invalid={!!errors.password}
-                />
-                {errors.password && (
-                  <p className="text-sm text-red-500">
-                    {errors.password.message}
-                  </p>
-                )}
-              </div>
               <Button type="submit" className="w-full" disabled={isPending}>
-                {isPending ? "Logging in..." : "Login"}
+                {isPending ? "Sending..." : "Send Reset Instructions"}
               </Button>
-              <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
-                <span className="bg-background text-muted-foreground relative z-10 px-2">
-                  or
-                </span>
-              </div>
-              <SocialBar />
               <div className="text-center text-sm">
-                Don&apos;t have an account?{" "}
-                <a href="/register" className="underline underline-offset-4">
-                  Register Here
+                Remember your password?{" "}
+                <a href="/login" className="underline underline-offset-4">
+                  Back to Login
                 </a>
               </div>
             </div>
@@ -118,7 +108,7 @@ export function LoginForm({
         </CardContent>
       </Card>
       <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
-        By Log-ing In, you agree to our{" "}
+        By using this service, you agree to our{" "}
         <a href="https://waltzyourway.com/terms">Terms of Service</a> and{" "}
         <a href="https://waltzyourway.com/privacy">Privacy Policy</a>.
       </div>
