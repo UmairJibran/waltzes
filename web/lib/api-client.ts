@@ -1,4 +1,4 @@
-import { LoginInput, RegisterInput } from "./validations/auth";
+import { ForgotPasswordInput, LoginInput, RegisterInput, ResetPasswordInput } from "./validations/auth";
 import { LinkedInData } from "./types/linkedin";
 import { UpdateUserData, User } from "./types/user";
 import {
@@ -130,6 +130,20 @@ export const authApi = {
 
   async register(data: RegisterInput): Promise<void> {
     return fetchWithAuth<void>("/auth/register", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  },
+  
+  async forgotPassword(data: ForgotPasswordInput): Promise<{ success: boolean }> {
+    return fetchWithAuth<{ success: boolean }>("/auth/forgot-password", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  },
+  
+  async resetPassword(data: ResetPasswordInput): Promise<{ success: boolean }> {
+    return fetchWithAuth<{ success: boolean }>("/auth/reset-password", {
       method: "POST",
       body: JSON.stringify(data),
     });

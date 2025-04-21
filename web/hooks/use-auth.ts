@@ -1,12 +1,18 @@
-'use client';
+"use client";
 
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { useRouter, usePathname } from 'next/navigation';
-import { useEffect } from 'react';
-import { useMutation } from '@tanstack/react-query';
-import { authApi } from '@/lib/api-client';
-import { LoginInput, RegisterInput } from '@/lib/validations/auth';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { useRouter, usePathname } from "next/navigation";
+import { useEffect } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { authApi } from "@/lib/api-client";
+import {
+  ForgotPasswordInput,
+  LoginInput,
+  RegisterInput,
+  ResetPasswordInput,
+} from "@/lib/validations/auth";
+import { toast } from "@/components/ui/use-toast";
 
 interface AuthStore {
   accessToken: string | null;
@@ -25,7 +31,8 @@ export const useAuthStore = create<AuthStore>()(
       isAuthenticated: false,
       isHydrated: false,
       setHydrated: (hydrated) => set({ isHydrated: hydrated }),
-      setAccessToken: (token) => set({ accessToken: token, isAuthenticated: !!token }),
+      setAccessToken: (token) =>
+        set({ accessToken: token, isAuthenticated: !!token }),
       login: async (data) => {
         const { access_token } = await authApi.login(data);
         set({
@@ -41,12 +48,12 @@ export const useAuthStore = create<AuthStore>()(
       },
     }),
     {
-      name: 'auth-storage',
+      name: "auth-storage",
       onRehydrateStorage: () => (state) => {
         state?.setHydrated(true);
       },
-    },
-  ),
+    }
+  )
 );
 
 // Hook to protect routes
@@ -55,7 +62,12 @@ export function useAuthProtection() {
   const pathname = usePathname();
   const { isAuthenticated } = useAuthStore();
 
-  const publicPaths = ['/login', '/register'];
+  const publicPaths = [
+    "/login",
+    "/register",
+    "/forgot-password",
+    "/reset-password",
+  ];
   const isPublicPath = publicPaths.some((path) => pathname?.startsWith(path));
 
   useEffect(() => {
@@ -67,8 +79,8 @@ export function useAuthProtection() {
     // Only redirect away from login/register if we're definitely authenticated
     if (isAuthenticated && isPublicPath) {
       const searchParams = new URLSearchParams(window.location.search);
-      const from = searchParams.get('from');
-      router.replace(from || '/applications');
+      const from = searchParams.get("from");
+      router.replace(from || "/applications");
     }
   }, [isAuthenticated, isPublicPath, pathname, router]);
 
@@ -76,7 +88,14 @@ export function useAuthProtection() {
 }
 
 export function useAuth() {
-  const { accessToken, isAuthenticated, isHydrated, setAccessToken, login, logout } = useAuthStore();
+  const {
+    accessToken,
+    isAuthenticated,
+    isHydrated,
+    setAccessToken,
+    login,
+    logout,
+  } = useAuthStore();
 
   return {
     accessToken,
@@ -98,8 +117,8 @@ export function useLogin() {
     },
     onSuccess: () => {
       const searchParams = new URLSearchParams(window.location.search);
-      const from = searchParams.get('from');
-      router.replace(decodeURIComponent(from || '/applications'));
+      const from = searchParams.get("from");
+      router.replace(decodeURIComponent(from || "/applications"));
     },
   });
 
@@ -112,7 +131,31 @@ export function useRegister() {
   return useMutation({
     mutationFn: (data: RegisterInput) => authApi.register(data),
     onSuccess: () => {
-      router.push('/login');
+      router.push("/login");
+    },
+  });
+}
+
+export function useForgotPassword() {
+  return useMutation({
+    mutationFn: (data: ForgotPasswordInput) => authApi.forgotPassword(data),
+    onSuccess: () => {
+      // Don't redirect, the component will show a success message
+    },
+  });
+}
+
+export function useResetPassword() {
+  const router = useRouter();
+
+  return useMutation({
+    mutationFn: (data: ResetPasswordInput) => authApi.resetPassword(data),
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "Your password has been reset successfully.",
+      });
+      router.push("/login");
     },
   });
 }
