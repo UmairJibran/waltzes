@@ -30,7 +30,7 @@ export default function BlogsPage() {
                 alt={latestBlog.title}
                 width={1500}
                 height={1000}
-                className="rounded-lg"
+                className="rounded-lg object-cover w-full h-full"
               />
             </div>
             <div className="py-4">
