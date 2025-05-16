@@ -1,11 +1,11 @@
-import { getBlogBySlug } from "@/lib/api";
-import markdownToHtml from "@/lib/markdownToHtml";
-import Image from "next/image";
-import Link from "next/link";
-import { notFound } from "next/navigation";
-import styles from "@/styles/markdown-styles.module.css";
-import { IAuthor } from "@/types/global";
-import { cn } from "@/lib/utils";
+import { getBlogBySlug } from '@/lib/api';
+import markdownToHtml from '@/lib/markdownToHtml';
+import Image from 'next/image';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import styles from '@/styles/markdown-styles.module.css';
+import { IAuthor } from '@/types/global';
+import { cn } from '@/lib/utils';
 
 interface PageProps {
   params: Promise<{
@@ -19,7 +19,7 @@ export async function generateMetadata(pageProps: PageProps) {
 
   if (!blog) {
     return {
-      title: "Blog Not Found",
+      title: 'Blog Not Found',
     };
   }
 
@@ -50,10 +50,10 @@ export default async function BlogPost(pageProps: PageProps) {
   const readingTime = Math.max(1, Math.ceil(wordCount / 200));
 
   // Format date
-  const formattedDate = new Date(blog.date).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
+  const formattedDate = new Date(blog.date).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
   });
 
   const author = blog.author as IAuthor;
@@ -61,51 +61,52 @@ export default async function BlogPost(pageProps: PageProps) {
   return (
     <article className="container mx-auto px-4 py-12 max-w-4xl">
       {/* Header */}
-      <header className="text-center mb-10">
-        <div className="mb-3">
-          <span className="inline-block bg-purple-50 text-purple-700 px-4 py-1 rounded-full text-sm">
-            {blog.tags[0]}
-          </span>
-        </div>
-        <h1 className="text-3xl md:text-5xl font-bold mb-6 text-gray-900 leading-tight">
-          {blog.title}
-        </h1>
-        <p className="text-gray-600 mb-8 text-md mx-auto max-w-2xl">
-          {blog.excerpt}
-        </p>
-        <div className="flex items-center justify-center">
+      <header className="relative text-center mb-10 -mx-4 sm:-mx-8 md:-mx-16 lg:-mx-32">
+        <div className="relative h-[60vh] mb-12">
           <Image
-            src={author.picture}
-            alt={author.name}
-            width={50}
-            height={50}
-            className="rounded-full mr-3"
+            src={blog.coverImage}
+            alt={blog.title}
+            fill
+            priority
+            className="object-cover brightness-50"
           />
-          <div className="flex flex-col items-start">
-            <span className="text-gray-700">{author.name}</span>
-            <div className="flex items-center">
-              <span className="text-gray-500">{formattedDate}</span>
-              <span className="mx-2 text-gray-400">•</span>
-              <span className="text-gray-500">{readingTime} min read</span>
+          <div className="absolute inset-0 flex flex-col items-center justify-center px-4">
+            <div className="container mx-auto max-w-4xl">
+              <div className="mb-3">
+                <span className="inline-block bg-purple-50 text-purple-700 px-4 py-1 rounded-full text-sm">
+                  {blog.tags[0]}
+                </span>
+              </div>
+              <h1 className="text-3xl md:text-5xl font-bold mb-6 text-white leading-tight">
+                {blog.title}
+              </h1>
+              <p className="text-gray-200 mb-8 text-md mx-auto max-w-2xl">
+                {blog.excerpt}
+              </p>
+              <div className="flex items-center justify-center">
+                <Image
+                  src={author.picture}
+                  alt={author.name}
+                  width={50}
+                  height={50}
+                  className="rounded-full mr-3 border-2 border-white"
+                />
+                <div className="flex flex-col items-start">
+                  <span className="text-white">{author.name}</span>
+                  <div className="flex items-center text-gray-200">
+                    <span>{formattedDate}</span>
+                    <span className="mx-2">•</span>
+                    <span>{readingTime} min read</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Featured Image */}
-      <div className="mb-12">
-        <Image
-          src={blog.coverImage}
-          alt={blog.title}
-          width={1200}
-          height={675}
-          priority
-          className="w-full h-auto rounded-lg object-cover"
-        />
-      </div>
-
       {/* Article Content */}
-      <div className={cn(styles.markdown, "max-w-2xl mx-auto")}>
+      <div className={cn(styles.markdown, 'max-w-2xl mx-auto')}>
         <div dangerouslySetInnerHTML={{ __html: content }} />
       </div>
 
