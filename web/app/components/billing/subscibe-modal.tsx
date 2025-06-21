@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   Dialog,
@@ -7,10 +7,10 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@/components/ui/dialog";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { useState } from "react";
+} from '@/components/ui/dialog';
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { useState } from 'react';
 
 export function SubscriptionDialog({
   user,
@@ -27,9 +27,9 @@ export function SubscriptionDialog({
     const path = process.env.NEXT_PUBLIC_CHARGEBEE_LINK;
     if (!path) return;
     const url = new URL(path);
-    url.searchParams.append("customer[first_name]", user.firstName);
-    url.searchParams.append("customer[last_name]", user.lastName);
-    url.searchParams.append("customer[email]", user.email);
+    url.searchParams.append('customer[first_name]', user.firstName);
+    url.searchParams.append('customer[last_name]', user.lastName);
+    url.searchParams.append('customer[email]', user.email);
     router.push(url.toString());
   };
 
@@ -61,7 +61,7 @@ export function SubscriptionDialog({
               <p className="mb-1">After subscribing:</p>
               <ul className="space-y-1">
                 <li>• Get 5 free documents every month</li>
-                <li>• Pay only $1 for each additional document</li>
+                <li>• Pay only 10¢ for each additional document</li>
                 <li>• Cancel your subscription at any time</li>
               </ul>
             </div>

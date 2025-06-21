@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
-import Image from "next/image";
+} from '@/components/ui/accordion';
+import Image from 'next/image';
 
 export default function Home() {
   return (
@@ -41,7 +41,7 @@ export default function Home() {
                     data-umami-event="hero-create-resume"
                     onClick={() => {
                       window.location.href =
-                        "https://app.waltzyourway.com/register";
+                        'https://app.waltzyourway.com/register';
                     }}
                   >
                     Create my resume
@@ -416,7 +416,7 @@ export default function Home() {
                   className="flex items-center justify-center gap-2 text-indigo-400 mb-4"
                   hidden
                 >
-                  {"★★★★★".split("").map((star, i) => (
+                  {'★★★★★'.split('').map((star, i) => (
                     <span key={i} className="text-2xl">
                       {star}
                     </span>
@@ -619,11 +619,9 @@ export default function Home() {
 
                 <div className="mb-8">
                   <div className="flex items-center justify-center gap-1">
-                    <span className="text-3xl font-medium text-indigo-950">
-                      $
-                    </span>
+                    <span className="text-3xl font-medium text-indigo-950"></span>
                     <span className="text-6xl font-bold text-indigo-950">
-                      1
+                      10¢
                     </span>
                   </div>
                   <p className="text-indigo-600 mt-2">
@@ -707,7 +705,7 @@ export default function Home() {
                   className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 cursor-pointer"
                   onClick={() => {
                     window.location.href =
-                      "https://app.waltzyourway.com/register";
+                      'https://app.waltzyourway.com/register';
                   }}
                 >
                   Start with 5 free documents
@@ -732,7 +730,7 @@ export default function Home() {
               variant="outline"
               className="bg-white text-indigo-600 hover:bg-indigo-50 border-2 border-white cursor-pointer"
               onClick={() => {
-                window.location.href = "https://app.waltzyourway.com/register";
+                window.location.href = 'https://app.waltzyourway.com/register';
               }}
             >
               Create your resume now
