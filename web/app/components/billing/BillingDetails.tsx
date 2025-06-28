@@ -45,7 +45,8 @@ export function BillingDetails({ user }: IBillingDetailsProps) {
       <div>
         <h1 className="text-2xl font-bold">Billing & Usage</h1>
         <p className="text-muted-foreground">
-          Manage your subscription and track your document generation usage.
+          Track your document generation usage. You get 5 free documents every
+          month without any subscription required.
         </p>
       </div>
 
@@ -57,7 +58,10 @@ export function BillingDetails({ user }: IBillingDetailsProps) {
         <Card>
           <CardHeader>
             <CardTitle>Monthly Usage</CardTitle>
-            <CardDescription>Track your document generation</CardDescription>
+            <CardDescription>
+              You get 5 free documents every month. Additional documents cost
+              10¢ each (subscription required).
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid gap-4 md:grid-cols-3">
