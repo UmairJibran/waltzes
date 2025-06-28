@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   Dialog,
@@ -7,10 +7,10 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from '@/components/ui/dialog';
-import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { useState } from 'react';
+} from "@/components/ui/dialog";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 export function SubscriptionDialog({
   user,
@@ -27,9 +27,9 @@ export function SubscriptionDialog({
     const path = process.env.NEXT_PUBLIC_CHARGEBEE_LINK;
     if (!path) return;
     const url = new URL(path);
-    url.searchParams.append('customer[first_name]', user.firstName);
-    url.searchParams.append('customer[last_name]', user.lastName);
-    url.searchParams.append('customer[email]', user.email);
+    url.searchParams.append("customer[first_name]", user.firstName);
+    url.searchParams.append("customer[last_name]", user.lastName);
+    url.searchParams.append("customer[email]", user.email);
     router.push(url.toString());
   };
 
@@ -42,8 +42,8 @@ export function SubscriptionDialog({
           </DialogTitle>
           <DialogDescription className="pt-2 space-y-4">
             <p>
-              Upgrade to a paid plan to unlock unlimited document generation and
-              access advanced features.
+              You get 5 free documents every month! Upgrade to a paid plan for
+              unlimited document generation and advanced features.
             </p>
 
             <div className="flex items-center justify-center py-3">
@@ -54,13 +54,16 @@ export function SubscriptionDialog({
                 <span className="block text-lg font-medium">
                   documents monthly
                 </span>
+                <span className="block text-sm text-muted-foreground">
+                  No subscription required
+                </span>
               </div>
             </div>
 
             <div className="text-sm text-muted-foreground">
-              <p className="mb-1">After subscribing:</p>
+              <p className="mb-1">With a paid subscription:</p>
               <ul className="space-y-1">
-                <li>• Get 5 free documents every month</li>
+                <li>• Keep your 5 free documents every month</li>
                 <li>• Pay only 10¢ for each additional document</li>
                 <li>• Cancel your subscription at any time</li>
               </ul>

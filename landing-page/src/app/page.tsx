@@ -44,7 +44,7 @@ export default function Home() {
                         'https://app.waltzyourway.com/register';
                     }}
                   >
-                    Create my resume
+                    Create my resume FREE ✨
                   </Button>
                   <div className="flex items-center gap-2 text-indigo-600">
                     <svg
@@ -57,7 +57,7 @@ export default function Home() {
                     <span>Just connect with LinkedIn - no resume needed!</span>
                   </div>
                 </div>
-                <div className="mt-12 flex items-center justify-center lg:justify-start gap-8">
+                <div className="mt-12 flex items-center justify-center gap-8">
                   <div className="text-center">
                     <div className="text-2xl font-bold text-indigo-950">
                       39%
@@ -76,6 +76,11 @@ export default function Home() {
                       better pay with your next job
                     </div>
                   </div>
+                </div>
+                <div className="text-center sm:text-left mt-8">
+                  <p className="text-sm text-indigo-600 font-semibold">
+                    🎯 5 free documents monthly • No credit card needed
+                  </p>
                 </div>
               </div>
               <div className="flex-1 relative">
@@ -104,6 +109,77 @@ export default function Home() {
               </div>
             </div>
           </div>
+        </section>
+
+        {/* Free Trial Banner - Screaming announcement */}
+        <section className="py-8 bg-gradient-to-r from-green-500 via-emerald-500 to-green-600 text-white relative overflow-hidden">
+          <div className="absolute inset-0 bg-black/10"></div>
+          <div className="container mx-auto px-4 relative z-10">
+            <div className="text-center">
+              <div className="inline-flex items-center gap-3 mb-4">
+                <div className="flex items-center gap-1">
+                  <span className="text-2xl">🎉</span>
+                  <span className="text-2xl">✨</span>
+                </div>
+                <div className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full">
+                  <span className="text-sm font-semibold tracking-wide uppercase">
+                    NO CREDIT CARD REQUIRED
+                  </span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="text-2xl">✨</span>
+                  <span className="text-2xl">🎉</span>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight">
+                  <span className="text-yellow-300">5 FREE</span> DOCUMENTS
+                </h2>
+                <p className="text-xl md:text-2xl font-bold">
+                  EVERY SINGLE MONTH!
+                </p>
+                <p className="text-lg md:text-xl text-green-100 max-w-2xl mx-auto">
+                  No subscription, no hidden fees, no tricks. Create
+                  professional resumes & cover letters instantly!
+                </p>
+              </div>
+
+              <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Button
+                  size="lg"
+                  className="bg-white text-green-600 hover:bg-green-50 font-bold px-8 py-4 text-lg shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
+                  data-umami-event="free-trial-banner-cta"
+                  onClick={() => {
+                    window.location.href =
+                      'https://app.waltzyourway.com/register';
+                  }}
+                >
+                  🚀 START FOR FREE NOW
+                </Button>
+                <div className="flex items-center gap-2 text-green-100">
+                  <svg
+                    className="w-5 h-5 text-yellow-300"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  <span className="font-semibold">
+                    Instant access • No waiting
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Animated background elements */}
+          <div className="absolute top-0 left-1/4 w-32 h-32 bg-white/10 rounded-full blur-xl animate-pulse"></div>
+          <div className="absolute bottom-0 right-1/4 w-24 h-24 bg-yellow-300/20 rounded-full blur-lg animate-pulse delay-1000"></div>
         </section>
 
         {/* Features Section */}
@@ -721,19 +797,28 @@ export default function Home() {
             <h2 className="text-3xl font-bold mb-6">
               Ready to land your dream job?
             </h2>
-            <p className="text-xl mb-8 text-indigo-100">
+            <p className="text-xl mb-4 text-indigo-100">
               Join thousands of professionals who&apos;ve advanced their careers
               with Waltzes
             </p>
+            <div className="mb-8 inline-flex items-center gap-2 bg-indigo-500/50 backdrop-blur-sm px-4 py-2 rounded-full">
+              <span className="text-yellow-300">⭐</span>
+              <span className="font-semibold">
+                5 FREE documents every month • No credit card required
+              </span>
+              <span className="text-yellow-300">⭐</span>
+            </div>
+            <br />
             <Button
               size="lg"
               variant="outline"
-              className="bg-white text-indigo-600 hover:bg-indigo-50 border-2 border-white cursor-pointer"
+              data-umami-event="ready-to-land-job-cta"
+              className="bg-white text-indigo-600 hover:bg-indigo-50 border-2 border-white cursor-pointer font-semibold"
               onClick={() => {
                 window.location.href = 'https://app.waltzyourway.com/register';
               }}
             >
-              Create your resume now
+              🚀 Start FREE - No Credit Card Needed
             </Button>
           </div>
         </section>
