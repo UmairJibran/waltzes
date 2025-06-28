@@ -28,7 +28,7 @@ export function BillingDetails({ user }: IBillingDetailsProps) {
   const totalDocuments =
     chartData?.reduce((sum, day) => sum + day.documents, 0) || 0;
   const documentsToBeBilled = totalDocuments > 5 ? totalDocuments - 5 : 0;
-  const estimatedBill = documentsToBeBilled * 1;
+  const estimatedBill = documentsToBeBilled * 0.1;
   const chartConfig = {
     documents: {
       label: "Documents Generated",
