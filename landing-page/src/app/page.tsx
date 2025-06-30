@@ -20,11 +20,6 @@ export default function Home() {
           <div className="container mx-auto px-4">
             <div className="flex flex-col lg:flex-row items-center gap-12">
               <div className="flex-1 text-center lg:text-left max-w-2xl">
-                <div className="inline-flex items-center gap-2 bg-indigo-600 text-white px-4 py-1 rounded-full text-sm mb-6">
-                  <span className="inline-block w-2 h-2 bg-green-400 rounded-full"></span>
-                  Over {new Intl.NumberFormat().format(501)} resumes created
-                  today
-                </div>
                 <h1 className="text-5xl lg:text-6xl font-bold tracking-tight text-indigo-950 mb-6">
                   The professional
                   <br />
