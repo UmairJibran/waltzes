@@ -39,16 +39,17 @@ export function Navbar() {
               }}
               data-umami-event="signin-button"
             >
-              Sign In
+              Log In
             </Button>
             <Button
-              className="bg-indigo-600 hover:bg-indigo-700 text-white cursor-pointer"
+              size="lg"
+              className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold px-6 cursor-pointer shadow-lg hover:shadow-xl transition-all duration-300"
               onClick={() => {
                 window.location.href = 'https://app.waltzyourway.com/register';
               }}
-              data-umami-event="get-started-button"
+              data-umami-event="create-resume-nav"
             >
-              Get Started
+              ✨ Create My Free Resume
             </Button>
           </div>
         </div>
