@@ -117,6 +117,6 @@ You can keep doing things the old-fashioned way—copying, pasting, tweaking, an
 
 The choice isn’t whether to personalize job applications. It’s **how fast** you can do it.
 
-With Waltzes, you don’t just save time—you save energy, reduce burnout, and boost your chances of landing interviews. Want proof? Try it out: [Start saving time now](https://app.waltzyourway.com/register).
+With Waltzes, you don’t just save time—you save energy, reduce burnout, and boost your chances of landing interviews. Want proof? Try it out: [Start saving time now](https://waltzyourway.com/register).
 
 And if you’re still doing it manually, we wish you good luck, and really hope you find your dream job. Hopefully, these tips will help streamline your process. But when you’re ready to scale your job hunt without sacrificing quality, you’ll know where to find us.

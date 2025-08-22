@@ -90,4 +90,4 @@ A well-designed resume is more than a document; it’s your professional brand. 
 
 ## p.s.
 
-Ready to upgrade your professional brand? Explore our range of modern, customizable resume templates that combine style with functionality. Subscribe to [waltzes](https://app.waltzyourway.com/register) for more career tips and design insights, and share this post with others looking to stand out in the job market!
+Ready to upgrade your professional brand? Explore our range of modern, customizable resume templates that combine style with functionality. Subscribe to [waltzes](https://waltzyourway.com/register) for more career tips and design insights, and share this post with others looking to stand out in the job market!

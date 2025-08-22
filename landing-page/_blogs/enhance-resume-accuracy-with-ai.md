@@ -105,6 +105,6 @@ So while you could painstakingly rework each resume, **you don't have to**. Walt
 
 Struggling to make your resume hit the mark every time? You’re not alone. Whether you're into the handcrafted route or ready to embrace AI-driven precision, remember: the end goal is **to get noticed**.
 
-Sign up for [Waltzes](https://app.waltzyourway.com/register) today and start customizing resumes that actually work—without the headache.
+Sign up for [Waltzes](https://waltzyourway.com/register) today and start customizing resumes that actually work—without the headache.
 
 And if you still prefer the long way? That’s cool. Just keep your coffee hot.

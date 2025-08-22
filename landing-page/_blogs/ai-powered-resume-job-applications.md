@@ -83,4 +83,4 @@ Creating an AI-powered resume with Waltzes is straightforward:
 
 The job application process doesn’t have to be overwhelming. Whether you prefer crafting resumes manually or leveraging AI, ensuring ATS compatibility, keyword optimization, and personalization is key. Waltzes streamlines these tasks, giving job seekers an edge in today’s highly competitive market.
 
-Ready to transform your job search? [Try Waltzes today](https://app.waltzyourway.com/register) and get a resume that stands out.
+Ready to transform your job search? [Try Waltzes today](https://waltzyourway.com/register) and get a resume that stands out.

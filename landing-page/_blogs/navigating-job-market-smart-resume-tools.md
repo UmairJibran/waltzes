@@ -109,4 +109,4 @@ Navigating the job market can feel overwhelming—but it doesn’t have to. With
 
 Let your resume tell your story—_clearly, confidently, and convincingly_.
 
-Want to see how your resume stacks up? [Try Waltz for free](https://app.waltzyourway.com/register)—your next job might just be a click away.
+Want to see how your resume stacks up? [Try Waltz for free](https://waltzyourway.com/register)—your next job might just be a click away.

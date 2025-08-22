@@ -35,21 +35,20 @@ export function Navbar() {
               variant="ghost"
               className="text-indigo-600 hover:text-indigo-900 hover:bg-indigo-50 cursor-pointer"
               onClick={() => {
-                window.location.href = 'https://app.waltzyourway.com/login';
+                window.open('https://github.com/umairjibran/waltzes', '_blank');
               }}
-              data-umami-event="signin-button"
             >
-              Log In
+              GitHub
             </Button>
             <Button
               size="lg"
-              className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold px-6 cursor-pointer shadow-lg hover:shadow-xl transition-all duration-300"
+              className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white font-semibold px-6 cursor-pointer shadow-lg hover:shadow-xl transition-all duration-300"
               onClick={() => {
-                window.location.href = 'https://app.waltzyourway.com/register';
+                const element = document.getElementById('getting-started');
+                element?.scrollIntoView({ behavior: 'smooth' });
               }}
-              data-umami-event="create-resume-nav"
             >
-              ✨ Create My Free Resume
+              🚀 Get Started
             </Button>
           </div>
         </div>

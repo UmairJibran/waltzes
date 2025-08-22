@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     title: 'Waltzes - Create Professional Resumes with AI',
     description:
       'Build ATS-friendly resumes that stand out. Powered by AI, designed for success.',
-    url: 'https://app.waltzyourway.com',
+    url: 'https://waltzyourway.com',
     siteName: 'Waltzes',
     type: 'website',
   },

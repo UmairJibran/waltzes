@@ -41,7 +41,7 @@ export default function Custom404() {
           </Button>
 
           <Button
-            onClick={() => router.push('https://app.waltzyourway.com')}
+            onClick={() => router.push('https://waltzyourway.com')}
             className="cursor-pointer inline-flex items-center justify-center px-6 py-3 border border-indigo-200 text-base font-medium rounded-md text-indigo-600 bg-white hover:bg-indigo-50 transition-colors p-8"
             data-umami-event="404-create-resume"
           >

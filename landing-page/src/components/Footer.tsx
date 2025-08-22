@@ -81,18 +81,7 @@ export function Footer() {
         </div>
         <Separator className="my-8 bg-indigo-900" />
         <div className="text-center text-sm">
-          © {new Date().getFullYear()} Waltzes. All rights reserved.
-        </div>
-        <div className="text-center mt-8">
-          <button
-            className="border-indigo-600 text-indigo-600 hover:bg-indigo-50 cursor-pointer"
-            onClick={() => {
-              window.location.href = 'https://app.waltzyourway.com/register';
-            }}
-            data-umami-event="footer-get-started"
-          >
-            Get Started
-          </button>
+          &copy; 2024 - {new Date().getFullYear()} Waltzes. All rights reserved.
         </div>
       </div>
     </footer>

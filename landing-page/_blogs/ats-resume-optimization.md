@@ -117,6 +117,6 @@ To wrap it up, whether you're manually optimizing or using Waltzes, here’s wha
 - Format for clarity and readability, not flair
 - Update your resume _frequently_ to keep it fresh
 
-Need help getting started? Try Waltzes at [app.waltzyourway.com/register](https://app.waltzyourway.com/register) and experience a simpler way to get your resume through the door.
+Need help getting started? Try Waltzes at [waltzyourway.com/register](https://waltzyourway.com/register) and experience a simpler way to get your resume through the door.
 
 And if you still want to go the long road manually? That’s fine too. Just remember: hiring algorithms are only getting smarter—so should your resume strategy.
