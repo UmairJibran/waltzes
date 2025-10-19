@@ -8,7 +8,8 @@ import {
   ApplyStatus,
   GenerateApplicationResponse,
   ReGenerateApplicationDocumentRequest,
-} from "./types/application";
+  UpdateDocumentRequest,
+} from "@/lib/types/application";
 
 export interface ApiResponse<T> {
   success: boolean;
@@ -261,6 +262,17 @@ export const applicationsApi = {
   ): Promise<GenerateApplicationResponse> => {
     return fetchWithAuth<ReGenerateApplicationDocumentRequest>(
       "/applications/recreate",
+      {
+        method: "POST",
+        body: JSON.stringify(data),
+      }
+    );
+  },
+  updateDocument: async (
+    data: UpdateDocumentRequest
+  ): Promise<{ success: boolean }> => {
+    return fetchWithAuth<{ success: boolean }>(
+      "/applications/update-document",
       {
         method: "POST",
         body: JSON.stringify(data),

@@ -7,7 +7,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { format } from "date-fns";
-import { Link2, Loader2, ExternalLink, RefreshCcw } from "lucide-react";
+import { Link2, Loader2, ExternalLink, RefreshCcw, Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -23,6 +23,8 @@ import {
 } from "@/hooks/use-applications";
 import { PDFViewer } from "./PDFViewer";
 import { toast } from "@/components/ui/use-toast";
+import { DocumentEditor } from "./DocumentEditor";
+import { getErrorMessage } from "@/lib/api-client";
 
 interface ApplicationDialogProps {
   application: Application | null;
@@ -35,6 +37,41 @@ const STATUS_OPTIONS: ApplicationStatus[] = [
   "accepted",
   "rejected",
 ];
+
+function DocumentActions({
+  type,
+  application,
+  onEditClick,
+}: {
+  type: "resume" | "coverLetter";
+  application: Application;
+  onEditClick: (type: "resume" | "coverLetter", data: any) => void;
+}) {
+  const label = type === "resume" ? "Resume" : "Cover Letter";
+  const rawData =
+    type === "resume" ? application.resumeRaw : application.coverLetterRaw;
+
+  return (
+    <div className="flex gap-2">
+      <RecreateButton
+        exists={!!application.appliedWith?.[type]}
+        label={label}
+        type={type}
+        applicationId={application._id}
+      />
+      {rawData && (
+        <Button
+          onClick={() => onEditClick(type, rawData)}
+          variant="link"
+          className="text-blue-500 flex items-center gap-1"
+        >
+          Edit
+          <Edit className="ml-1 h-4 w-4" size={12} />
+        </Button>
+      )}
+    </div>
+  );
+}
 
 export function RecreateButton({
   exists,
@@ -70,9 +107,7 @@ export function RecreateButton({
       console.error("Error recreating application:", error);
       toast({
         title: "Error",
-        description: `Failed to ${
-          exists ? "recreate" : "create"
-        } ${label}. Please try again.`,
+        description: getErrorMessage(error),
         variant: "destructive",
       });
     } finally {
@@ -107,9 +142,8 @@ export function RecreateButton({
             </DialogTitle>
             <DialogDescription>
               {exists
-                ? `Recreation will overwrite the existing ${label} and incur a charge of 1 credit.`
-                : `Creating a new ${label} will incur a charge of 1 credit.`}{" "}
-              Are you sure you want to continue?
+                ? `Are you sure you want to recreate the ${label}? This will regenerate the document based on the current job details and your profile.`
+                : `Are you sure you want to create a new ${label}? This will generate the document based on the current job details and your profile.`}
             </DialogDescription>
           </DialogHeader>
           <div className="flex justify-end space-x-2 mt-4">
@@ -134,8 +168,19 @@ export function ApplicationDialog({
   const [selectedStatus, setSelectedStatus] =
     useState<ApplicationStatus | null>(null);
   const { mutate: updateStatus, isPending } = useUpdateApplicationStatus();
+  const [editingDocument, setEditingDocument] = useState<{
+    type: "resume" | "coverLetter";
+    data: Record<string, any> | string;
+  } | null>(null);
 
   if (!application) return null;
+
+  const handleEdit = (
+    type: "resume" | "coverLetter",
+    data: Record<string, any> | string
+  ) => {
+    setEditingDocument({ type, data });
+  };
 
   const handleStatusUpdate = () => {
     if (!selectedStatus || selectedStatus === application.applicationStatus)
@@ -226,11 +271,10 @@ export function ApplicationDialog({
                   <p className="text-sm font-medium mb-2 flex items-center gap-1">
                     Resume
                   </p>
-                  <RecreateButton
-                    exists={!!application.appliedWith.resume}
-                    label="Resume"
+                  <DocumentActions
                     type="resume"
-                    applicationId={application._id}
+                    application={application}
+                    onEditClick={handleEdit}
                   />
                   {application.appliedWith.resume && (
                     <>
@@ -252,11 +296,10 @@ export function ApplicationDialog({
                   <p className="text-sm font-medium mb-2 flex items-center gap-1">
                     Cover Letter
                   </p>
-                  <RecreateButton
-                    exists={!!application.appliedWith.coverLetter}
-                    label="Cover Letter"
-                    applicationId={application._id}
+                  <DocumentActions
                     type="coverLetter"
+                    application={application}
+                    onEditClick={handleEdit}
                   />
                   {application.appliedWith.coverLetter && (
                     <>
@@ -283,6 +326,16 @@ export function ApplicationDialog({
           </div>
         </div>
       </DialogContent>
+
+      {editingDocument && (
+        <DocumentEditor
+          isOpen={!!editingDocument}
+          onClose={() => setEditingDocument(null)}
+          applicationId={application._id}
+          documentType={editingDocument.type}
+          documentData={editingDocument.data}
+        />
+      )}
     </Dialog>
   );
 }

@@ -16,6 +16,8 @@ export interface Application {
   createdAt: number;
   updatedAt: number;
   appliedWith?: AppliedWith;
+  resumeRaw?: Record<string, any>;
+  coverLetterRaw?: string;
   job: {
     url: string | null;
     title: string;
@@ -27,6 +29,12 @@ export interface Application {
 export interface ReGenerateApplicationDocumentRequest {
   applicationId: string;
   documentType: "resume" | "coverLetter";
+}
+
+export interface UpdateDocumentRequest {
+  applicationId: string;
+  documentType: "resume" | "coverLetter";
+  documentData: Record<string, any> | string;
 }
 
 export interface GenerateApplicationRequest {
