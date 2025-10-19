@@ -7,7 +7,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { format } from "date-fns";
-import { Link2, Loader2, ExternalLink, RefreshCcw } from "lucide-react";
+import { Link2, Loader2, ExternalLink, RefreshCcw, Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -23,6 +23,7 @@ import {
 } from "@/hooks/use-applications";
 import { PDFViewer } from "./PDFViewer";
 import { toast } from "@/components/ui/use-toast";
+import { DocumentEditor } from "./DocumentEditor";
 
 interface ApplicationDialogProps {
   application: Application | null;
@@ -107,9 +108,8 @@ export function RecreateButton({
             </DialogTitle>
             <DialogDescription>
               {exists
-                ? `Recreation will overwrite the existing ${label} and incur a charge of 1 credit.`
-                : `Creating a new ${label} will incur a charge of 1 credit.`}{" "}
-              Are you sure you want to continue?
+                ? `Are you sure you want to recreate the ${label}? This will regenerate the document based on the current job details and your profile.`
+                : `Are you sure you want to create a new ${label}? This will generate the document based on the current job details and your profile.`}
             </DialogDescription>
           </DialogHeader>
           <div className="flex justify-end space-x-2 mt-4">
@@ -134,6 +134,10 @@ export function ApplicationDialog({
   const [selectedStatus, setSelectedStatus] =
     useState<ApplicationStatus | null>(null);
   const { mutate: updateStatus, isPending } = useUpdateApplicationStatus();
+  const [editingDocument, setEditingDocument] = useState<{
+    type: "resume" | "coverLetter";
+    data: Record<string, any> | string;
+  } | null>(null);
 
   if (!application) return null;
 
@@ -226,12 +230,29 @@ export function ApplicationDialog({
                   <p className="text-sm font-medium mb-2 flex items-center gap-1">
                     Resume
                   </p>
-                  <RecreateButton
-                    exists={!!application.appliedWith.resume}
-                    label="Resume"
-                    type="resume"
-                    applicationId={application._id}
-                  />
+                  <div className="flex gap-2">
+                    <RecreateButton
+                      exists={!!application.appliedWith.resume}
+                      label="Resume"
+                      type="resume"
+                      applicationId={application._id}
+                    />
+                    {application.resumeRaw && (
+                      <Button
+                        onClick={() =>
+                          setEditingDocument({
+                            type: "resume",
+                            data: application.resumeRaw!,
+                          })
+                        }
+                        variant="link"
+                        className="text-blue-500 flex items-center gap-1"
+                      >
+                        Edit
+                        <Edit className="ml-1 h-4 w-4" size={12} />
+                      </Button>
+                    )}
+                  </div>
                   {application.appliedWith.resume && (
                     <>
                       <a
@@ -252,12 +273,29 @@ export function ApplicationDialog({
                   <p className="text-sm font-medium mb-2 flex items-center gap-1">
                     Cover Letter
                   </p>
-                  <RecreateButton
-                    exists={!!application.appliedWith.coverLetter}
-                    label="Cover Letter"
-                    applicationId={application._id}
-                    type="coverLetter"
-                  />
+                  <div className="flex gap-2">
+                    <RecreateButton
+                      exists={!!application.appliedWith.coverLetter}
+                      label="Cover Letter"
+                      applicationId={application._id}
+                      type="coverLetter"
+                    />
+                    {application.coverLetterRaw && (
+                      <Button
+                        onClick={() =>
+                          setEditingDocument({
+                            type: "coverLetter",
+                            data: application.coverLetterRaw!,
+                          })
+                        }
+                        variant="link"
+                        className="text-blue-500 flex items-center gap-1"
+                      >
+                        Edit
+                        <Edit className="ml-1 h-4 w-4" size={12} />
+                      </Button>
+                    )}
+                  </div>
                   {application.appliedWith.coverLetter && (
                     <>
                       <a
@@ -283,6 +321,16 @@ export function ApplicationDialog({
           </div>
         </div>
       </DialogContent>
+
+      {editingDocument && (
+        <DocumentEditor
+          isOpen={!!editingDocument}
+          onClose={() => setEditingDocument(null)}
+          applicationId={application._id}
+          documentType={editingDocument.type}
+          documentData={editingDocument.data}
+        />
+      )}
     </Dialog>
   );
 }

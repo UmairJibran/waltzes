@@ -4,6 +4,7 @@ import {
   ApplicationStatus,
   GenerateApplicationRequest,
   ReGenerateApplicationDocumentRequest,
+  UpdateDocumentRequest,
 } from "@/lib/types/application";
 
 interface UpdateStatusInput {
@@ -69,6 +70,19 @@ export function useReGenerateApplication() {
     onSuccess: (applicationId: string) => {
       queryClient.invalidateQueries({ queryKey: ["applications"] });
       return applicationId;
+    },
+  });
+}
+
+export function useUpdateDocument() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: UpdateDocumentRequest) => {
+      const response = await applicationsApi.updateDocument(data);
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["applications"] });
     },
   });
 }
