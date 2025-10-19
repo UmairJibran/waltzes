@@ -38,6 +38,41 @@ const STATUS_OPTIONS: ApplicationStatus[] = [
   "rejected",
 ];
 
+function DocumentActions({
+  type,
+  application,
+  onEditClick,
+}: {
+  type: "resume" | "coverLetter";
+  application: Application;
+  onEditClick: (type: "resume" | "coverLetter", data: any) => void;
+}) {
+  const label = type === "resume" ? "Resume" : "Cover Letter";
+  const rawData =
+    type === "resume" ? application.resumeRaw : application.coverLetterRaw;
+
+  return (
+    <div className="flex gap-2">
+      <RecreateButton
+        exists={!!application.appliedWith?.[type]}
+        label={label}
+        type={type}
+        applicationId={application._id}
+      />
+      {rawData && (
+        <Button
+          onClick={() => onEditClick(type, rawData)}
+          variant="link"
+          className="text-blue-500 flex items-center gap-1"
+        >
+          Edit
+          <Edit className="ml-1 h-4 w-4" size={12} />
+        </Button>
+      )}
+    </div>
+  );
+}
+
 export function RecreateButton({
   exists,
   label,
@@ -140,6 +175,13 @@ export function ApplicationDialog({
 
   if (!application) return null;
 
+  const handleEdit = (
+    type: "resume" | "coverLetter",
+    data: Record<string, any> | string
+  ) => {
+    setEditingDocument({ type, data });
+  };
+
   const handleStatusUpdate = () => {
     if (!selectedStatus || selectedStatus === application.applicationStatus)
       return;
@@ -229,29 +271,11 @@ export function ApplicationDialog({
                   <p className="text-sm font-medium mb-2 flex items-center gap-1">
                     Resume
                   </p>
-                  <div className="flex gap-2">
-                    <RecreateButton
-                      exists={!!application.appliedWith.resume}
-                      label="Resume"
-                      type="resume"
-                      applicationId={application._id}
-                    />
-                    {application.resumeRaw && (
-                      <Button
-                        onClick={() =>
-                          setEditingDocument({
-                            type: "resume",
-                            data: application.resumeRaw!,
-                          })
-                        }
-                        variant="link"
-                        className="text-blue-500 flex items-center gap-1"
-                      >
-                        Edit
-                        <Edit className="ml-1 h-4 w-4" size={12} />
-                      </Button>
-                    )}
-                  </div>
+                  <DocumentActions
+                    type="resume"
+                    application={application}
+                    onEditClick={handleEdit}
+                  />
                   {application.appliedWith.resume && (
                     <>
                       <a
@@ -272,29 +296,11 @@ export function ApplicationDialog({
                   <p className="text-sm font-medium mb-2 flex items-center gap-1">
                     Cover Letter
                   </p>
-                  <div className="flex gap-2">
-                    <RecreateButton
-                      exists={!!application.appliedWith.coverLetter}
-                      label="Cover Letter"
-                      applicationId={application._id}
-                      type="coverLetter"
-                    />
-                    {application.coverLetterRaw && (
-                      <Button
-                        onClick={() =>
-                          setEditingDocument({
-                            type: "coverLetter",
-                            data: application.coverLetterRaw!,
-                          })
-                        }
-                        variant="link"
-                        className="text-blue-500 flex items-center gap-1"
-                      >
-                        Edit
-                        <Edit className="ml-1 h-4 w-4" size={12} />
-                      </Button>
-                    )}
-                  </div>
+                  <DocumentActions
+                    type="coverLetter"
+                    application={application}
+                    onEditClick={handleEdit}
+                  />
                   {application.appliedWith.coverLetter && (
                     <>
                       <a
