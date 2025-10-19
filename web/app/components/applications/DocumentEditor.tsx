@@ -14,6 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loader2 } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
 import { useUpdateDocument } from "@/hooks/use-applications";
+import { getErrorMessage } from "@/lib/api-client";
 
 interface DocumentEditorProps {
   isOpen: boolean;
@@ -74,7 +75,7 @@ export function DocumentEditor({
       console.error("Error updating document:", error);
       toast({
         title: "Error",
-        description: "Failed to update document. Please try again.",
+        description: getErrorMessage(error),
         variant: "destructive",
       });
     }

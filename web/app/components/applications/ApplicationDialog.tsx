@@ -24,6 +24,7 @@ import {
 import { PDFViewer } from "./PDFViewer";
 import { toast } from "@/components/ui/use-toast";
 import { DocumentEditor } from "./DocumentEditor";
+import { getErrorMessage } from "@/lib/api-client";
 
 interface ApplicationDialogProps {
   application: Application | null;
@@ -71,9 +72,7 @@ export function RecreateButton({
       console.error("Error recreating application:", error);
       toast({
         title: "Error",
-        description: `Failed to ${
-          exists ? "recreate" : "create"
-        } ${label}. Please try again.`,
+        description: getErrorMessage(error),
         variant: "destructive",
       });
     } finally {
